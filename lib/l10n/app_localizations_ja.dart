@@ -150,6 +150,25 @@ class AppLocalizationsJa extends AppLocalizations {
   String get themeDark => 'ダーク';
 
   @override
+  String get quality => 'グラフィックス';
+
+  @override
+  String get qualityAuto => '自動';
+
+  @override
+  String get qualityLow => '低';
+
+  @override
+  String get qualityMedium => '中';
+
+  @override
+  String get qualityHigh => '高';
+
+  @override
+  String get qualityNote =>
+      '画質を下げると古いスマホでも速く動きます。自動はお使いのスマホに合うレベルを選びます。変更すると 3D 表示が再読み込みされます。';
+
+  @override
   String get language => '言語';
 
   @override

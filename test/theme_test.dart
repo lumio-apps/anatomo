@@ -23,4 +23,13 @@ void main() {
     settings.setTheme('blue');
     expect(settings.theme, 'light');
   });
+
+  test('graphics quality is kept and checked', () {
+    final settings = AppSettings.inMemory();
+    expect(settings.quality, 'auto');
+    settings.setQuality('low');
+    expect(settings.quality, 'low');
+    settings.setQuality('ultra');
+    expect(settings.quality, 'low');
+  });
 }

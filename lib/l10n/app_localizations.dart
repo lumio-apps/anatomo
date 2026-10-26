@@ -384,6 +384,42 @@ abstract class AppLocalizations {
   /// **'Dark'**
   String get themeDark;
 
+  /// No description provided for @quality.
+  ///
+  /// In en, this message translates to:
+  /// **'Graphics'**
+  String get quality;
+
+  /// No description provided for @qualityAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto'**
+  String get qualityAuto;
+
+  /// No description provided for @qualityLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get qualityLow;
+
+  /// No description provided for @qualityMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get qualityMedium;
+
+  /// No description provided for @qualityHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get qualityHigh;
+
+  /// No description provided for @qualityNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower quality runs faster on older phones. Auto picks the best level for your phone. The 3D view reloads when you change this.'**
+  String get qualityNote;
+
   /// No description provided for @language.
   ///
   /// In en, this message translates to:

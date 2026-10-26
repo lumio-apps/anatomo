@@ -154,6 +154,25 @@ class AppLocalizationsRu extends AppLocalizations {
   String get themeDark => 'Тёмная';
 
   @override
+  String get quality => 'Графика';
+
+  @override
+  String get qualityAuto => 'Авто';
+
+  @override
+  String get qualityLow => 'Низкое';
+
+  @override
+  String get qualityMedium => 'Среднее';
+
+  @override
+  String get qualityHigh => 'Высокое';
+
+  @override
+  String get qualityNote =>
+      'Низкое качество работает быстрее на старых телефонах. Авто выбирает лучший уровень для вашего телефона. При смене настройки 3D-вид загружается заново.';
+
+  @override
   String get language => 'Язык';
 
   @override

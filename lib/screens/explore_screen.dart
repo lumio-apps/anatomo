@@ -37,6 +37,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   String? _contentLang;
   BodyManifest? _manifest;
   late String _sex;
+  late String _quality;
 
   ViewerSelection? _selection;
   int _tab = 0;
@@ -49,6 +50,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   void initState() {
     super.initState();
     _sex = _settings.sex;
+    _quality = _settings.quality;
     _viewer = ViewerController(
       onSelect: _onSelect,
       onClear: _onViewerClear,
@@ -84,7 +86,12 @@ class _ExploreScreenState extends State<ExploreScreen> {
   Future<void> _start() async {
     try {
       final page = await _server.start();
-      await _viewer.open(page, sex: _sex, layers: _settings.layers);
+      await _viewer.open(
+        page,
+        sex: _sex,
+        layers: _settings.layers,
+        quality: _quality,
+      );
     } catch (_) {
       // The viewer shows its own error state.
     }
@@ -106,6 +113,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 
   void _onSettings() {
+    if (_settings.quality != _quality) {
+      _quality = _settings.quality;
+      _closeSheet(resetCamera: false);
+      _viewer.setQuality(_quality);
+    }
     if (_settings.sex != _sex) {
       _sex = _settings.sex;
       _closeSheet(resetCamera: false);
@@ -224,6 +236,17 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       () => EagerGestureRecognizer(),
                     ),
                   },
+                ),
+              ),
+            if (_viewer.busy && _viewer.ready && error == null)
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: LinearProgressIndicator(
+                  minHeight: 3,
+                  color: AnatomoColors.accent,
+                  backgroundColor: Colors.transparent,
                 ),
               ),
             if (error != null)

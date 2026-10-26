@@ -154,6 +154,25 @@ class AppLocalizationsHi extends AppLocalizations {
   String get themeDark => 'डार्क';
 
   @override
+  String get quality => 'ग्राफ़िक्स';
+
+  @override
+  String get qualityAuto => 'ऑटो';
+
+  @override
+  String get qualityLow => 'कम';
+
+  @override
+  String get qualityMedium => 'मध्यम';
+
+  @override
+  String get qualityHigh => 'उच्च';
+
+  @override
+  String get qualityNote =>
+      'कम क्वालिटी पुराने फ़ोन पर तेज़ चलती है। ऑटो आपके फ़ोन के लिए सबसे अच्छा स्तर चुनता है। इसे बदलने पर 3D व्यू दोबारा लोड होता है।';
+
+  @override
   String get language => 'भाषा';
 
   @override

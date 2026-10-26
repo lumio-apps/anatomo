@@ -14,6 +14,8 @@ const List<String> kLayers = [
   'skin',
 ];
 
+const List<String> kQualities = ['auto', 'low', 'medium', 'high'];
+
 const Map<String, bool> kDefaultLayers = {
   'organs': true,
   'bones': true,
@@ -39,6 +41,7 @@ class AppSettings extends ChangeNotifier {
   String _sex = 'male';
   bool _onboarded = false;
   String _theme = 'system';
+  String _quality = 'auto';
   final Map<String, bool> _layers = Map.of(kDefaultLayers);
 
   /// Language code chosen by the user, or null to follow the phone.
@@ -48,6 +51,9 @@ class AppSettings extends ChangeNotifier {
 
   /// 'system', 'light' or 'dark'.
   String get theme => _theme;
+
+  /// 3D graphics quality: 'auto', 'low', 'medium' or 'high'.
+  String get quality => _quality;
   Map<String, bool> get layers => Map.unmodifiable(_layers);
 
   static Future<AppSettings> load() async {
@@ -69,6 +75,8 @@ class AppSettings extends ChangeNotifier {
       final sex = data['sex'];
       if (sex == 'male' || sex == 'female') _sex = sex as String;
       _onboarded = data['onboarded'] == true;
+      final quality = data['quality'];
+      if (quality is String && kQualities.contains(quality)) _quality = quality;
       final theme = data['theme'];
       if (theme == 'system' || theme == 'light' || theme == 'dark') {
         _theme = theme as String;
@@ -96,6 +104,7 @@ class AppSettings extends ChangeNotifier {
           'sex': _sex,
           'onboarded': _onboarded,
           'theme': _theme,
+          'quality': _quality,
           'layers': _layers,
         }),
         flush: true,
@@ -116,6 +125,13 @@ class AppSettings extends ChangeNotifier {
   void setSex(String sex) {
     if (_sex == sex || (sex != 'male' && sex != 'female')) return;
     _sex = sex;
+    notifyListeners();
+    _save();
+  }
+
+  void setQuality(String quality) {
+    if (_quality == quality || !kQualities.contains(quality)) return;
+    _quality = quality;
     notifyListeners();
     _save();
   }

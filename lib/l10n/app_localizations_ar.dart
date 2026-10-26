@@ -152,6 +152,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get themeDark => 'داكن';
 
   @override
+  String get quality => 'الرسومات';
+
+  @override
+  String get qualityAuto => 'تلقائي';
+
+  @override
+  String get qualityLow => 'منخفضة';
+
+  @override
+  String get qualityMedium => 'متوسطة';
+
+  @override
+  String get qualityHigh => 'عالية';
+
+  @override
+  String get qualityNote =>
+      'الجودة الأقل تعمل أسرع على الهواتف القديمة. الوضع التلقائي يختار أفضل مستوى لهاتفك. يُعاد تحميل العرض ثلاثي الأبعاد عند التغيير.';
+
+  @override
   String get language => 'اللغة';
 
   @override

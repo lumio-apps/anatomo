@@ -154,6 +154,25 @@ class AppLocalizationsIt extends AppLocalizations {
   String get themeDark => 'Scuro';
 
   @override
+  String get quality => 'Grafica';
+
+  @override
+  String get qualityAuto => 'Auto';
+
+  @override
+  String get qualityLow => 'Bassa';
+
+  @override
+  String get qualityMedium => 'Media';
+
+  @override
+  String get qualityHigh => 'Alta';
+
+  @override
+  String get qualityNote =>
+      'Una qualità più bassa è più veloce sui telefoni meno recenti. Auto sceglie il livello migliore per il tuo telefono. La vista 3D si ricarica quando cambi questa impostazione.';
+
+  @override
   String get language => 'Lingua';
 
   @override

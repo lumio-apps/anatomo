@@ -151,6 +151,25 @@ class AppLocalizationsKo extends AppLocalizations {
   String get themeDark => '다크';
 
   @override
+  String get quality => '그래픽';
+
+  @override
+  String get qualityAuto => '자동';
+
+  @override
+  String get qualityLow => '낮음';
+
+  @override
+  String get qualityMedium => '보통';
+
+  @override
+  String get qualityHigh => '높음';
+
+  @override
+  String get qualityNote =>
+      '화질을 낮추면 오래된 휴대폰에서 더 빠르게 작동합니다. 자동은 휴대폰에 맞는 단계를 고릅니다. 바꾸면 3D 화면이 다시 로드됩니다.';
+
+  @override
   String get language => '언어';
 
   @override

@@ -25,6 +25,7 @@
 - **Parts list.** Search every part and jump to it in 3D.
 - **Dark and light mode.** Follows the phone, or pick one in Settings.
 - **13 languages.** English, Hindi, Armenian, Russian, Spanish, French, German, Arabic, Chinese, Portuguese, Japanese, Korean and Italian.
+- **Fast on phones.** Layers load only when you switch them on, the view drops to a lower resolution while you move it, and the Graphics setting (Auto, Low, Medium, High) fits it to your phone.
 - **Updates inside the app.** Settings → Check for updates downloads the newest release from GitHub. Your settings are kept.
 - **Offline and private.** No ads, no accounts, no tracking. See [PRIVACY.md](PRIVACY.md).
 
@@ -49,6 +50,7 @@ flutter build apk --release
 ## How it works
 
 - The 3D viewer is [three.js](https://threejs.org) in a WebView. A small server inside the app (`127.0.0.1`, random port) serves the viewer and the models, so it works offline.
+- Model files are split by layer (`tool/repack_by_layer.py`), so organs, bones and skin load first and muscles, nerves and vessels load when you switch them on.
 - Each layer is one merged mesh. Every vertex knows its part, and a small GPU texture stores each part's state (selected, faded, hidden) and spread offset. That keeps it to a few draw calls on phones.
 - Tapping uses GPU picking: the part under your finger is drawn in an ID color into a 1×1 image.
 - Texts for each part are in `assets/content/<lang>_a.json` and `<lang>_b.json`. App texts are in `lib/l10n/`.

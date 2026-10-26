@@ -18,11 +18,29 @@ function post(msg) {
 }
 
 // ---------- renderer and scene ----------
-const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+// Graphics quality comes from the page address (?q=auto|low|medium|high).
+// Anti-aliasing can only be chosen when the renderer is created.
+const params = new URLSearchParams(location.search);
+const QUALITY = ['low', 'medium', 'high'].includes(params.get('q')) ? params.get('q') : 'auto';
+const DPR = window.devicePixelRatio || 1;
+// [sharp resolution, resolution while the finger moves]
+const RATIOS = {
+  low: [Math.min(DPR, 1), Math.min(DPR, 0.75)],
+  medium: [Math.min(DPR, 1.5), Math.min(DPR, 1)],
+  high: [Math.min(DPR, 2), Math.min(DPR, 1.25)],
+};
+let baseRatio = RATIOS[QUALITY === 'auto' ? 'medium' : QUALITY][0];
+let moveRatio = RATIOS[QUALITY === 'auto' ? 'medium' : QUALITY][1];
+let curRatio = baseRatio;
+let lastMove = 0;
+const renderer = new THREE.WebGLRenderer({
+  antialias: QUALITY === 'high' || (QUALITY !== 'low' && DPR < 2),
+  powerPreference: 'high-performance',
+});
 if (!renderer.capabilities.isWebGL2) {
   post({ type: 'error', code: 'webgl2' });
 }
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setPixelRatio(curRatio);
 let stageColor = 0x0d171b;
 renderer.setClearColor(stageColor, 1);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -70,6 +88,49 @@ const uniforms = { partTex: { value: null }, ghostOpacity: { value: 0.16 } };
 
 function invalidate() { dirty = true; }
 controls.addEventListener('change', invalidate);
+controls.addEventListener('start', () => { lastMove = performance.now(); });
+
+function setRatio(r) {
+  if (r === curRatio) return;
+  curRatio = r;
+  renderer.setPixelRatio(r);
+  renderer.setSize(window.innerWidth, window.innerHeight, false);
+  dirty = true;
+}
+
+function useQuality(level) {
+  [baseRatio, moveRatio] = RATIOS[level];
+  setRatio(baseRatio);
+  invalidate();
+}
+
+// Auto quality: draw a few frames on a slowly turning camera, wait for the GPU
+// each time, and pick the level from the time one frame takes.
+let tuned = false;
+function autoTune() {
+  if (QUALITY !== 'auto' || tuned || loading || !parts.length) return;
+  tuned = true;
+  const gl = renderer.getContext();
+  const px = new Uint8Array(4);
+  const savedPos = camera.position.clone();
+  setRatio(RATIOS.high[0]);
+  const times = [];
+  for (let i = 0; i < 6; i++) {
+    camera.position.sub(controls.target).applyAxisAngle(camera.up, 0.12).add(controls.target);
+    camera.lookAt(controls.target);
+    const t0 = performance.now();
+    renderer.render(scene, camera);
+    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+    times.push(performance.now() - t0);
+  }
+  camera.position.copy(savedPos);
+  camera.lookAt(controls.target);
+  times.shift(); // the first frame also compiles shaders
+  const ms = times.reduce((a, b) => a + b, 0) / times.length;
+  const level = ms <= 24 ? 'high' : ms <= 50 ? 'medium' : 'low';
+  useQuality(level);
+  post({ type: 'quality', value: level, ms: Math.round(ms) });
+}
 
 // ---------- materials ----------
 function patchMaterial(mat, ghost) {
@@ -166,10 +227,32 @@ const pickTarget = new THREE.WebGLRenderTarget(1, 1);
 const pickPixel = new Uint8Array(4);
 
 // ---------- loading ----------
+// A layer (organs, bones, muscles, ...) is downloaded from the app and built
+// only when it is switched on. That keeps start-up fast and the GPU memory low.
+let chunkBufs = new Map();   // chunk index -> ArrayBuffer (until its layer is built)
+let layerJobs = new Map();   // layer -> Promise
+let baseUrl = '';
+let busyCount = 0;
+
 async function fetchBuffer(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error('Could not load ' + url);
   return res.arrayBuffer();
+}
+
+function setBusy(delta) {
+  const was = busyCount > 0;
+  busyCount = Math.max(0, busyCount + delta);
+  const now = busyCount > 0;
+  if (was !== now && !loading) post({ type: 'busy', value: now });
+}
+
+function layerChunkIds(layer) {
+  const man = manifest;
+  if (!man) return [];
+  const ids = [];
+  man.chunks.forEach((_, i) => { if (man.chunkLayers[i] === layer) ids.push(i); });
+  return ids;
 }
 
 function disposeModel() {
@@ -181,9 +264,14 @@ function disposeModel() {
   }
   layerMeshes = {};
   if (partTex) partTex.dispose();
-  partTex = null;
+  partTex = null; texData = null;
+  uniforms.partTex.value = null;
   parts = []; groups = new Map(); keyParts = new Map();
   selected = new Set(); selectedKey = null;
+  chunkBufs = new Map(); layerJobs = new Map(); busyCount = 0;
+  stateNeeds = { solid: {}, ghost: {} };
+  manifest = null;
+  renderer.renderLists.dispose();
 }
 
 async function load(sex) {
@@ -193,30 +281,73 @@ async function load(sex) {
   disposeModel();
   invalidate();
   try {
-    const base = `models/${sex}/`;
-    const man = JSON.parse(new TextDecoder().decode(await fetchBuffer(base + 'manifest.json')));
+    baseUrl = `models/${sex}/`;
+    const man = JSON.parse(new TextDecoder().decode(await fetchBuffer(baseUrl + 'manifest.json')));
     if (token !== loadToken) return;
-    const buffers = [];
-    for (let i = 0; i < man.chunks.length; i++) {
-      buffers.push(await fetchBuffer(base + man.chunks[i]));
-      if (token !== loadToken) return;
-      post({ type: 'progress', value: (i + 1) / (man.chunks.length + 1) });
-    }
-    build(man, buffers);
+    buildParts(man);
     manifest = man;
+    const wanted = LAYERS.filter((l) => layerOn[l] && layerChunkIds(l).length);
+    const total = wanted.reduce((n, l) => n + layerChunkIds(l).length, 0);
+    let done = 0;
+    for (const layer of wanted) {
+      await ensureLayer(layer, token, () => post({ type: 'progress', value: ++done / (total + 1) }));
+      if (token !== loadToken) return;
+    }
     loading = false;
     applyLayers();
     resetView(false);
     post({ type: 'ready', sex, parts: parts.length });
+    setTimeout(autoTune, 600);
   } catch (e) {
-    loading = false;
-    post({ type: 'error', code: 'load', message: String(e && e.message || e) });
+    if (token === loadToken) {
+      loading = false;
+      post({ type: 'error', code: 'load', message: String(e && e.message || e) });
+    }
   }
 }
 
-function build(man, buffers) {
+function ensureLayer(layer, token = loadToken, onChunk = null) {
+  if (layerMeshes[layer]) return Promise.resolve(true);
+  const running = layerJobs.get(layer);
+  if (running) return running;
+  const job = (async () => {
+    const man = manifest;
+    const ids = layerChunkIds(layer);
+    for (const i of ids) {
+      if (!chunkBufs.has(i)) chunkBufs.set(i, await fetchBuffer(baseUrl + man.chunks[i]));
+      if (token !== loadToken) return false;
+      if (onChunk) onChunk();
+    }
+    if (token !== loadToken) return false;
+    buildLayer(layer);
+    for (const i of ids) chunkBufs.delete(i); // a chunk holds one layer only
+    return true;
+  })();
+  layerJobs.set(layer, job);
+  const clear = () => { if (layerJobs.get(layer) === job) layerJobs.delete(layer); };
+  job.then(clear, clear);
+  return job;
+}
+
+/** Switches on a layer that is not built yet; shows a small busy signal. */
+function wantLayer(layer) {
+  if (!manifest || layerMeshes[layer] || !layerChunkIds(layer).length) return;
+  const token = loadToken;
+  setBusy(1);
+  ensureLayer(layer).then((ok) => {
+    if (ok && token === loadToken) applyLayers();
+  }).catch(() => {
+    if (token !== loadToken) return;
+    layerOn[layer] = false;
+    post({ type: 'layers', layers: layerOn });
+    applyLayers();
+  }).finally(() => { if (token === loadToken) setBusy(-1); });
+}
+
+function buildParts(man) {
   const F = {};
   man.fields.forEach((f, i) => { F[f] = i; });
+  if (!man.chunkLayers) throw new Error('Model files are outdated');
   const [lo, hi] = man.bounds;
   bodyCenter.set((lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2);
   bodySize.set(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]);
@@ -265,56 +396,74 @@ function build(man, buffers) {
   partTex.magFilter = THREE.NearestFilter;
   partTex.needsUpdate = true;
   uniforms.partTex.value = partTex;
+  writeOffsets();
+}
 
-  // merge every layer into one geometry
-  for (const layer of LAYERS) {
-    const list = parts.filter((p) => p.layer === layer);
-    if (!list.length) continue;
-    let vc = 0, ic = 0;
-    for (const p of list) { vc += p.vc; ic += p.ic; }
-    const pos = new Float32Array(vc * 3);
-    const nrm = new Int16Array(vc * 3);
-    const pid = new Uint16Array(vc);
-    const idx = new Uint32Array(ic);
-    let vo = 0, io = 0;
-    for (const p of list) {
-      const buf = buffers[p.chunk];
-      pos.set(new Float32Array(buf, p.pos, p.vc * 3), vo * 3);
-      nrm.set(new Int16Array(buf, p.nrm, p.vc * 3), vo * 3);
-      pid.fill(p.index, vo, vo + p.vc);
-      const src = new Uint32Array(buf, p.idx, p.ic);
-      for (let i = 0; i < p.ic; i++) idx[io + i] = src[i] + vo;
-      vo += p.vc; io += p.ic;
-    }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    geo.setAttribute('normal', new THREE.BufferAttribute(nrm, 3, true));
-    geo.setAttribute('partIndex', new THREE.BufferAttribute(pid, 1));
-    geo.setIndex(new THREE.BufferAttribute(idx, 1));
-    const solid = new THREE.Mesh(geo, makeSolid(layer));
-    const ghost = new THREE.Mesh(geo, makeGhost(layer));
-    const pick = new THREE.Mesh(geo, pickMaterial);
-    for (const m of [solid, ghost, pick]) m.frustumCulled = false;
-    ghost.renderOrder = 1;
-    scene.add(solid); scene.add(ghost); pickScene.add(pick);
-    layerMeshes[layer] = { solid, ghost, pick };
+/** Merges all parts of one layer into a single geometry (few draw calls). */
+function buildLayer(layer) {
+  const list = parts.filter((p) => p.layer === layer);
+  if (!list.length || layerMeshes[layer]) return;
+  let vc = 0, ic = 0;
+  for (const p of list) { vc += p.vc; ic += p.ic; }
+  const pos = new Float32Array(vc * 3);
+  const nrm = new Int16Array(vc * 3);
+  const pid = new Uint16Array(vc);
+  const idx = new Uint32Array(ic);
+  let vo = 0, io = 0;
+  for (const p of list) {
+    const buf = chunkBufs.get(p.chunk);
+    pos.set(new Float32Array(buf, p.pos, p.vc * 3), vo * 3);
+    nrm.set(new Int16Array(buf, p.nrm, p.vc * 3), vo * 3);
+    pid.fill(p.index, vo, vo + p.vc);
+    const src = new Uint32Array(buf, p.idx, p.ic);
+    for (let i = 0; i < p.ic; i++) idx[io + i] = src[i] + vo;
+    vo += p.vc; io += p.ic;
   }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('normal', new THREE.BufferAttribute(nrm, 3, true));
+  geo.setAttribute('partIndex', new THREE.BufferAttribute(pid, 1));
+  geo.setIndex(new THREE.BufferAttribute(idx, 1));
+  const solid = new THREE.Mesh(geo, makeSolid(layer));
+  const ghost = new THREE.Mesh(geo, makeGhost(layer));
+  const pick = new THREE.Mesh(geo, pickMaterial);
+  for (const m of [solid, ghost, pick]) m.frustumCulled = false;
+  ghost.renderOrder = 1;
+  scene.add(solid); scene.add(ghost); pickScene.add(pick);
+  layerMeshes[layer] = { solid, ghost, pick };
 }
 
 // ---------- states, layers, spread ----------
+let stateNeeds = { solid: {}, ghost: {} };
+
 function writeStates() {
   if (!texData) return;
   const anySel = selected.size > 0;
+  const solid = {}, ghost = {};
   for (const p of parts) {
     let s;
     if (selected.has(p.index)) s = STATE_SELECTED;
     else if (anySel || p.layer === 'skin') s = STATE_GHOST;
     else s = STATE_NORMAL;
     texData[p.index * 8 + 3] = s;
+    if (s === STATE_GHOST) ghost[p.layer] = true; else solid[p.layer] = true;
   }
   uniforms.ghostOpacity.value = anySel ? 0.1 : 0.16;
   partTex.needsUpdate = true;
+  stateNeeds = { solid, ghost };
+  updateVisibility();
   invalidate();
+}
+
+/** A pass is drawn only when the layer has parts in that state. */
+function updateVisibility() {
+  for (const layer of Object.keys(layerMeshes)) {
+    const m = layerMeshes[layer];
+    const on = !!layerOn[layer];
+    m.pick.visible = on;
+    m.solid.visible = on && !!stateNeeds.solid[layer];
+    m.ghost.visible = on && !!stateNeeds.ghost[layer];
+  }
 }
 
 function writeOffsets() {
@@ -331,10 +480,6 @@ function writeOffsets() {
 }
 
 function applyLayers() {
-  for (const layer of Object.keys(layerMeshes)) {
-    const m = layerMeshes[layer];
-    m.solid.visible = m.ghost.visible = m.pick.visible = !!layerOn[layer];
-  }
   writeStates();
 }
 
@@ -406,9 +551,20 @@ function focusSelection() {
 
 // ---------- selection ----------
 function selectIndices(list, keyName, fromTap) {
+  const first = parts[list[0]];
+  if (!layerMeshes[first.layer]) {
+    // the layer is not loaded yet: load it, then select
+    layerOn[first.layer] = true;
+    post({ type: 'layers', layers: layerOn });
+    const token = loadToken;
+    setBusy(1);
+    ensureLayer(first.layer).then((ok) => {
+      if (ok && token === loadToken) selectIndices(list, keyName, fromTap);
+    }).catch(() => {}).finally(() => { if (token === loadToken) setBusy(-1); });
+    return;
+  }
   selected = new Set(list);
   selectedKey = keyName;
-  const first = parts[list[0]];
   if (!layerOn[first.layer]) {
     layerOn[first.layer] = true;
     applyLayers();
@@ -515,6 +671,10 @@ function tick() {
     moving = true;
   }
   const changed = controls.update();
+  const now = performance.now();
+  if (moving || changed) lastMove = now;
+  // lower resolution while the view moves, sharp again when it stops
+  setRatio(now - lastMove < 220 ? moveRatio : baseRatio);
   if (!(moving || changed || dirty)) return;
   dirty = false;
   renderer.render(scene, camera);
@@ -531,6 +691,7 @@ window.anatomo = {
       if (p && !layerOn[p.layer]) clearSelection(true);
     }
     applyLayers();
+    for (const k of LAYERS) if (layerOn[k]) wantLayer(k);
   },
   setView(name) { setView(name); },
   reset() { clearSelection(false); resetView(true); },

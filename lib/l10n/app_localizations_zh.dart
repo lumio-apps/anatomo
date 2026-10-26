@@ -149,6 +149,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get themeDark => '深色';
 
   @override
+  String get quality => '画质';
+
+  @override
+  String get qualityAuto => '自动';
+
+  @override
+  String get qualityLow => '低';
+
+  @override
+  String get qualityMedium => '中';
+
+  @override
+  String get qualityHigh => '高';
+
+  @override
+  String get qualityNote => '较低的画质在旧手机上更流畅。自动会为你的手机选择最合适的等级。更改后 3D 视图会重新加载。';
+
+  @override
   String get language => '语言';
 
   @override

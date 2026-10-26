@@ -191,6 +191,50 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   children: [
                     Row(
                       children: [
+                        Icon(Icons.speed_rounded, color: AnatomoColors.accent),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Text(t.quality,
+                              style: const TextStyle(fontSize: 16)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: SegmentedButton<String>(
+                        showSelectedIcon: false,
+                        segments: [
+                          ButtonSegment(value: 'auto', label: Text(t.qualityAuto)),
+                          ButtonSegment(value: 'low', label: Text(t.qualityLow)),
+                          ButtonSegment(value: 'medium', label: Text(t.qualityMedium)),
+                          ButtonSegment(value: 'high', label: Text(t.qualityHigh)),
+                        ],
+                        selected: {widget.settings.quality},
+                        onSelectionChanged: (s) =>
+                            widget.settings.setQuality(s.first),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      t.qualityNote,
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        height: 1.4,
+                        color: AnatomoColors.muted,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 1),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
                         Icon(Icons.accessibility_new_rounded,
                             color: AnatomoColors.accent),
                         const SizedBox(width: 16),

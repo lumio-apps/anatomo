@@ -50,19 +50,29 @@ class ViewerController extends ChangeNotifier {
 
   String _sex = 'male';
   bool _light = false;
+  bool _busy = false;
+  Uri? _page;
   Map<String, bool> _layers = const {};
 
   bool get ready => _ready;
   double get progress => _progress;
 
+  /// A layer is being loaded in the background (the view stays usable).
+  bool get busy => _busy;
+
   /// "webgl2", "load" or "context" when something went wrong.
   String? get error => _error;
+
+  Uri _withQuality(String quality) =>
+      _page!.replace(queryParameters: {'q': quality});
 
   Future<void> open(
     Uri page, {
     required String sex,
     required Map<String, bool> layers,
+    required String quality,
   }) async {
+    _page = page;
     _sex = sex;
     _layers = layers;
     _light = AnatomoColors.isLight;
@@ -86,7 +96,19 @@ class ViewerController extends ChangeNotifier {
       ),
     );
     notifyListeners();
-    await web.loadRequest(page);
+    await web.loadRequest(_withQuality(quality));
+  }
+
+  /// Graphics quality changed: the viewer page is opened again with it.
+  Future<void> setQuality(String quality) async {
+    if (_web == null || _page == null) return;
+    _error = null;
+    _ready = false;
+    _booted = false;
+    _busy = false;
+    _progress = 0;
+    notifyListeners();
+    await _web!.loadRequest(_withQuality(quality));
   }
 
   /// Loads the page again, for example after an error.
@@ -120,6 +142,9 @@ class ViewerController extends ChangeNotifier {
       case 'progress':
         _ready = false;
         _progress = (msg['value'] as num?)?.toDouble() ?? 0;
+        notifyListeners();
+      case 'busy':
+        _busy = msg['value'] == true;
         notifyListeners();
       case 'ready':
         _ready = true;

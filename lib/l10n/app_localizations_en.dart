@@ -152,6 +152,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeDark => 'Dark';
 
   @override
+  String get quality => 'Graphics';
+
+  @override
+  String get qualityAuto => 'Auto';
+
+  @override
+  String get qualityLow => 'Low';
+
+  @override
+  String get qualityMedium => 'Medium';
+
+  @override
+  String get qualityHigh => 'High';
+
+  @override
+  String get qualityNote =>
+      'Lower quality runs faster on older phones. Auto picks the best level for your phone. The 3D view reloads when you change this.';
+
+  @override
   String get language => 'Language';
 
   @override

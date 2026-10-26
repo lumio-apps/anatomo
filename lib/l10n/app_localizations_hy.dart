@@ -154,6 +154,25 @@ class AppLocalizationsHy extends AppLocalizations {
   String get themeDark => 'Մուգ';
 
   @override
+  String get quality => 'Գրաֆիկա';
+
+  @override
+  String get qualityAuto => 'Ավտո';
+
+  @override
+  String get qualityLow => 'Ցածր';
+
+  @override
+  String get qualityMedium => 'Միջին';
+
+  @override
+  String get qualityHigh => 'Բարձր';
+
+  @override
+  String get qualityNote =>
+      'Ցածր որակը ավելի արագ է աշխատում հին հեռախոսների վրա։ Ավտո ռեժիմը ընտրում է ձեր հեռախոսի համար լավագույն մակարդակը։ Փոխելիս 3D տեսքը նորից բեռնվում է։';
+
+  @override
   String get language => 'Լեզու';
 
   @override
