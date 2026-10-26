@@ -370,7 +370,7 @@ class AppLocalizationsHy extends AppLocalizations {
 
   @override
   String get pack3dReady =>
-      '3D փաթեթը տեղադրված է։ Մարմնի տակ փոխեք 2D-ի և 3D-ի միջև։';
+      '3D փաթեթը տեղադրված է։ Տեսքը փոխելու համար օգտագործեք 2D / 3D փոխարկիչը։';
 
   @override
   String get pack3dRemove => 'Հեռացնել';
@@ -378,4 +378,8 @@ class AppLocalizationsHy extends AppLocalizations {
   @override
   String get pack3dFailed =>
       '3D փաթեթը չհաջողվեց ներբեռնել։ Ստուգեք ինտերնետ կապը և նորից փորձեք։';
+
+  @override
+  String get hint3dDesktop =>
+      'Քաշեք՝ պտտելու համար · պտտեք անիվը՝ մեծացնելու համար · սեղմեք ցանկացած մասի վրա';
 }

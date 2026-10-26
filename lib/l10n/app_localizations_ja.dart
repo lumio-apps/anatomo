@@ -358,7 +358,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get pack3dDownload => 'ダウンロード';
 
   @override
-  String get pack3dReady => '3D パックはインストール済みです。体の下で 2D と 3D を切り替えられます。';
+  String get pack3dReady => '3D パックはインストール済みです。2D / 3D の切り替えで表示を変えられます。';
 
   @override
   String get pack3dRemove => '削除';
@@ -366,4 +366,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get pack3dFailed =>
       '3D パックをダウンロードできませんでした。インターネット接続を確認して、もう一度お試しください。';
+
+  @override
+  String get hint3dDesktop => 'ドラッグで回転 · ホイールで拡大 · 部位をクリック';
 }

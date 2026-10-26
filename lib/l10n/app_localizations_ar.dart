@@ -368,7 +368,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pack3dReady =>
-      'الحزمة ثلاثية الأبعاد مثبّتة. بدّل بين 2D و3D أسفل الجسم.';
+      'الحزمة ثلاثية الأبعاد مثبّتة. استخدم مفتاح 2D / 3D لتغيير العرض.';
 
   @override
   String get pack3dRemove => 'إزالة';
@@ -376,4 +376,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get pack3dFailed =>
       'تعذّر تنزيل الحزمة ثلاثية الأبعاد. تحقّق من الاتصال بالإنترنت وحاول مرة أخرى.';
+
+  @override
+  String get hint3dDesktop =>
+      'اسحب للتدوير · استخدم عجلة الفأرة للتكبير · انقر على أي جزء';
 }

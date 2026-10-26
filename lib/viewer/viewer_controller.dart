@@ -1,14 +1,18 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_windows/webview_windows.dart' as win;
 
 import '../selection.dart';
 import '../theme.dart';
 
 export '../selection.dart';
 
-/// Talks to the 3D viewer page (assets/web/viewer.js) inside the WebView.
+/// Talks to the 3D viewer page (assets/web/viewer.js) inside the WebView:
+/// the system WebView on Android, Microsoft Edge WebView2 on Windows.
 class ViewerController extends ChangeNotifier {
   ViewerController({
     required this.onSelect,
@@ -22,6 +26,15 @@ class ViewerController extends ChangeNotifier {
 
   WebViewController? _web;
   WebViewController? get web => _web;
+
+  win.WebviewController? _win;
+  StreamSubscription<dynamic>? _winMessages;
+
+  /// The WebView2 controller on Windows, once it is ready to be shown.
+  win.WebviewController? get windowsView => _winReady ? _win : null;
+  bool _winReady = false;
+
+  static bool get _onWindows => !kIsWeb && Platform.isWindows;
 
   bool _booted = false;
   bool _ready = false;
@@ -56,6 +69,10 @@ class ViewerController extends ChangeNotifier {
     _sex = sex;
     _layers = layers;
     _light = AnatomoColors.isLight;
+    if (_onWindows) {
+      await _openWindows(quality);
+      return;
+    }
     final origin = '${page.scheme}://${page.host}:${page.port}';
     final web = WebViewController();
     _web = web;
@@ -79,16 +96,55 @@ class ViewerController extends ChangeNotifier {
     await web.loadRequest(_withQuality(quality));
   }
 
+  Future<void> _openWindows(String quality) async {
+    try {
+      if (await win.WebviewController.getWebViewVersion() == null) {
+        _fail('load');
+        return;
+      }
+      final c = win.WebviewController();
+      _win = c;
+      await c.initialize();
+      await c.setBackgroundColor(AnatomoColors.stage);
+      await c.setPopupWindowPolicy(win.WebviewPopupWindowPolicy.deny);
+      // The page talks to the app through window.AnatomoBridge, as on Android.
+      await c.addScriptToExecuteOnDocumentCreated(
+        'window.AnatomoBridge = { postMessage: function (s) { '
+        'window.chrome.webview.postMessage(s); } };',
+      );
+      _winMessages = c.webMessage.listen((m) {
+        _onMessage(m is String ? m : jsonEncode(m));
+      });
+      _winReady = true;
+      notifyListeners();
+      await c.loadUrl(_withQuality(quality).toString());
+    } catch (_) {
+      _fail('load');
+    }
+  }
+
+  @override
+  void dispose() {
+    _winMessages?.cancel();
+    _win?.dispose();
+    super.dispose();
+  }
+
   /// Graphics quality changed: the viewer page is opened again with it.
   Future<void> setQuality(String quality) async {
-    if (_web == null || _page == null) return;
+    if ((_web == null && _win == null) || _page == null) return;
     _error = null;
     _ready = false;
     _booted = false;
     _busy = false;
     _progress = 0;
     notifyListeners();
-    await _web!.loadRequest(_withQuality(quality));
+    final c = _win;
+    if (c != null) {
+      await c.loadUrl(_withQuality(quality).toString());
+    } else {
+      await _web!.loadRequest(_withQuality(quality));
+    }
   }
 
   /// Loads the page again, for example after an error.
@@ -98,7 +154,12 @@ class ViewerController extends ChangeNotifier {
     _booted = false;
     _progress = 0;
     notifyListeners();
-    await _web?.reload();
+    final c = _win;
+    if (c != null) {
+      await c.reload();
+    } else {
+      await _web?.reload();
+    }
   }
 
   void _fail(String code) {
@@ -155,10 +216,14 @@ class ViewerController extends ChangeNotifier {
   }
 
   Future<void> _run(String js) async {
-    final web = _web;
-    if (web == null || !_booted) return;
+    if (!_booted) return;
     try {
-      await web.runJavaScript(js);
+      final c = _win;
+      if (c != null) {
+        await c.executeScript(js);
+        return;
+      }
+      await _web?.runJavaScript(js);
     } catch (_) {
       // The page is reloading; the next boot sends the current state again.
     }
@@ -182,6 +247,7 @@ class ViewerController extends ChangeNotifier {
     if (light == _light) return;
     _light = light;
     _web?.setBackgroundColor(AnatomoColors.stage);
+    _win?.setBackgroundColor(AnatomoColors.stage);
     _run('anatomo.setTheme(${jsonEncode(light ? 'light' : 'dark')})');
   }
 

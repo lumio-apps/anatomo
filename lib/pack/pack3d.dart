@@ -26,8 +26,9 @@ class Pack3D extends ChangeNotifier {
 
   static final Pack3D instance = Pack3D._();
 
-  /// The 3D view runs in a WebView, which Anatomo has on Android only.
-  static bool get supported => !kIsWeb && Platform.isAndroid;
+  /// The 3D view runs in a WebView: the system one on Android, Microsoft
+  /// Edge WebView2 on Windows.
+  static bool get supported => !kIsWeb && (Platform.isAndroid || Platform.isWindows);
 
   PackState _state = PackState.checking;
   double _progress = 0;

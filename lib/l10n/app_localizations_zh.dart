@@ -353,11 +353,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pack3dDownload => '下载';
 
   @override
-  String get pack3dReady => '3D 资源包已安装。可在身体下方切换 2D 和 3D。';
+  String get pack3dReady => '3D 资源包已安装。使用 2D / 3D 开关切换视图。';
 
   @override
   String get pack3dRemove => '删除';
 
   @override
   String get pack3dFailed => '无法下载 3D 资源包。请检查网络连接后重试。';
+
+  @override
+  String get hint3dDesktop => '拖动旋转 · 滚轮缩放 · 点击任意部位';
 }

@@ -371,7 +371,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get pack3dReady =>
-      '3D-пакет установлен. Переключайтесь между 2D и 3D под телом.';
+      '3D-пакет установлен. Переключайтесь кнопкой 2D / 3D.';
 
   @override
   String get pack3dRemove => 'Удалить';
@@ -379,4 +379,8 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get pack3dFailed =>
       'Не удалось скачать 3D-пакет. Проверьте подключение к интернету и попробуйте снова.';
+
+  @override
+  String get hint3dDesktop =>
+      'Перетаскивайте для вращения · колесо мыши для масштаба · нажмите на любую часть';
 }

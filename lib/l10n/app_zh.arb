@@ -105,7 +105,8 @@
   "pack3dTitle": "3D 资源包",
   "pack3dNote": "在 3D 中旋转身体并把各部分分开查看。只需下载一次（约 {size} MB），之后可离线使用。",
   "pack3dDownload": "下载",
-  "pack3dReady": "3D 资源包已安装。可在身体下方切换 2D 和 3D。",
+  "pack3dReady": "3D 资源包已安装。使用 2D / 3D 开关切换视图。",
   "pack3dRemove": "删除",
-  "pack3dFailed": "无法下载 3D 资源包。请检查网络连接后重试。"
+  "pack3dFailed": "无法下载 3D 资源包。请检查网络连接后重试。",
+  "hint3dDesktop": "拖动旋转 · 滚轮缩放 · 点击任意部位"
 }

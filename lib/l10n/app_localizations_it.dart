@@ -370,7 +370,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get pack3dReady =>
-      'Il pacchetto 3D è installato. Passa da 2D a 3D sotto il corpo.';
+      'Il pacchetto 3D è installato. Usa il selettore 2D / 3D per cambiare vista.';
 
   @override
   String get pack3dRemove => 'Rimuovi';
@@ -378,4 +378,8 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get pack3dFailed =>
       'Impossibile scaricare il pacchetto 3D. Controlla la connessione a internet e riprova.';
+
+  @override
+  String get hint3dDesktop =>
+      'Trascina per ruotare · rotellina per ingrandire · fai clic su una parte';
 }

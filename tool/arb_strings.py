@@ -1549,6 +1549,28 @@ for _lang, _texts in V2.items():
             S[_lang][_key] = _value
 
 
+# ---------------------------------------------------------------- v2.1 texts (3D on Windows)
+V21 = {
+    "en": ("Drag to rotate · scroll to zoom · click any part", "The 3D pack is installed. Use the 2D / 3D switch to change the view."),
+    "hi": ("घुमाने के लिए खींचें · ज़ूम के लिए स्क्रॉल करें · किसी भी हिस्से पर क्लिक करें", "3D पैक इंस्टॉल है। व्यू बदलने के लिए 2D / 3D स्विच का इस्तेमाल करें।"),
+    "hy": ("Քաշեք՝ պտտելու համար · պտտեք անիվը՝ մեծացնելու համար · սեղմեք ցանկացած մասի վրա", "3D փաթեթը տեղադրված է։ Տեսքը փոխելու համար օգտագործեք 2D / 3D փոխարկիչը։"),
+    "ru": ("Перетаскивайте для вращения · колесо мыши для масштаба · нажмите на любую часть", "3D-пакет установлен. Переключайтесь кнопкой 2D / 3D."),
+    "es": ("Arrastra para girar · usa la rueda para ampliar · haz clic en cualquier parte", "El paquete 3D está instalado. Usa el selector 2D / 3D para cambiar la vista."),
+    "fr": ("Faites glisser pour tourner · molette pour zoomer · cliquez sur une partie", "Le pack 3D est installé. Utilisez le bouton 2D / 3D pour changer de vue."),
+    "de": ("Ziehen zum Drehen · Mausrad zum Zoomen · ein Teil anklicken", "Das 3D-Paket ist installiert. Wechsle die Ansicht mit dem Schalter 2D / 3D."),
+    "ar": ("اسحب للتدوير · استخدم عجلة الفأرة للتكبير · انقر على أي جزء", "الحزمة ثلاثية الأبعاد مثبّتة. استخدم مفتاح 2D / 3D لتغيير العرض."),
+    "zh": ("拖动旋转 · 滚轮缩放 · 点击任意部位", "3D 资源包已安装。使用 2D / 3D 开关切换视图。"),
+    "pt": ("Arraste para girar · use a roda para ampliar · clique em qualquer parte", "O pacote 3D está instalado. Use o seletor 2D / 3D para mudar a visualização."),
+    "ja": ("ドラッグで回転 · ホイールで拡大 · 部位をクリック", "3D パックはインストール済みです。2D / 3D の切り替えで表示を変えられます。"),
+    "ko": ("드래그하여 회전 · 휠로 확대 · 부위를 클릭", "3D 팩이 설치되어 있습니다. 2D / 3D 전환으로 보기를 바꾸세요."),
+    "it": ("Trascina per ruotare · rotellina per ingrandire · fai clic su una parte", "Il pacchetto 3D è installato. Usa il selettore 2D / 3D per cambiare vista."),
+}
+
+for _lang, (_hint, _ready) in V21.items():
+    S[_lang]["hint3dDesktop"] = _hint
+    S[_lang]["pack3dReady"] = _ready
+
+
 def main():
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     out = os.path.join(root, "lib", "l10n")

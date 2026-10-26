@@ -117,6 +117,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final t = AppLocalizations.of(context);
     final lang = languageFor(Localizations.localeOf(context).languageCode);
     final sex = widget.settings.sex;
+    final noteStyle = TextStyle(fontSize: 12.5, height: 1.4, color: AnatomoColors.muted);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -124,87 +125,57 @@ class _SettingsScreenState extends State<SettingsScreen> {
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
         ),
       ),
-      body: ListView(
-        padding: EdgeInsets.fromLTRB(
-          16,
-          8,
-          16,
-          24 + MediaQuery.paddingOf(context).bottom,
-        ),
-        children: [
-          _SectionTitle(t.general),
-          _Card(
+      body: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          // On wide windows the settings stay a readable column, like the
+          // settings pages of Windows, instead of stretching across.
+          constraints: const BoxConstraints(maxWidth: 760),
+          child: ListView(
+            padding: EdgeInsets.fromLTRB(
+              16,
+              8,
+              16,
+              24 + MediaQuery.paddingOf(context).bottom,
+            ),
             children: [
-              ListTile(
-                leading: Icon(Icons.language_rounded, color: AnatomoColors.accent),
-                title: Text(t.language),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      lang.nativeName,
-                      style: TextStyle(color: AnatomoColors.muted),
-                    ),
-                    Icon(Icons.chevron_right_rounded, color: AnatomoColors.muted),
-                  ],
-                ),
-                onTap: _pickLanguage,
-              ),
-              const Divider(height: 1),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+              _SectionTitle(t.general),
+              _Card(
+                children: [
+                  _SettingRow(
+                    icon: Icons.language_rounded,
+                    title: t.language,
+                    onTap: _pickLanguage,
+                    control: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.contrast_rounded, color: AnatomoColors.accent),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Text(t.appearance,
-                              style: const TextStyle(fontSize: 16)),
-                        ),
+                        Text(lang.nativeName, style: TextStyle(color: AnatomoColors.muted)),
+                        Icon(Icons.chevron_right_rounded, color: AnatomoColors.muted),
                       ],
                     ),
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      width: double.infinity,
-                      child: SegmentedButton<String>(
-                        showSelectedIcon: false,
-                        segments: [
-                          ButtonSegment(value: 'system', label: Text(t.themeAuto)),
-                          ButtonSegment(value: 'light', label: Text(t.themeLight)),
-                          ButtonSegment(value: 'dark', label: Text(t.themeDark)),
-                        ],
-                        selected: {widget.settings.theme},
-                        onSelectionChanged: (s) =>
-                            widget.settings.setTheme(s.first),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (Pack3D.supported) const Divider(height: 1),
-              if (Pack3D.supported)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.speed_rounded, color: AnatomoColors.accent),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Text(t.quality,
-                              style: const TextStyle(fontSize: 16)),
-                        ),
+                  ),
+                  const Divider(height: 1),
+                  _SettingRow(
+                    icon: Icons.contrast_rounded,
+                    title: t.appearance,
+                    control: SegmentedButton<String>(
+                      showSelectedIcon: false,
+                      segments: [
+                        ButtonSegment(value: 'system', label: Text(t.themeAuto)),
+                        ButtonSegment(value: 'light', label: Text(t.themeLight)),
+                        ButtonSegment(value: 'dark', label: Text(t.themeDark)),
                       ],
+                      selected: {widget.settings.theme},
+                      onSelectionChanged: (s) => widget.settings.setTheme(s.first),
                     ),
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      width: double.infinity,
-                      child: SegmentedButton<String>(
+                  ),
+                  if (Pack3D.supported) ...[
+                    const Divider(height: 1),
+                    _SettingRow(
+                      icon: Icons.speed_rounded,
+                      title: t.quality,
+                      note: t.qualityNote,
+                      control: SegmentedButton<String>(
                         showSelectedIcon: false,
                         segments: [
                           ButtonSegment(value: 'auto', label: Text(t.qualityAuto)),
@@ -213,152 +184,209 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ButtonSegment(value: 'high', label: Text(t.qualityHigh)),
                         ],
                         selected: {widget.settings.quality},
-                        onSelectionChanged: (s) =>
-                            widget.settings.setQuality(s.first),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      t.qualityNote,
-                      style: TextStyle(
-                        fontSize: 12.5,
-                        height: 1.4,
-                        color: AnatomoColors.muted,
+                        onSelectionChanged: (s) => widget.settings.setQuality(s.first),
                       ),
                     ),
                   ],
-                ),
+                  const Divider(height: 1),
+                  _SettingRow(
+                    icon: Icons.accessibility_new_rounded,
+                    title: t.body,
+                    note: t.femaleNote,
+                    control: SegmentedButton<String>(
+                      showSelectedIcon: false,
+                      segments: [
+                        ButtonSegment(value: 'male', label: Text(t.male)),
+                        ButtonSegment(value: 'female', label: Text(t.female)),
+                      ],
+                      selected: {sex},
+                      onSelectionChanged: (s) => widget.settings.setSex(s.first),
+                    ),
+                  ),
+                ],
               ),
-              const Divider(height: 1),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.accessibility_new_rounded,
-                            color: AnatomoColors.accent),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Text(t.body, style: const TextStyle(fontSize: 16)),
-                        ),
-                        SegmentedButton<String>(
-                          showSelectedIcon: false,
-                          segments: [
-                            ButtonSegment(value: 'male', label: Text(t.male)),
-                            ButtonSegment(value: 'female', label: Text(t.female)),
+              if (Pack3D.supported) ...[
+                _SectionTitle(t.pack3dTitle),
+                _Card(children: [_PackTile(pack: Pack3D.instance)]),
+              ],
+              _SectionTitle(t.updates),
+              _Card(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: LayoutBuilder(
+                      builder: (context, c) {
+                        final wide = c.maxWidth >= 520;
+                        final info = Row(
+                          children: [
+                            const AnatomoMark(size: 40),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _version.isEmpty ? 'Anatomo' : t.versionLabel(_version),
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  if (_status != null)
+                                    Text(
+                                      _status!,
+                                      style: TextStyle(
+                                        fontSize: 13.5,
+                                        color: _statusIsError
+                                            ? AnatomoColors.bad
+                                            : AnatomoColors.good,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
                           ],
-                          selected: {sex},
-                          onSelectionChanged: (s) =>
-                              widget.settings.setSex(s.first),
-                        ),
-                      ],
+                        );
+                        final button = SizedBox(
+                          width: wide ? null : double.infinity,
+                          height: 44,
+                          child: FilledButton(
+                            style: FilledButton.styleFrom(
+                              backgroundColor: AnatomoColors.accent,
+                              foregroundColor: AnatomoColors.accentInk,
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            onPressed: _checking ? null : _checkForUpdates,
+                            child: Text(_checking ? t.checking : t.checkForUpdates),
+                          ),
+                        );
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (wide)
+                              Row(
+                                children: [
+                                  Expanded(child: info),
+                                  const SizedBox(width: 16),
+                                  button,
+                                ],
+                              )
+                            else ...[
+                              info,
+                              const SizedBox(height: 12),
+                              button,
+                            ],
+                            const SizedBox(height: 10),
+                            Text(t.updatesNote, style: noteStyle),
+                          ],
+                        );
+                      },
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      t.femaleNote,
+                  ),
+                ],
+              ),
+              _SectionTitle(t.about),
+              _Card(
+                children: [
+                  _InfoTile(
+                    title: t.sourceCode,
+                    child: SelectableText(
+                      'github.com/$kGithubOwner/$kGithubRepo',
                       style: TextStyle(
-                        fontSize: 12.5,
-                        height: 1.4,
-                        color: AnatomoColors.muted,
+                        fontSize: 13.5,
+                        color: AnatomoColors.accent,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  const Divider(height: 1),
+                  _InfoTile(title: t.models3d, text: t.modelsCredit),
+                  const Divider(height: 1),
+                  _InfoTile(title: t.privacy, text: t.privacyText),
+                  const Divider(height: 1),
+                  _InfoTile(title: t.disclaimerTitle, text: t.disclaimer),
+                ],
               ),
             ],
           ),
-          if (Pack3D.supported) ...[
-            _SectionTitle(t.pack3dTitle),
-            _Card(children: [_PackTile(pack: Pack3D.instance)]),
-          ],
-          _SectionTitle(t.updates),
-          _Card(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const AnatomoMark(size: 40),
-                        const SizedBox(width: 12),
-                        Text(
-                          _version.isEmpty ? 'Anatomo' : t.versionLabel(_version),
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
+        ),
+      ),
+    );
+  }
+}
+
+/// One setting: icon, title and note on the left, its control on the right
+/// (or under the title when there is not enough room, as on phones).
+class _SettingRow extends StatelessWidget {
+  const _SettingRow({
+    required this.icon,
+    required this.title,
+    required this.control,
+    this.note,
+    this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String? note;
+  final Widget control;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final noteText = note == null
+        ? null
+        : Text(
+            note!,
+            style: TextStyle(fontSize: 12.5, height: 1.4, color: AnatomoColors.muted),
+          );
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+        child: LayoutBuilder(
+          builder: (context, c) {
+            final side = c.maxWidth >= 560 || onTap != null;
+            final head = Row(
+              children: [
+                Icon(icon, color: AnatomoColors.accent),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title, style: const TextStyle(fontSize: 16)),
+                      if (side && noteText != null) ...[
+                        const SizedBox(height: 2),
+                        noteText,
                       ],
-                    ),
-                    if (_status != null) ...[
-                      const SizedBox(height: 12),
-                      Text(
-                        _status!,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: _statusIsError
-                              ? AnatomoColors.bad
-                              : AnatomoColors.good,
-                        ),
-                      ),
                     ],
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 48,
-                      child: FilledButton(
-                        style: FilledButton.styleFrom(
-                          backgroundColor: AnatomoColors.accent,
-                          foregroundColor: AnatomoColors.accentInk,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        onPressed: _checking ? null : _checkForUpdates,
-                        child: Text(_checking ? t.checking : t.checkForUpdates),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      t.updatesNote,
-                      style: TextStyle(
-                        fontSize: 12.5,
-                        height: 1.4,
-                        color: AnatomoColors.muted,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          _SectionTitle(t.about),
-          _Card(
-            children: [
-              _InfoTile(
-                title: t.sourceCode,
-                child: SelectableText(
-                  'github.com/$kGithubOwner/$kGithubRepo',
-                  style: TextStyle(
-                    fontSize: 13.5,
-                    color: AnatomoColors.accent,
-                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              ),
-              const Divider(height: 1),
-              _InfoTile(title: t.models3d, text: t.modelsCredit),
-              const Divider(height: 1),
-              _InfoTile(title: t.privacy, text: t.privacyText),
-              const Divider(height: 1),
-              _InfoTile(title: t.disclaimerTitle, text: t.disclaimer),
-            ],
-          ),
-        ],
+                if (side) ...[
+                  const SizedBox(width: 16),
+                  control,
+                ],
+              ],
+            );
+            if (side) return head;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                head,
+                const SizedBox(height: 10),
+                SizedBox(width: double.infinity, child: control),
+                if (noteText != null) ...[
+                  const SizedBox(height: 8),
+                  noteText,
+                ],
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -529,16 +557,20 @@ class _PackTile extends StatelessWidget {
         final buttonStyle = FilledButton.styleFrom(
           backgroundColor: AnatomoColors.accent,
           foregroundColor: AnatomoColors.accentInk,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         );
         Widget action;
         switch (state) {
           case PackState.checking:
             action = const SizedBox.shrink();
           case PackState.ready:
-            action = OutlinedButton(
-              onPressed: pack.remove,
-              child: Text(t.pack3dRemove),
+            action = Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: OutlinedButton(
+                onPressed: pack.remove,
+                child: Text(t.pack3dRemove),
+              ),
             );
           case PackState.downloading:
             action = Column(
@@ -556,13 +588,15 @@ class _PackTile extends StatelessWidget {
             );
           case PackState.missing:
           case PackState.failed:
-            action = SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: FilledButton(
-                style: buttonStyle,
-                onPressed: pack.download,
-                child: Text(t.pack3dDownload),
+            action = Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: SizedBox(
+                height: 44,
+                child: FilledButton(
+                  style: buttonStyle,
+                  onPressed: pack.download,
+                  child: Text(t.pack3dDownload),
+                ),
               ),
             );
         }

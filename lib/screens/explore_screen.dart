@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_windows/webview_windows.dart' as win;
 
 import '../atlas/atlas_controller.dart';
 import '../atlas/atlas_view.dart';
@@ -509,11 +510,14 @@ class _ExploreScreenState extends State<ExploreScreen> {
     if (!_in3d) return AtlasView(controller: _atlas, onHidden: _onHidden);
     final viewer = _viewer;
     final web = viewer?.web;
+    final windowsView = viewer?.windowsView;
     final error = viewer?.error;
     final ready = viewer?.ready ?? false;
     return Stack(
       children: [
         Positioned.fill(child: ColoredBox(color: AnatomoColors.stage)),
+        if (windowsView != null)
+          Positioned.fill(child: win.Webview(windowsView)),
         if (web != null)
           Positioned.fill(
             child: WebViewWidget(
@@ -825,7 +829,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
             right: 80,
             child: Align(
               alignment: AlignmentDirectional.centerStart,
-              child: _Hint(text: _in3d ? t.hint : t.hintDesktop),
+              child: _Hint(text: _in3d ? t.hint3dDesktop : t.hintDesktop),
             ),
           ),
         if (_in3d && _bodyShown)

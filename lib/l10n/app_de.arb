@@ -105,7 +105,8 @@
   "pack3dTitle": "3D-Paket",
   "pack3dNote": "Drehe den Körper und ziehe ihn in 3D auseinander. Wird einmal geladen (etwa {size} MB) und funktioniert dann offline.",
   "pack3dDownload": "Herunterladen",
-  "pack3dReady": "Das 3D-Paket ist installiert. Wechsle unter dem Körper zwischen 2D und 3D.",
+  "pack3dReady": "Das 3D-Paket ist installiert. Wechsle die Ansicht mit dem Schalter 2D / 3D.",
   "pack3dRemove": "Entfernen",
-  "pack3dFailed": "Das 3D-Paket konnte nicht geladen werden. Prüfe die Internetverbindung und versuche es erneut."
+  "pack3dFailed": "Das 3D-Paket konnte nicht geladen werden. Prüfe die Internetverbindung und versuche es erneut.",
+  "hint3dDesktop": "Ziehen zum Drehen · Mausrad zum Zoomen · ein Teil anklicken"
 }

@@ -105,7 +105,8 @@
   "pack3dTitle": "Pacchetto 3D",
   "pack3dNote": "Ruota il corpo e separane le parti in 3D. Si scarica una volta (circa {size} MB), poi funziona offline.",
   "pack3dDownload": "Scarica",
-  "pack3dReady": "Il pacchetto 3D è installato. Passa da 2D a 3D sotto il corpo.",
+  "pack3dReady": "Il pacchetto 3D è installato. Usa il selettore 2D / 3D per cambiare vista.",
   "pack3dRemove": "Rimuovi",
-  "pack3dFailed": "Impossibile scaricare il pacchetto 3D. Controlla la connessione a internet e riprova."
+  "pack3dFailed": "Impossibile scaricare il pacchetto 3D. Controlla la connessione a internet e riprova.",
+  "hint3dDesktop": "Trascina per ruotare · rotellina per ingrandire · fai clic su una parte"
 }

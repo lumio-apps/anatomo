@@ -370,7 +370,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get pack3dReady =>
-      '3D पैक इंस्टॉल है। शरीर के नीचे 2D और 3D के बीच बदलें।';
+      '3D पैक इंस्टॉल है। व्यू बदलने के लिए 2D / 3D स्विच का इस्तेमाल करें।';
 
   @override
   String get pack3dRemove => 'हटाएँ';
@@ -378,4 +378,8 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get pack3dFailed =>
       '3D पैक डाउनलोड नहीं हो सका। इंटरनेट कनेक्शन जाँचें और फिर कोशिश करें।';
+
+  @override
+  String get hint3dDesktop =>
+      'घुमाने के लिए खींचें · ज़ूम के लिए स्क्रॉल करें · किसी भी हिस्से पर क्लिक करें';
 }

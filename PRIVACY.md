@@ -15,7 +15,7 @@ Your language, the body you chose (male or female), the layers you turned on, yo
 ## Internet
 
 - **2D view.** The pictures of the body are inside the app. Exploring works fully offline.
-- **3D pack (Android).** Only when you tap Download, the app downloads the 3D models from the GitHub release `pack-1` of `lumio-apps/anatomo` and keeps them in its own folder. After that the 3D view works offline: it is drawn by a tiny web server that runs inside the app at `127.0.0.1`, reachable only from your own phone. You can remove the pack in Settings.
+- **3D pack.** Only when you tap Download, the app downloads the 3D models from the GitHub release `pack-1` of `lumio-apps/anatomo` and keeps them in its own folder. After that the 3D view works offline: it is drawn by a tiny web server that runs inside the app at `127.0.0.1`, reachable only from your own device. You can remove the pack in Settings.
 - **Check for updates.** Only when you tap it, the app asks GitHub (`api.github.com`) for the latest release of `lumio-apps/anatomo` and, if you agree, downloads the new APK (Android) or installer (Windows) from GitHub. GitHub may log the request as with any website visit. See [GitHub's privacy statement](https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement).
 
 ## Permissions

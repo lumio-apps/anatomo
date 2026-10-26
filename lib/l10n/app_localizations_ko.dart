@@ -358,11 +358,14 @@ class AppLocalizationsKo extends AppLocalizations {
   String get pack3dDownload => '내려받기';
 
   @override
-  String get pack3dReady => '3D 팩이 설치되어 있습니다. 몸 아래에서 2D와 3D를 전환하세요.';
+  String get pack3dReady => '3D 팩이 설치되어 있습니다. 2D / 3D 전환으로 보기를 바꾸세요.';
 
   @override
   String get pack3dRemove => '삭제';
 
   @override
   String get pack3dFailed => '3D 팩을 내려받지 못했습니다. 인터넷 연결을 확인하고 다시 시도하세요.';
+
+  @override
+  String get hint3dDesktop => '드래그하여 회전 · 휠로 확대 · 부위를 클릭';
 }

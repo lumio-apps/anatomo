@@ -369,7 +369,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get pack3dReady =>
-      'Das 3D-Paket ist installiert. Wechsle unter dem Körper zwischen 2D und 3D.';
+      'Das 3D-Paket ist installiert. Wechsle die Ansicht mit dem Schalter 2D / 3D.';
 
   @override
   String get pack3dRemove => 'Entfernen';
@@ -377,4 +377,8 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get pack3dFailed =>
       'Das 3D-Paket konnte nicht geladen werden. Prüfe die Internetverbindung und versuche es erneut.';
+
+  @override
+  String get hint3dDesktop =>
+      'Ziehen zum Drehen · Mausrad zum Zoomen · ein Teil anklicken';
 }

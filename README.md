@@ -19,7 +19,7 @@
 
 - **Real bodies.** A male body (about 2,300 parts) and a female body (about 1,500 parts) from open scientific anatomy data. The female skeleton and muscles are adapted from the male body.
 - **2D, light and fast.** The app shows sharp pictures of the body drawn from the 3D models, from the front, back and side. Pinch or scroll to zoom, tap any part to open it.
-- **3D pack (Android).** Download it once from Settings (about 68 MB) to turn the body in 3D and use the **Spread slider** to pull it apart. Switch between 2D and 3D under the body.
+- **3D pack.** Download it once from Settings (about 68 MB) to turn the body in 3D and use the **Spread slider** to pull it apart. Switch between 2D and 3D with the 2D / 3D switch. On Windows the 3D view uses Microsoft Edge WebView2, which is built into Windows 10 and 11.
 - **Layers.** Turn skin, muscles, bones, organs, nerves and vessels on or off.
 - **What each part does.** Every part opens a card: what it does, what is good for it, what harms it, and quick facts.
 - **Favorites.** Tap the star on a part to keep it; find it again under Favorites in the parts list.

@@ -753,7 +753,7 @@ abstract class AppLocalizations {
   /// No description provided for @pack3dReady.
   ///
   /// In en, this message translates to:
-  /// **'The 3D pack is installed. Switch between 2D and 3D under the body.'**
+  /// **'The 3D pack is installed. Use the 2D / 3D switch to change the view.'**
   String get pack3dReady;
 
   /// No description provided for @pack3dRemove.
@@ -767,6 +767,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The 3D pack could not be downloaded. Check the internet connection and try again.'**
   String get pack3dFailed;
+
+  /// No description provided for @hint3dDesktop.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag to rotate · scroll to zoom · click any part'**
+  String get hint3dDesktop;
 }
 
 class _AppLocalizationsDelegate
