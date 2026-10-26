@@ -142,6 +142,18 @@ class AppLocalizationsHi extends AppLocalizations {
   String get general => 'सामान्य';
 
   @override
+  String get appearance => 'दिखावट';
+
+  @override
+  String get themeAuto => 'ऑटो';
+
+  @override
+  String get themeLight => 'लाइट';
+
+  @override
+  String get themeDark => 'डार्क';
+
+  @override
   String get language => 'भाषा';
 
   @override

@@ -56,7 +56,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               const SizedBox(height: 6),
               Text(
                 t.welcomeSubtitle,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
                   color: AnatomoColors.muted,
                   height: 1.45,
@@ -110,7 +110,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 child: Text(
                   t.offlineNote,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12.5,
                     color: AnatomoColors.muted,
                   ),
@@ -138,7 +138,7 @@ class _LanguageTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: selected ? const Color(0xFF12302F) : AnatomoColors.panel,
+      color: selected ? AnatomoColors.tint : AnatomoColors.panel,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(
@@ -170,7 +170,7 @@ class _LanguageTile extends StatelessWidget {
                     Text(
                       language.englishName,
                       maxLines: 1,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         color: AnatomoColors.muted,
                       ),
@@ -179,7 +179,7 @@ class _LanguageTile extends StatelessWidget {
                 ),
               ),
               if (selected)
-                const Icon(Icons.check_rounded,
+                Icon(Icons.check_rounded,
                     color: AnatomoColors.accent, size: 20),
             ],
           ),

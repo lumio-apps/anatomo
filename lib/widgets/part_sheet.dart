@@ -35,12 +35,16 @@ class PartSheet extends StatelessWidget {
     final t = AppLocalizations.of(context);
     final labels = [t.tabAbout, t.tabGood, t.tabBad];
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AnatomoColors.panel,
         borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
         border: Border(top: BorderSide(color: AnatomoColors.line)),
         boxShadow: [
-          BoxShadow(color: Color(0x66000000), blurRadius: 30, offset: Offset(0, -10)),
+          BoxShadow(
+            color: Color(AnatomoColors.isLight ? 0x22000000 : 0x66000000),
+            blurRadius: 30,
+            offset: Offset(0, -10),
+          ),
         ],
       ),
       child: Column(
@@ -50,7 +54,7 @@ class PartSheet extends StatelessWidget {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: const Color(0xFF3A5056),
+              color: AnatomoColors.grip,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -83,7 +87,7 @@ class PartSheet extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(
                         systemName.toUpperCase(),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 0.5,
@@ -98,7 +102,7 @@ class PartSheet extends StatelessWidget {
                   onPressed: onClose,
                   icon: const Icon(Icons.close_rounded),
                   style: IconButton.styleFrom(
-                    side: const BorderSide(color: AnatomoColors.line),
+                    side: BorderSide(color: AnatomoColors.line),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -145,7 +149,7 @@ class PartSheet extends StatelessWidget {
               alignment: AlignmentDirectional.centerStart,
               child: Text(
                 t.notMedical,
-                style: const TextStyle(fontSize: 12, color: AnatomoColors.muted),
+                style: TextStyle(fontSize: 12, color: AnatomoColors.muted),
               ),
             ),
           ),
@@ -170,7 +174,7 @@ class PartSheet extends StatelessWidget {
               ),
               child: Text(
                 t.partLabel(partName!),
-                style: const TextStyle(fontSize: 13, color: AnatomoColors.body),
+                style: TextStyle(fontSize: 13, color: AnatomoColors.body),
               ),
             ),
             const SizedBox(height: 12),
@@ -178,7 +182,7 @@ class PartSheet extends StatelessWidget {
           if (info != null)
             Text(
               info.description,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 height: 1.55,
                 color: AnatomoColors.body,
@@ -210,7 +214,7 @@ class PartSheet extends StatelessWidget {
                           children: [
                             Text(
                               f[0],
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 11.5,
                                 color: AnatomoColors.muted,
                               ),
@@ -263,10 +267,10 @@ class PartSheet extends StatelessWidget {
                 Expanded(
                   child: Text(
                     item,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 15,
                       height: 1.4,
-                      color: Color(0xFFDCE6E5),
+                      color: AnatomoColors.body,
                     ),
                   ),
                 ),

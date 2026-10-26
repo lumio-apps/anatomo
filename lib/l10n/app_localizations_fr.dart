@@ -143,6 +143,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get general => 'Général';
 
   @override
+  String get appearance => 'Apparence';
+
+  @override
+  String get themeAuto => 'Auto';
+
+  @override
+  String get themeLight => 'Clair';
+
+  @override
+  String get themeDark => 'Sombre';
+
+  @override
   String get language => 'Langue';
 
   @override

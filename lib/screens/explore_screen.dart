@@ -178,6 +178,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
     final selection = _selection;
+    _viewer.syncTheme();
     return PopScope(
       canPop: selection == null,
       onPopInvokedWithResult: (didPop, _) {
@@ -213,7 +214,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
       builder: (context, constraints) {
         return Stack(
           children: [
-            const Positioned.fill(child: ColoredBox(color: AnatomoColors.stage)),
+            Positioned.fill(child: ColoredBox(color: AnatomoColors.stage)),
             if (web != null)
               Positioned.fill(
                 child: WebViewWidget(
@@ -238,10 +239,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   child: Text(
                     t.hint,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12.5,
                       color: AnatomoColors.muted,
-                      shadows: [Shadow(color: Colors.black, blurRadius: 6)],
+                      shadows: [Shadow(color: AnatomoColors.stage, blurRadius: 6)],
                     ),
                   ),
                 ),
@@ -280,7 +281,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
       'side': t.viewSide,
     };
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AnatomoColors.bg,
         border: Border(top: BorderSide(color: AnatomoColors.line)),
       ),
@@ -326,7 +327,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
             children: [
               Text(
                 t.spreadApart,
-                style: const TextStyle(fontSize: 13.5, color: AnatomoColors.muted),
+                style: TextStyle(fontSize: 13.5, color: AnatomoColors.muted),
               ),
               Expanded(
                 child: Slider(
@@ -344,7 +345,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   textAlign: TextAlign.end,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 13, color: AnatomoColors.muted),
+                  style: TextStyle(fontSize: 13, color: AnatomoColors.muted),
                 ),
               ),
             ],
@@ -405,7 +406,7 @@ class _ControlsRow extends StatelessWidget {
     final names = layerNames(t);
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 0, 0, 12),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: AnatomoColors.line)),
       ),
       child: Row(
@@ -565,7 +566,7 @@ class _SquareButton extends StatelessWidget {
         color: AnatomoColors.panel,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: const BorderSide(color: AnatomoColors.line),
+          side: BorderSide(color: AnatomoColors.line),
         ),
         child: InkWell(
           customBorder: RoundedRectangleBorder(
@@ -617,7 +618,7 @@ class _LoadingView extends StatelessWidget {
               Text(
                 t.loading((progress * 100).round()),
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: AnatomoColors.muted, fontSize: 14),
+                style: TextStyle(color: AnatomoColors.muted, fontSize: 14),
               ),
             ],
           ),
@@ -644,7 +645,7 @@ class _ErrorView extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.view_in_ar_rounded, size: 48, color: AnatomoColors.muted),
+              Icon(Icons.view_in_ar_rounded, size: 48, color: AnatomoColors.muted),
               const SizedBox(height: 16),
               Text(
                 code == 'webgl2' ? t.errorWebgl : t.errorLoad,

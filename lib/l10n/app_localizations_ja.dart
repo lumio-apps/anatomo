@@ -138,6 +138,18 @@ class AppLocalizationsJa extends AppLocalizations {
   String get general => '一般';
 
   @override
+  String get appearance => '外観';
+
+  @override
+  String get themeAuto => '自動';
+
+  @override
+  String get themeLight => 'ライト';
+
+  @override
+  String get themeDark => 'ダーク';
+
+  @override
   String get language => '言語';
 
   @override

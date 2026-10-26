@@ -18,7 +18,7 @@ void main() {
             child: Text(
               details.exceptionAsString(),
               textDirection: TextDirection.ltr,
-              style: const TextStyle(color: Colors.white, fontSize: 14),
+              style: TextStyle(color: AnatomoColors.text, fontSize: 14),
             ),
           ),
         ),
@@ -62,7 +62,7 @@ class _BootstrapState extends State<_Bootstrap> {
   Widget build(BuildContext context) {
     final settings = _settings;
     if (settings != null) return AnatomoApp(settings: settings);
-    return const Directionality(
+    return Directionality(
       textDirection: TextDirection.ltr,
       child: ColoredBox(
         color: AnatomoColors.bg,

@@ -23,7 +23,8 @@ if (!renderer.capabilities.isWebGL2) {
   post({ type: 'error', code: 'webgl2' });
 }
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-renderer.setClearColor(0x0d171b, 1);
+let stageColor = 0x0d171b;
+renderer.setClearColor(stageColor, 1);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.05;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -450,7 +451,7 @@ function pickAt(x, y) {
     renderer.render(pickScene, camera);
     renderer.readRenderTargetPixels(pickTarget, 0, 0, 1, 1, pickPixel);
     renderer.setRenderTarget(null);
-    renderer.setClearColor(0x0d171b, 1);
+    renderer.setClearColor(stageColor, 1);
     const id = pickPixel[0] + pickPixel[1] * 256;
     if (id > 0) { applyInset(); return id - 1; }
   }
@@ -533,6 +534,12 @@ window.anatomo = {
   },
   setView(name) { setView(name); },
   reset() { clearSelection(false); resetView(true); },
+  setTheme(mode) {
+    stageColor = mode === 'light' ? 0xe9f0f1 : 0x0d171b;
+    renderer.setClearColor(stageColor, 1);
+    document.body.style.background = mode === 'light' ? '#E9F0F1' : '#0D171B';
+    invalidate();
+  },
   setSpread(v) { spread = Math.max(0, Math.min(1, Number(v) || 0)); invalidate(); },
   setInset(v) {
     inset = Math.max(0, Math.min(0.7, Number(v) || 0));

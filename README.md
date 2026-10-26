@@ -23,6 +23,7 @@
 - **Layers.** Turn skin, muscles, bones, organs, nerves and vessels on or off.
 - **What each part does.** Every part opens a card: what it does, what is good for it, what harms it, and quick facts.
 - **Parts list.** Search every part and jump to it in 3D.
+- **Dark and light mode.** Follows the phone, or pick one in Settings.
 - **13 languages.** English, Hindi, Armenian, Russian, Spanish, French, German, Arabic, Chinese, Portuguese, Japanese, Korean and Italian.
 - **Updates inside the app.** Settings → Check for updates downloads the newest release from GitHub. Your settings are kept.
 - **Offline and private.** No ads, no accounts, no tracking. See [PRIVACY.md](PRIVACY.md).

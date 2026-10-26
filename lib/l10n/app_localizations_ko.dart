@@ -139,6 +139,18 @@ class AppLocalizationsKo extends AppLocalizations {
   String get general => '일반';
 
   @override
+  String get appearance => '화면 모드';
+
+  @override
+  String get themeAuto => '자동';
+
+  @override
+  String get themeLight => '라이트';
+
+  @override
+  String get themeDark => '다크';
+
+  @override
   String get language => '언어';
 
   @override

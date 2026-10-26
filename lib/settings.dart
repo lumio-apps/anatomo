@@ -38,12 +38,16 @@ class AppSettings extends ChangeNotifier {
   String? _language;
   String _sex = 'male';
   bool _onboarded = false;
+  String _theme = 'system';
   final Map<String, bool> _layers = Map.of(kDefaultLayers);
 
   /// Language code chosen by the user, or null to follow the phone.
   String? get language => _language;
   String get sex => _sex;
   bool get onboarded => _onboarded;
+
+  /// 'system', 'light' or 'dark'.
+  String get theme => _theme;
   Map<String, bool> get layers => Map.unmodifiable(_layers);
 
   static Future<AppSettings> load() async {
@@ -65,6 +69,10 @@ class AppSettings extends ChangeNotifier {
       final sex = data['sex'];
       if (sex == 'male' || sex == 'female') _sex = sex as String;
       _onboarded = data['onboarded'] == true;
+      final theme = data['theme'];
+      if (theme == 'system' || theme == 'light' || theme == 'dark') {
+        _theme = theme as String;
+      }
       final layers = data['layers'];
       if (layers is Map) {
         for (final layer in kLayers) {
@@ -87,6 +95,7 @@ class AppSettings extends ChangeNotifier {
           'language': _language,
           'sex': _sex,
           'onboarded': _onboarded,
+          'theme': _theme,
           'layers': _layers,
         }),
         flush: true,
@@ -107,6 +116,15 @@ class AppSettings extends ChangeNotifier {
   void setSex(String sex) {
     if (_sex == sex || (sex != 'male' && sex != 'female')) return;
     _sex = sex;
+    notifyListeners();
+    _save();
+  }
+
+  void setTheme(String theme) {
+    if (_theme == theme || !const ['system', 'light', 'dark'].contains(theme)) {
+      return;
+    }
+    _theme = theme;
     notifyListeners();
     _save();
   }

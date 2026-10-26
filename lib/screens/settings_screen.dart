@@ -62,10 +62,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   title: Text(lang.nativeName),
                   subtitle: Text(
                     lang.englishName,
-                    style: const TextStyle(color: AnatomoColors.muted),
+                    style: TextStyle(color: AnatomoColors.muted),
                   ),
                   trailing: lang.code == current
-                      ? const Icon(Icons.check_rounded, color: AnatomoColors.accent)
+                      ? Icon(Icons.check_rounded, color: AnatomoColors.accent)
                       : null,
                   onTap: () => Navigator.of(context).pop(lang.code),
                 ),
@@ -135,16 +135,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _Card(
             children: [
               ListTile(
-                leading: const Icon(Icons.language_rounded, color: AnatomoColors.accent),
+                leading: Icon(Icons.language_rounded, color: AnatomoColors.accent),
                 title: Text(t.language),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       lang.nativeName,
-                      style: const TextStyle(color: AnatomoColors.muted),
+                      style: TextStyle(color: AnatomoColors.muted),
                     ),
-                    const Icon(Icons.chevron_right_rounded, color: AnatomoColors.muted),
+                    Icon(Icons.chevron_right_rounded, color: AnatomoColors.muted),
                   ],
                 ),
                 onTap: _pickLanguage,
@@ -157,7 +157,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.accessibility_new_rounded,
+                        Icon(Icons.contrast_rounded, color: AnatomoColors.accent),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Text(t.appearance,
+                              style: const TextStyle(fontSize: 16)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: SegmentedButton<String>(
+                        showSelectedIcon: false,
+                        segments: [
+                          ButtonSegment(value: 'system', label: Text(t.themeAuto)),
+                          ButtonSegment(value: 'light', label: Text(t.themeLight)),
+                          ButtonSegment(value: 'dark', label: Text(t.themeDark)),
+                        ],
+                        selected: {widget.settings.theme},
+                        onSelectionChanged: (s) =>
+                            widget.settings.setTheme(s.first),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 1),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.accessibility_new_rounded,
                             color: AnatomoColors.accent),
                         const SizedBox(width: 16),
                         Expanded(
@@ -178,7 +212,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     const SizedBox(height: 8),
                     Text(
                       t.femaleNote,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12.5,
                         height: 1.4,
                         color: AnatomoColors.muted,
@@ -241,7 +275,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     const SizedBox(height: 10),
                     Text(
                       t.updatesNote,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12.5,
                         height: 1.4,
                         color: AnatomoColors.muted,
@@ -257,7 +291,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               _InfoTile(
                 title: t.sourceCode,
-                child: const SelectableText(
+                child: SelectableText(
                   'github.com/$kGithubOwner/$kGithubRepo',
                   style: TextStyle(
                     fontSize: 13.5,
@@ -291,7 +325,7 @@ class _SectionTitle extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(4, 18, 4, 8),
       child: Text(
         text.toUpperCase(),
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w700,
           letterSpacing: 0.6,
@@ -313,7 +347,7 @@ class _Card extends StatelessWidget {
       color: AnatomoColors.panel,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: AnatomoColors.line),
+        side: BorderSide(color: AnatomoColors.line),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(children: children),
@@ -340,7 +374,7 @@ class _InfoTile extends StatelessWidget {
           if (text != null)
             Text(
               text!,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 height: 1.45,
                 color: AnatomoColors.muted,
@@ -401,7 +435,7 @@ class _UpdateDialogState extends State<_UpdateDialog> {
             if (widget.info.notes.isNotEmpty)
               Text(
                 widget.info.notes,
-                style: const TextStyle(fontSize: 13.5, color: AnatomoColors.body),
+                style: TextStyle(fontSize: 13.5, color: AnatomoColors.body),
               ),
             if (progress != null) ...[
               const SizedBox(height: 16),
@@ -411,7 +445,7 @@ class _UpdateDialogState extends State<_UpdateDialog> {
             ],
             if (_error != null) ...[
               const SizedBox(height: 12),
-              Text(_error!, style: const TextStyle(color: AnatomoColors.bad)),
+              Text(_error!, style: TextStyle(color: AnatomoColors.bad)),
             ],
           ],
         ),

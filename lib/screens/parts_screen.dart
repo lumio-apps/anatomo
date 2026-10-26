@@ -110,7 +110,7 @@ class _PartsScreenState extends State<PartsScreen> {
         child: Text(
           t.noResults(_query.text.trim()),
           textAlign: TextAlign.center,
-          style: const TextStyle(color: AnatomoColors.muted, fontSize: 15),
+          style: TextStyle(color: AnatomoColors.muted, fontSize: 15),
         ),
       ));
     }
@@ -127,7 +127,7 @@ class _PartsScreenState extends State<PartsScreen> {
             Text(
               '${widget.sex == 'female' ? t.female : t.male} · '
               '${t.partsCount(manifest.parts.length)}',
-              style: const TextStyle(fontSize: 12.5, color: AnatomoColors.muted),
+              style: TextStyle(fontSize: 12.5, color: AnatomoColors.muted),
             ),
           ],
         ),
@@ -155,11 +155,11 @@ class _PartsScreenState extends State<PartsScreen> {
                 fillColor: AnatomoColors.panel,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: AnatomoColors.line),
+                  borderSide: BorderSide(color: AnatomoColors.line),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: AnatomoColors.line),
+                  borderSide: BorderSide(color: AnatomoColors.line),
                 ),
               ),
             ),
@@ -213,7 +213,7 @@ class _Header extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(4, 18, 4, 8),
       child: Text(
         text.toUpperCase(),
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w700,
           letterSpacing: 0.6,
@@ -245,7 +245,7 @@ class _Row extends StatelessWidget {
         color: AnatomoColors.panel,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: const BorderSide(color: AnatomoColors.line),
+          side: BorderSide(color: AnatomoColors.line),
         ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
@@ -277,7 +277,7 @@ class _Row extends StatelessWidget {
                         if (subtitle != null)
                           Text(
                             subtitle!,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 12.5,
                               color: AnatomoColors.muted,
                             ),
@@ -285,7 +285,7 @@ class _Row extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const Icon(
+                  Icon(
                     Icons.chevron_right_rounded,
                     color: AnatomoColors.muted,
                   ),
@@ -361,12 +361,12 @@ class _Note extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.info_outline_rounded, size: 18, color: AnatomoColors.accent),
+          Icon(Icons.info_outline_rounded, size: 18, color: AnatomoColors.accent),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(fontSize: 13.5, height: 1.4, color: AnatomoColors.body),
+              style: TextStyle(fontSize: 13.5, height: 1.4, color: AnatomoColors.body),
             ),
           ),
         ],

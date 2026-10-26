@@ -142,6 +142,18 @@ class AppLocalizationsHy extends AppLocalizations {
   String get general => 'Ընդհանուր';
 
   @override
+  String get appearance => 'Տեսք';
+
+  @override
+  String get themeAuto => 'Ավտո';
+
+  @override
+  String get themeLight => 'Բաց';
+
+  @override
+  String get themeDark => 'Մուգ';
+
+  @override
   String get language => 'Լեզու';
 
   @override

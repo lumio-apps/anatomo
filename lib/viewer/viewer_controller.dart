@@ -49,6 +49,7 @@ class ViewerController extends ChangeNotifier {
   String? _error;
 
   String _sex = 'male';
+  bool _light = false;
   Map<String, bool> _layers = const {};
 
   bool get ready => _ready;
@@ -64,6 +65,7 @@ class ViewerController extends ChangeNotifier {
   }) async {
     _sex = sex;
     _layers = layers;
+    _light = AnatomoColors.isLight;
     final origin = '${page.scheme}://${page.host}:${page.port}';
     final web = WebViewController();
     _web = web;
@@ -112,7 +114,8 @@ class ViewerController extends ChangeNotifier {
     switch (msg['type']) {
       case 'boot':
         _booted = true;
-        _run('anatomo.setLayers(${jsonEncode(_layers)}); '
+        _run('anatomo.setTheme(${jsonEncode(_light ? 'light' : 'dark')}); '
+            'anatomo.setLayers(${jsonEncode(_layers)}); '
             'anatomo.load(${jsonEncode(_sex)});');
       case 'progress':
         _ready = false;
@@ -166,6 +169,15 @@ class ViewerController extends ChangeNotifier {
     _progress = 0;
     notifyListeners();
     _run('anatomo.load(${jsonEncode(sex)})');
+  }
+
+  /// Called on every rebuild; does nothing unless the mode really changed.
+  void syncTheme() {
+    final light = AnatomoColors.isLight;
+    if (light == _light) return;
+    _light = light;
+    _web?.setBackgroundColor(AnatomoColors.stage);
+    _run('anatomo.setTheme(${jsonEncode(light ? 'light' : 'dark')})');
   }
 
   void setLayers(Map<String, bool> layers) {

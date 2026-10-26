@@ -141,6 +141,18 @@ class AppLocalizationsPt extends AppLocalizations {
   String get general => 'Geral';
 
   @override
+  String get appearance => 'Aparência';
+
+  @override
+  String get themeAuto => 'Auto';
+
+  @override
+  String get themeLight => 'Claro';
+
+  @override
+  String get themeDark => 'Escuro';
+
+  @override
   String get language => 'Idioma';
 
   @override
