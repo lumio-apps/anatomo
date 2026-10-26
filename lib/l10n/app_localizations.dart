@@ -420,6 +420,108 @@ abstract class AppLocalizations {
   /// **'Lower quality runs faster on older phones. Auto picks the best level for your phone. The 3D view reloads when you change this.'**
   String get qualityNote;
 
+  /// No description provided for @favorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get favorites;
+
+  /// No description provided for @noFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'No favorites yet. Tap the star on a part to add it here.'**
+  String get noFavorites;
+
+  /// No description provided for @addFavorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favorites'**
+  String get addFavorite;
+
+  /// No description provided for @removeFavorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from favorites'**
+  String get removeFavorite;
+
+  /// No description provided for @copyText.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy text'**
+  String get copyText;
+
+  /// No description provided for @copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to the clipboard'**
+  String get copied;
+
+  /// No description provided for @quiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiz'**
+  String get quiz;
+
+  /// No description provided for @quizWhichPart.
+  ///
+  /// In en, this message translates to:
+  /// **'Which body part is this?'**
+  String get quizWhichPart;
+
+  /// No description provided for @quizWhichSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Which body system does {name} belong to?'**
+  String quizWhichSystem(String name);
+
+  /// No description provided for @quizQuestionOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Question {n} of {total}'**
+  String quizQuestionOf(int n, int total);
+
+  /// No description provided for @quizCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct!'**
+  String get quizCorrect;
+
+  /// No description provided for @quizWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Not quite. The answer is {answer}.'**
+  String quizWrong(String answer);
+
+  /// No description provided for @quizNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get quizNext;
+
+  /// No description provided for @quizFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'See result'**
+  String get quizFinish;
+
+  /// No description provided for @quizScore.
+  ///
+  /// In en, this message translates to:
+  /// **'You got {score} of {total} right'**
+  String quizScore(int score, int total);
+
+  /// No description provided for @quizBest.
+  ///
+  /// In en, this message translates to:
+  /// **'Best score: {best}'**
+  String quizBest(int best);
+
+  /// No description provided for @quizPlayAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Play again'**
+  String get quizPlayAgain;
+
   /// No description provided for @language.
   ///
   /// In en, this message translates to:

@@ -17,6 +17,9 @@ class PartSheet extends StatelessWidget {
     required this.tab,
     required this.onTab,
     required this.onClose,
+    required this.favorite,
+    required this.onFavorite,
+    required this.onCopy,
   });
 
   final String title;
@@ -29,6 +32,9 @@ class PartSheet extends StatelessWidget {
   final int tab;
   final ValueChanged<int> onTab;
   final VoidCallback onClose;
+  final bool favorite;
+  final VoidCallback onFavorite;
+  final VoidCallback onCopy;
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +102,19 @@ class PartSheet extends StatelessWidget {
                       ),
                     ],
                   ),
+                ),
+                IconButton(
+                  tooltip: favorite ? t.removeFavorite : t.addFavorite,
+                  onPressed: onFavorite,
+                  icon: Icon(
+                    favorite ? Icons.star_rounded : Icons.star_outline_rounded,
+                    color: favorite ? AnatomoColors.coral : AnatomoColors.muted,
+                  ),
+                ),
+                IconButton(
+                  tooltip: t.copyText,
+                  onPressed: onCopy,
+                  icon: Icon(Icons.copy_rounded, size: 20, color: AnatomoColors.muted),
                 ),
                 IconButton(
                   tooltip: t.showWholeBody,

@@ -171,6 +171,68 @@ class AppLocalizationsAr extends AppLocalizations {
       'الجودة الأقل تعمل أسرع على الهواتف القديمة. الوضع التلقائي يختار أفضل مستوى لهاتفك. يُعاد تحميل العرض ثلاثي الأبعاد عند التغيير.';
 
   @override
+  String get favorites => 'المفضلة';
+
+  @override
+  String get noFavorites =>
+      'لا توجد عناصر مفضلة بعد. اضغط على النجمة في أي جزء لإضافته هنا.';
+
+  @override
+  String get addFavorite => 'إضافة إلى المفضلة';
+
+  @override
+  String get removeFavorite => 'إزالة من المفضلة';
+
+  @override
+  String get copyText => 'نسخ النص';
+
+  @override
+  String get copied => 'تم النسخ إلى الحافظة';
+
+  @override
+  String get quiz => 'اختبار';
+
+  @override
+  String get quizWhichPart => 'أي جزء من الجسم هذا؟';
+
+  @override
+  String quizWhichSystem(String name) {
+    return 'إلى أي جهاز في الجسم ينتمي: $name؟';
+  }
+
+  @override
+  String quizQuestionOf(int n, int total) {
+    return 'السؤال $n من $total';
+  }
+
+  @override
+  String get quizCorrect => 'صحيح!';
+
+  @override
+  String quizWrong(String answer) {
+    return 'ليس تمامًا. الإجابة هي $answer.';
+  }
+
+  @override
+  String get quizNext => 'التالي';
+
+  @override
+  String get quizFinish => 'عرض النتيجة';
+
+  @override
+  String quizScore(int score, int total) {
+    return 'أجبت بشكل صحيح عن $score من $total';
+  }
+
+  @override
+  String quizBest(int best) {
+    return 'أفضل نتيجة: $best';
+  }
+
+  @override
+  String get quizPlayAgain => 'العب مرة أخرى';
+
+  @override
   String get language => 'اللغة';
 
   @override

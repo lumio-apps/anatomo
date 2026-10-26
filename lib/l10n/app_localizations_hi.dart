@@ -173,6 +173,68 @@ class AppLocalizationsHi extends AppLocalizations {
       'कम क्वालिटी पुराने फ़ोन पर तेज़ चलती है। ऑटो आपके फ़ोन के लिए सबसे अच्छा स्तर चुनता है। इसे बदलने पर 3D व्यू दोबारा लोड होता है।';
 
   @override
+  String get favorites => 'पसंदीदा';
+
+  @override
+  String get noFavorites =>
+      'अभी कोई पसंदीदा नहीं है। किसी अंग पर तारा दबाकर उसे यहाँ जोड़ें।';
+
+  @override
+  String get addFavorite => 'पसंदीदा में जोड़ें';
+
+  @override
+  String get removeFavorite => 'पसंदीदा से हटाएँ';
+
+  @override
+  String get copyText => 'टेक्स्ट कॉपी करें';
+
+  @override
+  String get copied => 'क्लिपबोर्ड में कॉपी हो गया';
+
+  @override
+  String get quiz => 'क्विज़';
+
+  @override
+  String get quizWhichPart => 'यह शरीर का कौन-सा अंग है?';
+
+  @override
+  String quizWhichSystem(String name) {
+    return '$name किस शरीर तंत्र का हिस्सा है?';
+  }
+
+  @override
+  String quizQuestionOf(int n, int total) {
+    return 'सवाल $n / $total';
+  }
+
+  @override
+  String get quizCorrect => 'सही!';
+
+  @override
+  String quizWrong(String answer) {
+    return 'सही नहीं। जवाब है $answer।';
+  }
+
+  @override
+  String get quizNext => 'आगे';
+
+  @override
+  String get quizFinish => 'नतीजा देखें';
+
+  @override
+  String quizScore(int score, int total) {
+    return 'आपके $total में से $score सही हुए';
+  }
+
+  @override
+  String quizBest(int best) {
+    return 'सबसे अच्छा स्कोर: $best';
+  }
+
+  @override
+  String get quizPlayAgain => 'फिर खेलें';
+
+  @override
   String get language => 'भाषा';
 
   @override

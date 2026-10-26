@@ -171,6 +171,68 @@ class AppLocalizationsEn extends AppLocalizations {
       'Lower quality runs faster on older phones. Auto picks the best level for your phone. The 3D view reloads when you change this.';
 
   @override
+  String get favorites => 'Favorites';
+
+  @override
+  String get noFavorites =>
+      'No favorites yet. Tap the star on a part to add it here.';
+
+  @override
+  String get addFavorite => 'Add to favorites';
+
+  @override
+  String get removeFavorite => 'Remove from favorites';
+
+  @override
+  String get copyText => 'Copy text';
+
+  @override
+  String get copied => 'Copied to the clipboard';
+
+  @override
+  String get quiz => 'Quiz';
+
+  @override
+  String get quizWhichPart => 'Which body part is this?';
+
+  @override
+  String quizWhichSystem(String name) {
+    return 'Which body system does $name belong to?';
+  }
+
+  @override
+  String quizQuestionOf(int n, int total) {
+    return 'Question $n of $total';
+  }
+
+  @override
+  String get quizCorrect => 'Correct!';
+
+  @override
+  String quizWrong(String answer) {
+    return 'Not quite. The answer is $answer.';
+  }
+
+  @override
+  String get quizNext => 'Next';
+
+  @override
+  String get quizFinish => 'See result';
+
+  @override
+  String quizScore(int score, int total) {
+    return 'You got $score of $total right';
+  }
+
+  @override
+  String quizBest(int best) {
+    return 'Best score: $best';
+  }
+
+  @override
+  String get quizPlayAgain => 'Play again';
+
+  @override
   String get language => 'Language';
 
   @override

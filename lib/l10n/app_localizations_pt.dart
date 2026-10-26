@@ -172,6 +172,68 @@ class AppLocalizationsPt extends AppLocalizations {
       'Uma qualidade menor roda mais rápido em celulares antigos. O Auto escolhe o melhor nível para o seu celular. A vista 3D é recarregada quando você muda isso.';
 
   @override
+  String get favorites => 'Favoritos';
+
+  @override
+  String get noFavorites =>
+      'Ainda não há favoritos. Toque na estrela em uma parte para adicioná-la aqui.';
+
+  @override
+  String get addFavorite => 'Adicionar aos favoritos';
+
+  @override
+  String get removeFavorite => 'Remover dos favoritos';
+
+  @override
+  String get copyText => 'Copiar texto';
+
+  @override
+  String get copied => 'Copiado para a área de transferência';
+
+  @override
+  String get quiz => 'Quiz';
+
+  @override
+  String get quizWhichPart => 'Que parte do corpo é esta?';
+
+  @override
+  String quizWhichSystem(String name) {
+    return 'A que sistema do corpo pertence: $name?';
+  }
+
+  @override
+  String quizQuestionOf(int n, int total) {
+    return 'Pergunta $n de $total';
+  }
+
+  @override
+  String get quizCorrect => 'Correto!';
+
+  @override
+  String quizWrong(String answer) {
+    return 'Quase. A resposta é $answer.';
+  }
+
+  @override
+  String get quizNext => 'Próxima';
+
+  @override
+  String get quizFinish => 'Ver resultado';
+
+  @override
+  String quizScore(int score, int total) {
+    return 'Você acertou $score de $total';
+  }
+
+  @override
+  String quizBest(int best) {
+    return 'Melhor pontuação: $best';
+  }
+
+  @override
+  String get quizPlayAgain => 'Jogar de novo';
+
+  @override
   String get language => 'Idioma';
 
   @override

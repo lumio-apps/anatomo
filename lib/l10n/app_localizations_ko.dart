@@ -170,6 +170,67 @@ class AppLocalizationsKo extends AppLocalizations {
       '화질을 낮추면 오래된 휴대폰에서 더 빠르게 작동합니다. 자동은 휴대폰에 맞는 단계를 고릅니다. 바꾸면 3D 화면이 다시 로드됩니다.';
 
   @override
+  String get favorites => '즐겨찾기';
+
+  @override
+  String get noFavorites => '아직 즐겨찾기가 없습니다. 부위의 별을 누르면 여기에 추가됩니다.';
+
+  @override
+  String get addFavorite => '즐겨찾기에 추가';
+
+  @override
+  String get removeFavorite => '즐겨찾기에서 삭제';
+
+  @override
+  String get copyText => '텍스트 복사';
+
+  @override
+  String get copied => '클립보드에 복사했습니다';
+
+  @override
+  String get quiz => '퀴즈';
+
+  @override
+  String get quizWhichPart => '이것은 몸의 어느 부위일까요?';
+
+  @override
+  String quizWhichSystem(String name) {
+    return '$name은(는) 어느 신체 계통에 속할까요?';
+  }
+
+  @override
+  String quizQuestionOf(int n, int total) {
+    return '$total문제 중 $n번';
+  }
+
+  @override
+  String get quizCorrect => '정답!';
+
+  @override
+  String quizWrong(String answer) {
+    return '아쉽네요. 정답은 $answer입니다.';
+  }
+
+  @override
+  String get quizNext => '다음';
+
+  @override
+  String get quizFinish => '결과 보기';
+
+  @override
+  String quizScore(int score, int total) {
+    return '$total문제 중 $score문제를 맞혔어요';
+  }
+
+  @override
+  String quizBest(int best) {
+    return '최고 점수: $best';
+  }
+
+  @override
+  String get quizPlayAgain => '다시 하기';
+
+  @override
   String get language => '언어';
 
   @override

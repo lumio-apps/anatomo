@@ -42,6 +42,8 @@ class AppSettings extends ChangeNotifier {
   bool _onboarded = false;
   String _theme = 'system';
   String _quality = 'auto';
+  final Set<String> _favorites = {};
+  int _quizBest = 0;
   final Map<String, bool> _layers = Map.of(kDefaultLayers);
 
   /// Language code chosen by the user, or null to follow the phone.
@@ -54,6 +56,10 @@ class AppSettings extends ChangeNotifier {
 
   /// 3D graphics quality: 'auto', 'low', 'medium' or 'high'.
   String get quality => _quality;
+
+  /// Keys of the parts the user starred.
+  Set<String> get favorites => Set.unmodifiable(_favorites);
+  int get quizBest => _quizBest;
   Map<String, bool> get layers => Map.unmodifiable(_layers);
 
   static Future<AppSettings> load() async {
@@ -75,6 +81,12 @@ class AppSettings extends ChangeNotifier {
       final sex = data['sex'];
       if (sex == 'male' || sex == 'female') _sex = sex as String;
       _onboarded = data['onboarded'] == true;
+      final favorites = data['favorites'];
+      if (favorites is List) {
+        _favorites.addAll(favorites.whereType<String>());
+      }
+      final best = data['quizBest'];
+      if (best is int && best >= 0) _quizBest = best;
       final quality = data['quality'];
       if (quality is String && kQualities.contains(quality)) _quality = quality;
       final theme = data['theme'];
@@ -105,6 +117,8 @@ class AppSettings extends ChangeNotifier {
           'onboarded': _onboarded,
           'theme': _theme,
           'quality': _quality,
+          'favorites': _favorites.toList(),
+          'quizBest': _quizBest,
           'layers': _layers,
         }),
         flush: true,
@@ -125,6 +139,19 @@ class AppSettings extends ChangeNotifier {
   void setSex(String sex) {
     if (_sex == sex || (sex != 'male' && sex != 'female')) return;
     _sex = sex;
+    notifyListeners();
+    _save();
+  }
+
+  void toggleFavorite(String key) {
+    if (!_favorites.remove(key)) _favorites.add(key);
+    notifyListeners();
+    _save();
+  }
+
+  void setQuizBest(int score) {
+    if (score <= _quizBest) return;
+    _quizBest = score;
     notifyListeners();
     _save();
   }

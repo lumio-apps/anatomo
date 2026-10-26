@@ -173,6 +173,68 @@ class AppLocalizationsHy extends AppLocalizations {
       'Ցածր որակը ավելի արագ է աշխատում հին հեռախոսների վրա։ Ավտո ռեժիմը ընտրում է ձեր հեռախոսի համար լավագույն մակարդակը։ Փոխելիս 3D տեսքը նորից բեռնվում է։';
 
   @override
+  String get favorites => 'Ընտրյալներ';
+
+  @override
+  String get noFavorites =>
+      'Դեռ ընտրյալներ չկան։ Սեղմեք աստղանիշը մարմնի մասի վրա՝ այն այստեղ ավելացնելու համար։';
+
+  @override
+  String get addFavorite => 'Ավելացնել ընտրյալներում';
+
+  @override
+  String get removeFavorite => 'Հեռացնել ընտրյալներից';
+
+  @override
+  String get copyText => 'Պատճենել տեքստը';
+
+  @override
+  String get copied => 'Պատճենվեց';
+
+  @override
+  String get quiz => 'Վիկտորինա';
+
+  @override
+  String get quizWhichPart => 'Սա մարմնի ո՞ր մասն է։';
+
+  @override
+  String quizWhichSystem(String name) {
+    return 'Ո՞ր համակարգին է պատկանում՝ $name։';
+  }
+
+  @override
+  String quizQuestionOf(int n, int total) {
+    return 'Հարց $n / $total';
+  }
+
+  @override
+  String get quizCorrect => 'Ճիշտ է։';
+
+  @override
+  String quizWrong(String answer) {
+    return 'Ոչ այնքան։ Պատասխանն է՝ $answer։';
+  }
+
+  @override
+  String get quizNext => 'Հաջորդը';
+
+  @override
+  String get quizFinish => 'Տեսնել արդյունքը';
+
+  @override
+  String quizScore(int score, int total) {
+    return 'Դուք ճիշտ պատասխանեցիք $score/$total';
+  }
+
+  @override
+  String quizBest(int best) {
+    return 'Լավագույն արդյունքը՝ $best';
+  }
+
+  @override
+  String get quizPlayAgain => 'Խաղալ նորից';
+
+  @override
   String get language => 'Լեզու';
 
   @override

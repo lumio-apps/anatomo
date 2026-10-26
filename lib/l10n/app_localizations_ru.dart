@@ -173,6 +173,68 @@ class AppLocalizationsRu extends AppLocalizations {
       'Низкое качество работает быстрее на старых телефонах. Авто выбирает лучший уровень для вашего телефона. При смене настройки 3D-вид загружается заново.';
 
   @override
+  String get favorites => 'Избранное';
+
+  @override
+  String get noFavorites =>
+      'Пока ничего нет. Нажмите на звёздочку у части тела, чтобы добавить её сюда.';
+
+  @override
+  String get addFavorite => 'В избранное';
+
+  @override
+  String get removeFavorite => 'Убрать из избранного';
+
+  @override
+  String get copyText => 'Копировать текст';
+
+  @override
+  String get copied => 'Скопировано в буфер обмена';
+
+  @override
+  String get quiz => 'Викторина';
+
+  @override
+  String get quizWhichPart => 'Что это за часть тела?';
+
+  @override
+  String quizWhichSystem(String name) {
+    return 'К какой системе органов относится: $name?';
+  }
+
+  @override
+  String quizQuestionOf(int n, int total) {
+    return 'Вопрос $n из $total';
+  }
+
+  @override
+  String get quizCorrect => 'Верно!';
+
+  @override
+  String quizWrong(String answer) {
+    return 'Не совсем. Правильный ответ: $answer.';
+  }
+
+  @override
+  String get quizNext => 'Далее';
+
+  @override
+  String get quizFinish => 'Показать результат';
+
+  @override
+  String quizScore(int score, int total) {
+    return 'Верных ответов: $score из $total';
+  }
+
+  @override
+  String quizBest(int best) {
+    return 'Лучший результат: $best';
+  }
+
+  @override
+  String get quizPlayAgain => 'Играть снова';
+
+  @override
   String get language => 'Язык';
 
   @override

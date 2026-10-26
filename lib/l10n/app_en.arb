@@ -78,6 +78,64 @@
   "qualityMedium": "Medium",
   "qualityHigh": "High",
   "qualityNote": "Lower quality runs faster on older phones. Auto picks the best level for your phone. The 3D view reloads when you change this.",
+  "favorites": "Favorites",
+  "noFavorites": "No favorites yet. Tap the star on a part to add it here.",
+  "addFavorite": "Add to favorites",
+  "removeFavorite": "Remove from favorites",
+  "copyText": "Copy text",
+  "copied": "Copied to the clipboard",
+  "quiz": "Quiz",
+  "quizWhichPart": "Which body part is this?",
+  "quizWhichSystem": "Which body system does {name} belong to?",
+  "@quizWhichSystem": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quizQuestionOf": "Question {n} of {total}",
+  "@quizQuestionOf": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "quizCorrect": "Correct!",
+  "quizWrong": "Not quite. The answer is {answer}.",
+  "@quizWrong": {
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "quizNext": "Next",
+  "quizFinish": "See result",
+  "quizScore": "You got {score} of {total} right",
+  "@quizScore": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "quizBest": "Best score: {best}",
+  "@quizBest": {
+    "placeholders": {
+      "best": {
+        "type": "int"
+      }
+    }
+  },
+  "quizPlayAgain": "Play again",
   "language": "Language",
   "body": "Body",
   "updates": "Updates",

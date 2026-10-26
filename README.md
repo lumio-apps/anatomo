@@ -22,6 +22,9 @@
 - **Spread slider.** Pull the body apart to see what sits inside.
 - **Layers.** Turn skin, muscles, bones, organs, nerves and vessels on or off.
 - **What each part does.** Every part opens a card: what it does, what is good for it, what harms it, and quick facts.
+- **Favorites.** Tap the star on a part to keep it; find it again under Favorites in the parts list.
+- **Quiz.** Ten questions made from the part texts, in your language, with a best score.
+- **Copy.** Copy the texts of a part to the clipboard.
 - **Parts list.** Search every part and jump to it in 3D.
 - **Dark and light mode.** Follows the phone, or pick one in Settings.
 - **13 languages.** English, Hindi, Armenian, Russian, Spanish, French, German, Arabic, Chinese, Portuguese, Japanese, Korean and Italian.

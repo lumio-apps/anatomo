@@ -24,8 +24,10 @@ class PartsScreen extends StatefulWidget {
     required this.manifest,
     required this.content,
     required this.sex,
+    required this.favorites,
   });
 
+  final Set<String> favorites;
   final BodyManifest manifest;
   final BodyContent content;
   final String sex;
@@ -53,7 +55,11 @@ class _PartsScreenState extends State<PartsScreen> {
     final q = _query.text.trim().toLowerCase();
 
     final keys = manifest.keyLayers.keys.where((k) {
-      if (_filter != 'all' && manifest.keyLayers[k] != _filter) return false;
+      if (_filter == 'fav') {
+        if (!widget.favorites.contains(k)) return false;
+      } else if (_filter != 'all' && manifest.keyLayers[k] != _filter) {
+        return false;
+      }
       if (q.isEmpty) return true;
       final info = content[k];
       return content.nameOf(k).toLowerCase().contains(q) ||
@@ -89,6 +95,7 @@ class _PartsScreenState extends State<PartsScreen> {
           color: Color(manifest.keyColors[k] ?? 0xFF46BFB4),
           title: content.nameOf(k),
           subtitle: info == null ? null : content.systemName(info.system),
+          favorite: widget.favorites.contains(k),
           onTap: () => Navigator.of(context).pop(PartsPick(k)),
         ));
       }
@@ -100,6 +107,7 @@ class _PartsScreenState extends State<PartsScreen> {
           color: Color(manifest.keyColors[p.key] ?? 0xFF46BFB4),
           title: p.name,
           subtitle: content.nameOf(p.key),
+          favorite: false,
           onTap: () => Navigator.of(context).pop(PartsPick(p.key, p.id)),
         ));
       }
@@ -108,7 +116,9 @@ class _PartsScreenState extends State<PartsScreen> {
       children.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 32),
         child: Text(
-          t.noResults(_query.text.trim()),
+          _filter == 'fav' && q.isEmpty
+              ? t.noFavorites
+              : t.noResults(_query.text.trim()),
           textAlign: TextAlign.center,
           style: TextStyle(color: AnatomoColors.muted, fontSize: 15),
         ),
@@ -175,6 +185,11 @@ class _PartsScreenState extends State<PartsScreen> {
                   selected: _filter == 'all',
                   onTap: () => setState(() => _filter = 'all'),
                 ),
+                _FilterChip(
+                  label: '★ ${t.favorites}',
+                  selected: _filter == 'fav',
+                  onTap: () => setState(() => _filter = 'fav'),
+                ),
                 for (final l in layersPresent)
                   _FilterChip(
                     label: names[l] ?? l,
@@ -229,12 +244,14 @@ class _Row extends StatelessWidget {
     required this.color,
     required this.title,
     required this.subtitle,
+    required this.favorite,
     required this.onTap,
   });
 
   final Color color;
   final String title;
   final String? subtitle;
+  final bool favorite;
   final VoidCallback onTap;
 
   @override
@@ -285,6 +302,15 @@ class _Row extends StatelessWidget {
                       ],
                     ),
                   ),
+                  if (favorite)
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(end: 6),
+                      child: Icon(
+                        Icons.star_rounded,
+                        size: 18,
+                        color: AnatomoColors.coral,
+                      ),
+                    ),
                   Icon(
                     Icons.chevron_right_rounded,
                     color: AnatomoColors.muted,

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../body_manifest.dart';
@@ -14,6 +15,7 @@ import '../viewer/viewer_controller.dart';
 import '../widgets/logo.dart';
 import '../widgets/part_sheet.dart';
 import 'parts_screen.dart';
+import 'quiz_screen.dart';
 import 'settings_screen.dart';
 
 /// Share of the 3D view covered by the details sheet.
@@ -169,6 +171,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
           manifest: manifest,
           content: _content,
           sex: _sex,
+          favorites: _settings.favorites,
         ),
       ),
     );
@@ -178,6 +181,43 @@ class _ExploreScreenState extends State<ExploreScreen> {
     } else {
       _viewer.selectKey(pick.key);
     }
+  }
+
+  Future<void> _openQuiz() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => QuizScreen(content: _content, settings: _settings),
+      ),
+    );
+  }
+
+  /// Puts the texts of a part on the clipboard.
+  Future<void> _copyText(String key) async {
+    final info = _content[key];
+    final t = AppLocalizations.of(context);
+    final buffer = StringBuffer(_content.nameOf(key));
+    if (info != null) {
+      buffer
+        ..writeln(' (${_content.systemName(info.system)})')
+        ..writeln(info.description)
+        ..writeln()
+        ..writeln('+ ${t.tabGood}')
+        ..writeAll(info.good.map((s) => '  - $s\n'))
+        ..writeln()
+        ..writeln('+ ${t.tabBad}')
+        ..writeAll(info.bad.map((s) => '  - $s\n'));
+    }
+    buffer
+      ..writeln()
+      ..write('Anatomo · github.com/lumio-apps/anatomo');
+    await Clipboard.setData(ClipboardData(text: buffer.toString()));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(
+        content: Text(t.copied),
+        duration: const Duration(seconds: 2),
+      ));
   }
 
   Future<void> _openSettings() async {
@@ -202,7 +242,12 @@ class _ExploreScreenState extends State<ExploreScreen> {
           bottom: false,
           child: Column(
             children: [
-              _TopBar(onSearch: _openSearch, onSettings: _openSettings, t: t),
+              _TopBar(
+                onSearch: _openSearch,
+                onQuiz: _openQuiz,
+                onSettings: _openSettings,
+                t: t,
+              ),
               _ControlsRow(
                 sex: _sex,
                 layers: _settings.layers,
@@ -289,6 +334,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   tab: _tab,
                   onTab: (i) => setState(() => _tab = i),
                   onClose: _closeSheet,
+                  favorite: _settings.favorites.contains(selection.key),
+                  onFavorite: () => _settings.toggleFavorite(selection.key),
+                  onCopy: () => _copyText(selection.key),
                 ),
               ),
           ],
@@ -382,11 +430,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
 class _TopBar extends StatelessWidget {
   const _TopBar({
     required this.onSearch,
+    required this.onQuiz,
     required this.onSettings,
     required this.t,
   });
 
   final VoidCallback onSearch;
+  final VoidCallback onQuiz;
   final VoidCallback onSettings;
   final AppLocalizations t;
 
@@ -401,6 +451,8 @@ class _TopBar extends StatelessWidget {
           const AnatomoWordmark(size: 20),
           const Spacer(),
           _SquareButton(icon: Icons.search_rounded, tooltip: t.searchParts, onTap: onSearch),
+          const SizedBox(width: 8),
+          _SquareButton(icon: Icons.quiz_outlined, tooltip: t.quiz, onTap: onQuiz),
           const SizedBox(width: 8),
           _SquareButton(icon: Icons.settings_outlined, tooltip: t.settings, onTap: onSettings),
         ],

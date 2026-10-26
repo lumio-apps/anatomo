@@ -169,6 +169,67 @@ class AppLocalizationsJa extends AppLocalizations {
       '画質を下げると古いスマホでも速く動きます。自動はお使いのスマホに合うレベルを選びます。変更すると 3D 表示が再読み込みされます。';
 
   @override
+  String get favorites => 'お気に入り';
+
+  @override
+  String get noFavorites => 'お気に入りはまだありません。部位の星をタップするとここに追加されます。';
+
+  @override
+  String get addFavorite => 'お気に入りに追加';
+
+  @override
+  String get removeFavorite => 'お気に入りから削除';
+
+  @override
+  String get copyText => 'テキストをコピー';
+
+  @override
+  String get copied => 'クリップボードにコピーしました';
+
+  @override
+  String get quiz => 'クイズ';
+
+  @override
+  String get quizWhichPart => 'これは体のどの部分でしょう？';
+
+  @override
+  String quizWhichSystem(String name) {
+    return '$name はどの器官系に属しますか？';
+  }
+
+  @override
+  String quizQuestionOf(int n, int total) {
+    return '$total 問中 $n 問目';
+  }
+
+  @override
+  String get quizCorrect => '正解！';
+
+  @override
+  String quizWrong(String answer) {
+    return '惜しい！正解は $answer です。';
+  }
+
+  @override
+  String get quizNext => '次へ';
+
+  @override
+  String get quizFinish => '結果を見る';
+
+  @override
+  String quizScore(int score, int total) {
+    return '$total 問中 $score 問正解';
+  }
+
+  @override
+  String quizBest(int best) {
+    return 'ベストスコア：$best';
+  }
+
+  @override
+  String get quizPlayAgain => 'もう一度';
+
+  @override
   String get language => '言語';
 
   @override

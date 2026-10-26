@@ -167,6 +167,67 @@ class AppLocalizationsZh extends AppLocalizations {
   String get qualityNote => '较低的画质在旧手机上更流畅。自动会为你的手机选择最合适的等级。更改后 3D 视图会重新加载。';
 
   @override
+  String get favorites => '收藏';
+
+  @override
+  String get noFavorites => '还没有收藏。点按某个部位上的星标即可添加到这里。';
+
+  @override
+  String get addFavorite => '加入收藏';
+
+  @override
+  String get removeFavorite => '取消收藏';
+
+  @override
+  String get copyText => '复制文字';
+
+  @override
+  String get copied => '已复制到剪贴板';
+
+  @override
+  String get quiz => '小测验';
+
+  @override
+  String get quizWhichPart => '这是身体的哪个部位？';
+
+  @override
+  String quizWhichSystem(String name) {
+    return '$name 属于哪个身体系统？';
+  }
+
+  @override
+  String quizQuestionOf(int n, int total) {
+    return '第 $n 题，共 $total 题';
+  }
+
+  @override
+  String get quizCorrect => '正确！';
+
+  @override
+  String quizWrong(String answer) {
+    return '不太对。答案是 $answer。';
+  }
+
+  @override
+  String get quizNext => '下一题';
+
+  @override
+  String get quizFinish => '查看结果';
+
+  @override
+  String quizScore(int score, int total) {
+    return '你答对了 $score 题，共 $total 题';
+  }
+
+  @override
+  String quizBest(int best) {
+    return '最高分：$best';
+  }
+
+  @override
+  String get quizPlayAgain => '再玩一次';
+
+  @override
   String get language => '语言';
 
   @override
