@@ -15,6 +15,33 @@
 
 </div>
 
+<p align="center">
+  <img src="docs/screenshots/explore-female.jpg" width="23%" alt="Female body in 3D, light mode">
+  <img src="docs/screenshots/explore-male.jpg" width="23%" alt="Male body in 3D, light mode">
+  <img src="docs/screenshots/quiz.jpg" width="23%" alt="Quiz, dark mode">
+  <img src="docs/screenshots/settings.jpg" width="23%" alt="Settings with the 3D pack, dark mode">
+</p>
+
+<p align="center">
+  <a href="#features">Features</a> ·
+  <a href="#install">Install</a> ·
+  <a href="#build">Build</a> ·
+  <a href="#how-it-works">How it works</a> ·
+  <a href="#roadmap">Roadmap</a> ·
+  <a href="#credits">Credits</a>
+</p>
+
+## Why Anatomo
+
+Most anatomy apps are heavy, full of ads, or need an account. Anatomo is a small, free atlas of the human body that works fully offline. Open it, tap any part, and learn what it does, what is good for it and what harms it, in your own language. Nothing leaves your device.
+
+| | |
+|---|---|
+| **Small** | The app holds 2D pictures only. The 3D models are an optional one-time download (about 68 MB). |
+| **Private** | No ads, no accounts, no tracking, no internet needed after the download. |
+| **Open** | Code under MIT, anatomy data under CC BY 4.0. |
+| **Everywhere** | Android and Windows, 13 languages. |
+
 ## Features
 
 - **Real bodies.** A male body (about 2,300 parts) and a female body (about 1,500 parts) from open scientific anatomy data. The female skeleton and muscles are adapted from the male body.
@@ -102,6 +129,16 @@ Pushing a version tag such as `v2.0.0` starts the **Release** workflow. It build
 The 3D pack is published separately: pushing a tag such as `pack-1` starts the **3D pack** workflow, which compresses `pack/models` and uploads it as a pre-release (it is not marked as the latest app release). The app downloads the pack whose number is `kPackVersion` in `lib/pack/pack3d.dart`.
 
 Required repository secrets: `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`.
+
+## Roadmap
+
+Planned, one step at a time: highlight a whole body system, isolate or hide a part, cross-section slider, auto-rotate, labels in 3D, flashcards, more quiz types, organ of the day, study progress, landscape mode, bigger text, read-aloud, and lighter 3D models. Ideas and bug reports are welcome in [Issues](https://github.com/lumio-apps/anatomo/issues).
+
+## Contributing
+
+1. Fork the repository and create a branch.
+2. Run `flutter analyze` and `flutter test` before you open a pull request.
+3. New app texts go in `lib/l10n/app_en.arb` first; other languages can follow.
 
 ## Credits
 
