@@ -21,6 +21,8 @@ function post(msg) {
 // Graphics quality comes from the page address (?q=auto|low|medium|high).
 // Anti-aliasing can only be chosen when the renderer is created.
 const params = new URLSearchParams(location.search);
+// ?atlas=1 is only used by tool/build_atlas.py to draw the 2D pictures.
+const ATLAS = params.get('atlas') === '1';
 const QUALITY = ['low', 'medium', 'high'].includes(params.get('q')) ? params.get('q') : 'auto';
 const DPR = window.devicePixelRatio || 1;
 // [sharp resolution, resolution while the finger moves]
@@ -34,7 +36,9 @@ let moveRatio = RATIOS[QUALITY === 'auto' ? 'medium' : QUALITY][1];
 let curRatio = baseRatio;
 let lastMove = 0;
 const renderer = new THREE.WebGLRenderer({
-  antialias: QUALITY === 'high' || (QUALITY !== 'low' && DPR < 2),
+  antialias: ATLAS || QUALITY === 'high' || (QUALITY !== 'low' && DPR < 2),
+  alpha: ATLAS,
+  preserveDrawingBuffer: ATLAS,
   powerPreference: 'high-performance',
 });
 if (!renderer.capabilities.isWebGL2) {
@@ -52,10 +56,12 @@ const scene = new THREE.Scene();
 const pickScene = new THREE.Scene();
 const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-scene.add(new THREE.HemisphereLight(0xdfeeee, 0x1a1010, 0.6));
-const key = new THREE.DirectionalLight(0xffffff, 1.6); key.position.set(1.5, 3, 3); scene.add(key);
-const rim = new THREE.DirectionalLight(0x7fd6cf, 0.8); rim.position.set(-2, 1.5, -3); scene.add(rim);
-const fill = new THREE.DirectionalLight(0xffd9cc, 0.45); fill.position.set(-3, 0.5, 2); scene.add(fill);
+const lightRig = new THREE.Group();
+scene.add(lightRig);
+lightRig.add(new THREE.HemisphereLight(0xdfeeee, 0x1a1010, 0.6));
+const key = new THREE.DirectionalLight(0xffffff, 1.6); key.position.set(1.5, 3, 3); lightRig.add(key);
+const rim = new THREE.DirectionalLight(0x7fd6cf, 0.8); rim.position.set(-2, 1.5, -3); lightRig.add(rim);
+const fill = new THREE.DirectionalLight(0xffd9cc, 0.45); fill.position.set(-3, 0.5, 2); lightRig.add(fill);
 
 const camera = new THREE.PerspectiveCamera(30, 1, 0.01, 50);
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -679,7 +685,7 @@ function tick() {
   dirty = false;
   renderer.render(scene, camera);
 }
-tick();
+if (!ATLAS) tick();
 
 // ---------- API for Flutter ----------
 window.anatomo = {
@@ -724,5 +730,79 @@ window.anatomo = {
   clear() { clearSelection(false); if (!tween) resetView(true); },
   focus() { focusSelection(); },
 };
+
+// ---------- offline 2D pictures (tool/build_atlas.py) ----------
+if (ATLAS) {
+  const VIEWS = { front: [0, 0], back: [Math.PI, 0], side: [Math.PI / 2, 1] };
+  window.anatomoAtlas = {
+    async open(sex) {
+      await load(sex);
+      for (const layer of LAYERS) await ensureLayer(layer);
+      return { parts: parts.length, bounds: manifest.bounds };
+    },
+    /** Draws the given layers from one side; kind 'color' or 'ids'. */
+    shot(view, layers, height, kind) {
+      const [yaw, axis] = VIEWS[view];
+      const [lo, hi] = manifest.bounds;
+      const margin = 0.02;
+      const h0 = lo[1] - margin, h1 = hi[1] + margin;
+      // front: x to the right; back: x to the left; side (from +x): z to the left
+      const a0 = (axis ? lo[2] : lo[0]) - margin;
+      const a1 = (axis ? hi[2] : hi[0]) + margin;
+      const width = Math.round(height * (a1 - a0) / (h1 - h0));
+      const cam = new THREE.OrthographicCamera();
+      const mid = (a0 + a1) / 2, half = (a1 - a0) / 2;
+      cam.left = -half; cam.right = half; cam.top = (h1 - h0) / 2; cam.bottom = -(h1 - h0) / 2;
+      cam.near = 0.01; cam.far = 10;
+      const cy = (h0 + h1) / 2;
+      if (view === 'front') { cam.position.set(mid, cy, 3); cam.lookAt(mid, cy, 0); }
+      else if (view === 'back') { cam.position.set(mid, cy, -3); cam.lookAt(mid, cy, 0); }
+      else { cam.position.set(3, cy, mid); cam.lookAt(0, cy, mid); }
+      cam.updateProjectionMatrix();
+      lightRig.rotation.y = yaw;
+
+      for (const l of LAYERS) layerOn[l] = layers.includes(l);
+      for (const p of parts) texData[p.index * 8 + 3] = STATE_NORMAL;
+      partTex.needsUpdate = true;
+      stateNeeds = { solid: Object.fromEntries(LAYERS.map((l) => [l, true])), ghost: {} };
+      updateVisibility();
+
+      renderer.setPixelRatio(1);
+      renderer.setSize(width, height, false);
+      if (kind === 'color') {
+        renderer.setRenderTarget(null);
+        renderer.setClearColor(0x000000, 0);
+        renderer.clear();
+        renderer.render(scene, cam);
+        return { width, height, data: renderer.domElement.toDataURL('image/png') };
+      }
+      const target = new THREE.WebGLRenderTarget(width, height);
+      pickMaterial.uniforms.pickGhost.value = 0;
+      renderer.setRenderTarget(target);
+      renderer.setClearColor(0x000000, 0);
+      renderer.clear();
+      renderer.render(pickScene, cam);
+      const px = new Uint8Array(width * height * 4);
+      renderer.readRenderTargetPixels(target, 0, 0, width, height, px);
+      renderer.setRenderTarget(null);
+      target.dispose();
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      const img = ctx.createImageData(width, height);
+      for (let y = 0; y < height; y++) {
+        const src = (height - 1 - y) * width * 4, dst = y * width * 4;
+        for (let x = 0; x < width * 4; x += 4) {
+          img.data[dst + x] = px[src + x];
+          img.data[dst + x + 1] = px[src + x + 1];
+          img.data[dst + x + 2] = 0;
+          img.data[dst + x + 3] = 255;
+        }
+      }
+      ctx.putImageData(img, 0, 0);
+      return { width, height, data: canvas.toDataURL('image/png') };
+    },
+  };
+}
 
 post({ type: 'boot' });

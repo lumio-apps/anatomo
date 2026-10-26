@@ -131,7 +131,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get femaleNote => '女性身体显示器官、皮肤和部分骨骼。完整骨骼和肌肉在男性身体中。';
+  String get femaleNote => '女性身体的骨骼和肌肉取自男性身体并做了适配。';
 
   @override
   String get general => '通用';
@@ -288,17 +288,76 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get modelsCredit =>
-      '男性身体：BodyParts3D 4.0，© The Database Center for Life Science（CC BY 4.0）。女性身体：HuBMAP 3D Reference Organ Set for Female v1.5，作者 Kristen Browne 和 Heidi Schlehlein（CC BY 4.0）。两者都为手机做了简化。男性身体的肺和肝脏取自女性模型并做了适配。';
+      '男性身体：BodyParts3D 4.0，© The Database Center for Life Science（CC BY 4.0）。女性身体：HuBMAP 3D Reference Organ Set for Female v1.5，作者 Kristen Browne 和 Heidi Schlehlein（CC BY 4.0）。两者都为手机做了简化。男性身体的肺和肝脏取自女性模型并做了适配。女性身体的骨骼和肌肉取自男性身体并做了适配。';
 
   @override
   String get privacy => '隐私';
 
   @override
-  String get privacyText => 'Anatomo 可离线使用。无需账号，没有广告，没有追踪。你的任何信息都不会离开手机。';
+  String get privacyText => 'Anatomo 可离线使用。无需账号，没有广告，没有追踪。你的任何信息都不会离开设备。';
 
   @override
   String get disclaimerTitle => '用于学习';
 
   @override
   String get disclaimer => 'Anatomo 用于学习，不构成医疗建议。有关健康问题请咨询医生。';
+
+  @override
+  String get hint2d => '点按任意部位 · 双指缩放';
+
+  @override
+  String get hintDesktop => '点击部位 · 滚轮缩放 · 拖动移动';
+
+  @override
+  String get hiddenHere => '从这一侧看不到这个部位。请换一个方向，或关闭它前面的图层。';
+
+  @override
+  String get fittedFromMale => '在女性身体中，这个部位取自男性身体并做了适配。';
+
+  @override
+  String get fittedFromFemale => '在男性身体中，这个部位取自女性身体并做了适配。';
+
+  @override
+  String get layers => '图层';
+
+  @override
+  String get explore => '浏览';
+
+  @override
+  String get selectPartTitle => '点击身体的任意部位';
+
+  @override
+  String get selectPartText => '它的卡片会在这里打开：它的作用、对它有益的事和对它有害的事。';
+
+  @override
+  String get keyboard => '键盘';
+
+  @override
+  String get zoomIn => '放大';
+
+  @override
+  String get zoomOut => '缩小';
+
+  @override
+  String get cancel => '取消';
+
+  @override
+  String get pack3dTitle => '3D 资源包';
+
+  @override
+  String pack3dNote(int size) {
+    return '在 3D 中旋转身体并把各部分分开查看。只需下载一次（约 $size MB），之后可离线使用。';
+  }
+
+  @override
+  String get pack3dDownload => '下载';
+
+  @override
+  String get pack3dReady => '3D 资源包已安装。可在身体下方切换 2D 和 3D。';
+
+  @override
+  String get pack3dRemove => '删除';
+
+  @override
+  String get pack3dFailed => '无法下载 3D 资源包。请检查网络连接后重试。';
 }

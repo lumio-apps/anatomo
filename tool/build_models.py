@@ -199,6 +199,8 @@ def classify(name, system, cy, sex):
             return "spinal_cord"
         return "brain" if head else "nerves"
     if system == "skeletal":
+        if has("bone tissue"):
+            return "pelvis"  # HuBMAP female: the hip bones are named by tissue
         if has("fibularis", "tibialis", "iliotibial", "levator scapulae",
                "subscapularis", "tensor"):
             return "muscles"
@@ -330,7 +332,11 @@ def build(sex, atlas_path, chunk_dir, out_dir, transplant=None):
         unknown.setdefault(key, 0)
         unknown[key] += 1
         lo, hi = p["bounds"]
-        rows.append([p["id"], p["name"], key, side_of(p["name"]), p["chunk"],
+        name = p["name"]
+        if key == "pelvis" and "bone tissue" in name:
+            side = "Left" if cx > 0 else "Right"
+            name = f"{side} hip bone ({name.replace(' bone tissue', '')} bone)"
+        rows.append([p["id"], name, key, side_of(name), p["chunk"],
                      p["positions"], p["normals"], p["indices"],
                      p["vertexCount"], p["indexCount"],
                      *[round(v, 5) for v in lo], *[round(v, 5) for v in hi], 0])

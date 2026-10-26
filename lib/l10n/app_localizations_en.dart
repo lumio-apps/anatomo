@@ -134,7 +134,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get femaleNote =>
-      'The female body shows the organs, the skin and part of the skeleton. The full skeleton and the muscles are in the male body.';
+      'The skeleton and muscles of the female body are adapted from the male body.';
 
   @override
   String get general => 'General';
@@ -295,14 +295,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get modelsCredit =>
-      'Male body: BodyParts3D 4.0, © The Database Center for Life Science (CC BY 4.0). Female body: HuBMAP 3D Reference Organ Set for Female v1.5, by Kristen Browne and Heidi Schlehlein (CC BY 4.0). Both are simplified for phones. The lungs and liver of the male body are fitted from the female set.';
+      'Male body: BodyParts3D 4.0, © The Database Center for Life Science (CC BY 4.0). Female body: HuBMAP 3D Reference Organ Set for Female v1.5, by Kristen Browne and Heidi Schlehlein (CC BY 4.0). Both are simplified for phones. The lungs and liver of the male body are fitted from the female set. The skeleton and muscles of the female body are adapted from the male body.';
 
   @override
   String get privacy => 'Privacy';
 
   @override
   String get privacyText =>
-      'Anatomo works offline. No account, no ads, no tracking. Nothing about you leaves your phone.';
+      'Anatomo works offline. No account, no ads, no tracking. Nothing about you leaves your device.';
 
   @override
   String get disclaimerTitle => 'For learning';
@@ -310,4 +310,69 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get disclaimer =>
       'Anatomo is made for learning. It is not medical advice. Talk to a doctor about your health.';
+
+  @override
+  String get hint2d => 'Tap any part · pinch to zoom';
+
+  @override
+  String get hintDesktop => 'Click a part · scroll to zoom · drag to move';
+
+  @override
+  String get hiddenHere =>
+      'This part can\'t be seen from this side. Try another side, or switch off the layers in front of it.';
+
+  @override
+  String get fittedFromMale =>
+      'In the female body, this part is adapted from the male body.';
+
+  @override
+  String get fittedFromFemale =>
+      'In the male body, this part is adapted from the female body.';
+
+  @override
+  String get layers => 'Layers';
+
+  @override
+  String get explore => 'Explore';
+
+  @override
+  String get selectPartTitle => 'Click any part of the body';
+
+  @override
+  String get selectPartText =>
+      'Its card opens here: what it does, what is good for it and what harms it.';
+
+  @override
+  String get keyboard => 'Keyboard';
+
+  @override
+  String get zoomIn => 'Zoom in';
+
+  @override
+  String get zoomOut => 'Zoom out';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get pack3dTitle => '3D pack';
+
+  @override
+  String pack3dNote(int size) {
+    return 'Turn the body and spread it apart in 3D. Downloads once (about $size MB), then works offline.';
+  }
+
+  @override
+  String get pack3dDownload => 'Download';
+
+  @override
+  String get pack3dReady =>
+      'The 3D pack is installed. Switch between 2D and 3D under the body.';
+
+  @override
+  String get pack3dRemove => 'Remove';
+
+  @override
+  String get pack3dFailed =>
+      'The 3D pack could not be downloaded. Check the internet connection and try again.';
 }

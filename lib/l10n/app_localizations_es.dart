@@ -135,7 +135,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get femaleNote =>
-      'El cuerpo femenino muestra los órganos, la piel y parte del esqueleto. El esqueleto completo y los músculos están en el cuerpo masculino.';
+      'El esqueleto y los músculos del cuerpo femenino están adaptados del cuerpo masculino.';
 
   @override
   String get general => 'General';
@@ -296,14 +296,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get modelsCredit =>
-      'Cuerpo masculino: BodyParts3D 4.0, © The Database Center for Life Science (CC BY 4.0). Cuerpo femenino: HuBMAP 3D Reference Organ Set for Female v1.5, de Kristen Browne y Heidi Schlehlein (CC BY 4.0). Ambos están simplificados para teléfonos. Los pulmones y el hígado del cuerpo masculino se adaptaron del conjunto femenino.';
+      'Cuerpo masculino: BodyParts3D 4.0, © The Database Center for Life Science (CC BY 4.0). Cuerpo femenino: HuBMAP 3D Reference Organ Set for Female v1.5, de Kristen Browne y Heidi Schlehlein (CC BY 4.0). Ambos están simplificados para teléfonos. Los pulmones y el hígado del cuerpo masculino se adaptaron del conjunto femenino. El esqueleto y los músculos del cuerpo femenino están adaptados del cuerpo masculino.';
 
   @override
   String get privacy => 'Privacidad';
 
   @override
   String get privacyText =>
-      'Anatomo funciona sin conexión. Sin cuenta, sin anuncios, sin rastreo. Nada sobre ti sale de tu teléfono.';
+      'Anatomo funciona sin conexión. Sin cuenta, sin anuncios, sin rastreo. Nada sobre ti sale de tu dispositivo.';
 
   @override
   String get disclaimerTitle => 'Para aprender';
@@ -311,4 +311,70 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get disclaimer =>
       'Anatomo está hecha para aprender. No es consejo médico. Habla con un médico sobre tu salud.';
+
+  @override
+  String get hint2d => 'Toca cualquier parte · pellizca para ampliar';
+
+  @override
+  String get hintDesktop =>
+      'Haz clic en una parte · usa la rueda para ampliar · arrastra para mover';
+
+  @override
+  String get hiddenHere =>
+      'Esta parte no se ve desde este lado. Prueba otro lado o desactiva las capas que tiene delante.';
+
+  @override
+  String get fittedFromMale =>
+      'En el cuerpo femenino, esta parte está adaptada del cuerpo masculino.';
+
+  @override
+  String get fittedFromFemale =>
+      'En el cuerpo masculino, esta parte está adaptada del cuerpo femenino.';
+
+  @override
+  String get layers => 'Capas';
+
+  @override
+  String get explore => 'Explorar';
+
+  @override
+  String get selectPartTitle => 'Haz clic en cualquier parte del cuerpo';
+
+  @override
+  String get selectPartText =>
+      'Su ficha se abre aquí: qué hace, qué le hace bien y qué le hace daño.';
+
+  @override
+  String get keyboard => 'Teclado';
+
+  @override
+  String get zoomIn => 'Acercar';
+
+  @override
+  String get zoomOut => 'Alejar';
+
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String get pack3dTitle => 'Paquete 3D';
+
+  @override
+  String pack3dNote(int size) {
+    return 'Gira el cuerpo y sepáralo en partes en 3D. Se descarga una vez (unos $size MB) y luego funciona sin conexión.';
+  }
+
+  @override
+  String get pack3dDownload => 'Descargar';
+
+  @override
+  String get pack3dReady =>
+      'El paquete 3D está instalado. Cambia entre 2D y 3D debajo del cuerpo.';
+
+  @override
+  String get pack3dRemove => 'Eliminar';
+
+  @override
+  String get pack3dFailed =>
+      'No se pudo descargar el paquete 3D. Revisa la conexión a internet e inténtalo de nuevo.';
 }

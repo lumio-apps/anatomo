@@ -3,10 +3,12 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
+/// The 3D models are not inside the app any more: they are the 3D pack
+/// (pack/models), uploaded by .github/workflows/pack.yml.
 void main() {
   for (final sex in ['male', 'female']) {
-    test('$sex model chunks are split by layer and all exist', () {
-      final dir = 'assets/models/$sex';
+    test('$sex 3D pack chunks are split by layer and all exist', () {
+      final dir = 'pack/models/$sex';
       final man = jsonDecode(File('$dir/manifest.json').readAsStringSync())
           as Map<String, dynamic>;
       final chunks = (man['chunks'] as List).cast<String>();
@@ -26,4 +28,16 @@ void main() {
       }
     });
   }
+
+  test('the female body has a full skeleton and muscles', () {
+    final man = jsonDecode(
+      File('pack/models/female/manifest.json').readAsStringSync(),
+    ) as Map<String, dynamic>;
+    final fields = (man['fields'] as List).cast<String>();
+    final keyAt = fields.indexOf('key');
+    final keys = {for (final r in man['parts'] as List) (r as List)[keyAt]};
+    for (final k in ['skull', 'ribcage', 'humerus', 'forearm', 'hand', 'foot', 'biceps', 'quadriceps']) {
+      expect(keys.contains(k), isTrue, reason: k);
+    }
+  });
 }

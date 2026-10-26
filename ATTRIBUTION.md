@@ -27,7 +27,8 @@ Both models were taken from the browser-ready packs of [ashemag/human-atlas](htt
 
 - Re-packed the parts into one set of files per body, grouped by layer (organs, bones, muscles, nerves, vessels, skin), with a short key per part for the info cards.
 - **Lungs and liver in the male body.** BodyParts3D has no solid lung or liver tissue, only airways and vessels. The female lung segments and liver from the HuBMAP set were scaled and moved to fit the male chest and abdomen. They are marked `fitted` in the manifest. They show where the organs sit, not their exact male shape.
-- The female set covers the whole skin surface and many organs, but its skeleton and muscles are partial.
+- **Skeleton and muscles in the female body.** The female set has organs, skin, spine, pelvis and legs, but no skull, rib cage, arms, hands or feet and almost no muscles. `tool/fit_female.py` takes those bones and all muscles from the male body and bends them into the female body: a smooth warp pinned to matching points in both bodies (vertebrae, joints, eyes, heart, kidneys, bladder, lungs, head, toes and heels), with separate transforms for the arms because the female body holds them further out. They are marked `fitted`. Their shapes are male, adapted to the female body; they are not female anatomy.
+- **2D pictures.** `tool/build_atlas.py` draws the pictures in `assets/atlas/` from these models. They are derived from the same CC BY 4.0 data.
 - Colors and groupings were chosen for this app.
 
 ## Libraries

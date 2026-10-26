@@ -19,7 +19,7 @@ Map<String, dynamic> _readContent(String lang) {
 
 Set<String> _manifestKeys(String sex) {
   final data = jsonDecode(
-    File('assets/models/$sex/manifest.json').readAsStringSync(),
+    File('pack/models/$sex/manifest.json').readAsStringSync(),
   ) as Map<String, dynamic>;
   return (data['keys'] as Map<String, dynamic>).keys.toSet();
 }

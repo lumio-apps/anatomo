@@ -136,7 +136,7 @@ class AppLocalizationsHy extends AppLocalizations {
 
   @override
   String get femaleNote =>
-      'Կնոջ մարմնում երևում են օրգանները, մաշկը և կմախքի մի մասը։ Ամբողջական կմախքը և մկանները տղամարդու մարմնում են։';
+      'Կնոջ մարմնի կմախքը և մկանները հարմարեցված են տղամարդու մարմնից։';
 
   @override
   String get general => 'Ընդհանուր';
@@ -297,14 +297,14 @@ class AppLocalizationsHy extends AppLocalizations {
 
   @override
   String get modelsCredit =>
-      'Տղամարդու մարմին՝ BodyParts3D 4.0, © The Database Center for Life Science (CC BY 4.0)։ Կնոջ մարմին՝ HuBMAP 3D Reference Organ Set for Female v1.5, Kristen Browne և Heidi Schlehlein (CC BY 4.0)։ Երկուսն էլ պարզեցված են հեռախոսների համար։ Տղամարդու մարմնի թոքերը և լյարդը տեղադրված են կանացի հավաքածուից։';
+      'Տղամարդու մարմին՝ BodyParts3D 4.0, © The Database Center for Life Science (CC BY 4.0)։ Կնոջ մարմին՝ HuBMAP 3D Reference Organ Set for Female v1.5, Kristen Browne և Heidi Schlehlein (CC BY 4.0)։ Երկուսն էլ պարզեցված են հեռախոսների համար։ Տղամարդու մարմնի թոքերը և լյարդը տեղադրված են կանացի հավաքածուից։ Կնոջ մարմնի կմախքը և մկանները հարմարեցված են տղամարդու մարմնից։';
 
   @override
   String get privacy => 'Գաղտնիություն';
 
   @override
   String get privacyText =>
-      'Anatomo-ն աշխատում է առանց ինտերնետի։ Առանց հաշվի, առանց գովազդի, առանց հետևման։ Ձեր մասին ոչինչ դուրս չի գալիս հեռախոսից։';
+      'Anatomo-ն աշխատում է առանց ինտերնետի։ Առանց հաշվի, առանց գովազդի, առանց հետևման։ Ձեր մասին ոչինչ դուրս չի գալիս սարքից։';
 
   @override
   String get disclaimerTitle => 'Ուսուցման համար';
@@ -312,4 +312,70 @@ class AppLocalizationsHy extends AppLocalizations {
   @override
   String get disclaimer =>
       'Anatomo-ն ստեղծված է ուսուցման համար։ Այն բժշկական խորհուրդ չէ։ Ձեր առողջության մասին խոսեք բժշկի հետ։';
+
+  @override
+  String get hint2d => 'Հպեք ցանկացած մասի · մատներով մեծացրեք';
+
+  @override
+  String get hintDesktop =>
+      'Սեղմեք մասի վրա · պտտեք անիվը՝ մեծացնելու համար · քաշեք՝ տեղաշարժելու համար';
+
+  @override
+  String get hiddenHere =>
+      'Այս մասը այս կողմից չի երևում։ Փորձեք մեկ այլ կողմ կամ անջատեք դրա առջևի շերտերը։';
+
+  @override
+  String get fittedFromMale =>
+      'Կնոջ մարմնում այս մասը հարմարեցված է տղամարդու մարմնից։';
+
+  @override
+  String get fittedFromFemale =>
+      'Տղամարդու մարմնում այս մասը հարմարեցված է կնոջ մարմնից։';
+
+  @override
+  String get layers => 'Շերտեր';
+
+  @override
+  String get explore => 'Դիտել';
+
+  @override
+  String get selectPartTitle => 'Սեղմեք մարմնի ցանկացած մասի վրա';
+
+  @override
+  String get selectPartText =>
+      'Դրա քարտը կբացվի այստեղ՝ ինչ է անում, ինչն է օգտակար դրա համար և ինչն է վնասում։';
+
+  @override
+  String get keyboard => 'Ստեղնաշար';
+
+  @override
+  String get zoomIn => 'Մեծացնել';
+
+  @override
+  String get zoomOut => 'Փոքրացնել';
+
+  @override
+  String get cancel => 'Չեղարկել';
+
+  @override
+  String get pack3dTitle => '3D փաթեթ';
+
+  @override
+  String pack3dNote(int size) {
+    return 'Պտտեք մարմինը և բաժանեք մասերի 3D-ում։ Ներբեռնվում է մեկ անգամ (մոտ $size ՄԲ), հետո աշխատում է առանց ինտերնետի։';
+  }
+
+  @override
+  String get pack3dDownload => 'Ներբեռնել';
+
+  @override
+  String get pack3dReady =>
+      '3D փաթեթը տեղադրված է։ Մարմնի տակ փոխեք 2D-ի և 3D-ի միջև։';
+
+  @override
+  String get pack3dRemove => 'Հեռացնել';
+
+  @override
+  String get pack3dFailed =>
+      '3D փաթեթը չհաջողվեց ներբեռնել։ Ստուգեք ինտերնետ կապը և նորից փորձեք։';
 }

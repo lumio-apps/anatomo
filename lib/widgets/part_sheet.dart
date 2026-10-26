@@ -5,7 +5,8 @@ import '../l10n/app_localizations.dart';
 import '../theme.dart';
 
 /// The details of a body part: what it does, what is good for it and what
-/// harms it. Shown over the bottom of the 3D view.
+/// harms it. Shown over the bottom of the body view on phones, or as a side
+/// panel ([docked]) in wide windows.
 class PartSheet extends StatelessWidget {
   const PartSheet({
     super.key,
@@ -20,6 +21,8 @@ class PartSheet extends StatelessWidget {
     required this.favorite,
     required this.onFavorite,
     required this.onCopy,
+    this.note,
+    this.docked = false,
   });
 
   final String title;
@@ -36,34 +39,47 @@ class PartSheet extends StatelessWidget {
   final VoidCallback onFavorite;
   final VoidCallback onCopy;
 
+  /// A short remark under the description (for example that the piece was
+  /// adapted from the other body).
+  final String? note;
+
+  /// Shown as a side panel: no drag handle and no rounded top.
+  final bool docked;
+
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
     final labels = [t.tabAbout, t.tabGood, t.tabBad];
     return Container(
-      decoration: BoxDecoration(
-        color: AnatomoColors.panel,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
-        border: Border(top: BorderSide(color: AnatomoColors.line)),
-        boxShadow: [
-          BoxShadow(
-            color: Color(AnatomoColors.isLight ? 0x22000000 : 0x66000000),
-            blurRadius: 30,
-            offset: Offset(0, -10),
-          ),
-        ],
-      ),
+      decoration: docked
+          ? BoxDecoration(
+              color: AnatomoColors.panel,
+              border: BorderDirectional(start: BorderSide(color: AnatomoColors.line)),
+            )
+          : BoxDecoration(
+              color: AnatomoColors.panel,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+              border: Border(top: BorderSide(color: AnatomoColors.line)),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(AnatomoColors.isLight ? 0x22000000 : 0x66000000),
+                  blurRadius: 30,
+                  offset: Offset(0, -10),
+                ),
+              ],
+            ),
       child: Column(
         children: [
-          const SizedBox(height: 8),
-          Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: AnatomoColors.grip,
-              borderRadius: BorderRadius.circular(2),
+          SizedBox(height: docked ? 10 : 8),
+          if (!docked)
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AnatomoColors.grip,
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
-          ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 10, 10, 0),
             child: Row(
@@ -207,6 +223,22 @@ class PartSheet extends StatelessWidget {
                 color: AnatomoColors.body,
               ),
             ),
+          if (note != null) ...[
+            const SizedBox(height: 10),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.info_outline_rounded, size: 16, color: AnatomoColors.muted),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    note!,
+                    style: TextStyle(fontSize: 12.5, height: 1.4, color: AnatomoColors.muted),
+                  ),
+                ),
+              ],
+            ),
+          ],
           if (info != null && info.facts.isNotEmpty) ...[
             const SizedBox(height: 12),
             LayoutBuilder(

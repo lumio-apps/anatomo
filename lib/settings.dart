@@ -16,6 +16,10 @@ const List<String> kLayers = [
 
 const List<String> kQualities = ['auto', 'low', 'medium', 'high'];
 
+/// How the body is shown: '2d' (pictures, always there) or '3d' (needs the
+/// 3D pack).
+const List<String> kModes = ['2d', '3d'];
+
 const Map<String, bool> kDefaultLayers = {
   'organs': true,
   'bones': true,
@@ -42,6 +46,7 @@ class AppSettings extends ChangeNotifier {
   bool _onboarded = false;
   String _theme = 'system';
   String _quality = 'auto';
+  String _mode = '2d';
   final Set<String> _favorites = {};
   int _quizBest = 0;
   final Map<String, bool> _layers = Map.of(kDefaultLayers);
@@ -56,6 +61,9 @@ class AppSettings extends ChangeNotifier {
 
   /// 3D graphics quality: 'auto', 'low', 'medium' or 'high'.
   String get quality => _quality;
+
+  /// '2d' or '3d'.
+  String get mode => _mode;
 
   /// Keys of the parts the user starred.
   Set<String> get favorites => Set.unmodifiable(_favorites);
@@ -89,6 +97,8 @@ class AppSettings extends ChangeNotifier {
       if (best is int && best >= 0) _quizBest = best;
       final quality = data['quality'];
       if (quality is String && kQualities.contains(quality)) _quality = quality;
+      final mode = data['mode'];
+      if (mode is String && kModes.contains(mode)) _mode = mode;
       final theme = data['theme'];
       if (theme == 'system' || theme == 'light' || theme == 'dark') {
         _theme = theme as String;
@@ -117,6 +127,7 @@ class AppSettings extends ChangeNotifier {
           'onboarded': _onboarded,
           'theme': _theme,
           'quality': _quality,
+          'mode': _mode,
           'favorites': _favorites.toList(),
           'quizBest': _quizBest,
           'layers': _layers,
@@ -159,6 +170,13 @@ class AppSettings extends ChangeNotifier {
   void setQuality(String quality) {
     if (_quality == quality || !kQualities.contains(quality)) return;
     _quality = quality;
+    notifyListeners();
+    _save();
+  }
+
+  void setMode(String mode) {
+    if (_mode == mode || !kModes.contains(mode)) return;
+    _mode = mode;
     notifyListeners();
     _save();
   }

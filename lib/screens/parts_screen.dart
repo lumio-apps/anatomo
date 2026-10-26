@@ -25,8 +25,11 @@ class PartsScreen extends StatefulWidget {
     required this.content,
     required this.sex,
     required this.favorites,
+    this.initialFilter = 'all',
   });
 
+  /// 'all', 'fav' or a layer.
+  final String initialFilter;
   final Set<String> favorites;
   final BodyManifest manifest;
   final BodyContent content;
@@ -38,7 +41,7 @@ class PartsScreen extends StatefulWidget {
 
 class _PartsScreenState extends State<PartsScreen> {
   final TextEditingController _query = TextEditingController();
-  String _filter = 'all';
+  late String _filter = widget.initialFilter;
 
   @override
   void dispose() {

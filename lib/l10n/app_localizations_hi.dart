@@ -136,7 +136,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get femaleNote =>
-      'महिला शरीर में अंग, त्वचा और कंकाल का कुछ हिस्सा दिखता है। पूरा कंकाल और मांसपेशियाँ पुरुष शरीर में हैं।';
+      'महिला शरीर का कंकाल और मांसपेशियाँ पुरुष शरीर से लेकर ढाली गई हैं।';
 
   @override
   String get general => 'सामान्य';
@@ -297,14 +297,14 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get modelsCredit =>
-      'पुरुष शरीर: BodyParts3D 4.0, © The Database Center for Life Science (CC BY 4.0)। महिला शरीर: HuBMAP 3D Reference Organ Set for Female v1.5, Kristen Browne और Heidi Schlehlein (CC BY 4.0)। दोनों फ़ोन के लिए हल्के किए गए हैं। पुरुष शरीर के फेफड़े और लिवर महिला सेट से फिट किए गए हैं।';
+      'पुरुष शरीर: BodyParts3D 4.0, © The Database Center for Life Science (CC BY 4.0)। महिला शरीर: HuBMAP 3D Reference Organ Set for Female v1.5, Kristen Browne और Heidi Schlehlein (CC BY 4.0)। दोनों फ़ोन के लिए हल्के किए गए हैं। पुरुष शरीर के फेफड़े और लिवर महिला सेट से फिट किए गए हैं। महिला शरीर का कंकाल और मांसपेशियाँ पुरुष शरीर से लेकर ढाली गई हैं।';
 
   @override
   String get privacy => 'प्राइवेसी';
 
   @override
   String get privacyText =>
-      'Anatomo बिना इंटरनेट चलता है। कोई अकाउंट नहीं, कोई विज्ञापन नहीं, कोई ट्रैकिंग नहीं। आपकी कोई जानकारी फ़ोन से बाहर नहीं जाती।';
+      'Anatomo बिना इंटरनेट चलता है। कोई अकाउंट नहीं, कोई विज्ञापन नहीं, कोई ट्रैकिंग नहीं। आपकी कोई जानकारी डिवाइस से बाहर नहीं जाती।';
 
   @override
   String get disclaimerTitle => 'सीखने के लिए';
@@ -312,4 +312,70 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get disclaimer =>
       'Anatomo सीखने के लिए बना है। यह डॉक्टरी सलाह नहीं है। अपनी सेहत के बारे में डॉक्टर से बात करें।';
+
+  @override
+  String get hint2d => 'किसी भी हिस्से पर टैप करें · ज़ूम के लिए पिंच करें';
+
+  @override
+  String get hintDesktop =>
+      'किसी हिस्से पर क्लिक करें · ज़ूम के लिए स्क्रॉल करें · खिसकाने के लिए खींचें';
+
+  @override
+  String get hiddenHere =>
+      'यह हिस्सा इस तरफ़ से नहीं दिखता। दूसरी तरफ़ से देखें, या इसके आगे की परतें बंद करें।';
+
+  @override
+  String get fittedFromMale =>
+      'महिला शरीर में यह हिस्सा पुरुष शरीर से लेकर ढाला गया है।';
+
+  @override
+  String get fittedFromFemale =>
+      'पुरुष शरीर में यह हिस्सा महिला शरीर से लेकर ढाला गया है।';
+
+  @override
+  String get layers => 'परतें';
+
+  @override
+  String get explore => 'देखें';
+
+  @override
+  String get selectPartTitle => 'शरीर के किसी भी हिस्से पर क्लिक करें';
+
+  @override
+  String get selectPartText =>
+      'उसका कार्ड यहाँ खुलेगा: वह क्या करता है, उसके लिए क्या अच्छा है और क्या नुकसान करता है।';
+
+  @override
+  String get keyboard => 'कीबोर्ड';
+
+  @override
+  String get zoomIn => 'ज़ूम इन';
+
+  @override
+  String get zoomOut => 'ज़ूम आउट';
+
+  @override
+  String get cancel => 'रद्द करें';
+
+  @override
+  String get pack3dTitle => '3D पैक';
+
+  @override
+  String pack3dNote(int size) {
+    return 'शरीर को 3D में घुमाएँ और अलग-अलग करके देखें। एक बार डाउनलोड होता है (लगभग $size MB), फिर बिना इंटरनेट चलता है।';
+  }
+
+  @override
+  String get pack3dDownload => 'डाउनलोड करें';
+
+  @override
+  String get pack3dReady =>
+      '3D पैक इंस्टॉल है। शरीर के नीचे 2D और 3D के बीच बदलें।';
+
+  @override
+  String get pack3dRemove => 'हटाएँ';
+
+  @override
+  String get pack3dFailed =>
+      '3D पैक डाउनलोड नहीं हो सका। इंटरनेट कनेक्शन जाँचें और फिर कोशिश करें।';
 }

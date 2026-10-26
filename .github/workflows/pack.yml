@@ -1,0 +1,54 @@
+name: 3D pack
+
+# Uploads the 3D models (pack/models) as the release "pack-<n>", which the app
+# downloads when the user asks for the 3D view. Push a tag like pack-1 when
+# the models change, and raise kPackVersion in lib/pack/pack3d.dart to match.
+
+on:
+  push:
+    tags:
+      - 'pack-*'
+
+permissions:
+  contents: write
+
+jobs:
+  pack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compress the model files and write the index
+        run: |
+          mkdir -p out
+          python3 - <<'PY'
+          import gzip, json, os
+          files = []
+          for sex in ("male", "female"):
+              folder = os.path.join("pack", "models", sex)
+              for name in sorted(os.listdir(folder)):
+                  data = open(os.path.join(folder, name), "rb").read()
+                  asset = f"{sex}-{name}.gz"
+                  with open(os.path.join("out", asset), "wb") as fh:
+                      fh.write(gzip.compress(data, 9))
+                  files.append({
+                      "name": asset,
+                      "path": f"{sex}/{name}",
+                      "size": os.path.getsize(os.path.join("out", asset)),
+                      "raw": len(data),
+                  })
+          index = {"version": os.environ["GITHUB_REF_NAME"].split("-", 1)[1], "files": files}
+          with open(os.path.join("out", "anatomo-3d-pack.json"), "w") as fh:
+              json.dump(index, fh, indent=1)
+          print(sum(f["size"] for f in files) // (1024 * 1024), "MB in", len(files), "files")
+          PY
+
+      - name: Publish the pack (not marked as the latest app release)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" out/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --prerelease --latest=false \
+            --title "3D pack ${GITHUB_REF_NAME#pack-}" \
+            --notes "3D models for Anatomo's 3D view. The app downloads these files itself; there is nothing to install by hand."

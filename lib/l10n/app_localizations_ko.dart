@@ -132,8 +132,7 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get femaleNote =>
-      '여성 인체는 장기, 피부, 골격 일부를 보여 줍니다. 전체 골격과 근육은 남성 인체에 있습니다.';
+  String get femaleNote => '여성 인체의 골격과 근육은 남성 인체를 바탕으로 맞춘 것입니다.';
 
   @override
   String get general => '일반';
@@ -292,14 +291,14 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get modelsCredit =>
-      '남성 인체: BodyParts3D 4.0, © The Database Center for Life Science (CC BY 4.0). 여성 인체: HuBMAP 3D Reference Organ Set for Female v1.5, Kristen Browne·Heidi Schlehlein 제작 (CC BY 4.0). 둘 다 휴대폰에 맞게 단순화했습니다. 남성 인체의 폐와 간은 여성 세트에서 가져와 맞췄습니다.';
+      '남성 인체: BodyParts3D 4.0, © The Database Center for Life Science (CC BY 4.0). 여성 인체: HuBMAP 3D Reference Organ Set for Female v1.5, Kristen Browne·Heidi Schlehlein 제작 (CC BY 4.0). 둘 다 휴대폰에 맞게 단순화했습니다. 남성 인체의 폐와 간은 여성 세트에서 가져와 맞췄습니다. 여성 인체의 골격과 근육은 남성 인체를 바탕으로 맞췄습니다.';
 
   @override
   String get privacy => '개인정보';
 
   @override
   String get privacyText =>
-      'Anatomo는 오프라인으로 작동합니다. 계정, 광고, 추적이 없습니다. 사용자에 대한 어떤 정보도 휴대폰 밖으로 나가지 않습니다.';
+      'Anatomo는 오프라인으로 작동합니다. 계정, 광고, 추적이 없습니다. 사용자에 대한 어떤 정보도 기기 밖으로 나가지 않습니다.';
 
   @override
   String get disclaimerTitle => '학습용';
@@ -307,4 +306,63 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get disclaimer =>
       'Anatomo는 학습을 위해 만들어졌습니다. 의학적 조언이 아닙니다. 건강에 대해서는 의사와 상담하세요.';
+
+  @override
+  String get hint2d => '부위를 탭하세요 · 두 손가락으로 확대';
+
+  @override
+  String get hintDesktop => '부위를 클릭 · 휠로 확대 · 드래그로 이동';
+
+  @override
+  String get hiddenHere => '이 부위는 이쪽에서는 보이지 않습니다. 다른 방향으로 보거나 앞에 있는 레이어를 끄세요.';
+
+  @override
+  String get fittedFromMale => '여성 인체에서 이 부위는 남성 인체를 바탕으로 맞춘 것입니다.';
+
+  @override
+  String get fittedFromFemale => '남성 인체에서 이 부위는 여성 인체를 바탕으로 맞춘 것입니다.';
+
+  @override
+  String get layers => '레이어';
+
+  @override
+  String get explore => '탐색';
+
+  @override
+  String get selectPartTitle => '몸의 아무 부위나 클릭하세요';
+
+  @override
+  String get selectPartText => '여기에 카드가 열립니다: 하는 일, 도움이 되는 것, 해가 되는 것.';
+
+  @override
+  String get keyboard => '키보드';
+
+  @override
+  String get zoomIn => '확대';
+
+  @override
+  String get zoomOut => '축소';
+
+  @override
+  String get cancel => '취소';
+
+  @override
+  String get pack3dTitle => '3D 팩';
+
+  @override
+  String pack3dNote(int size) {
+    return '3D로 몸을 돌리고 부위를 펼쳐 볼 수 있습니다. 한 번만 내려받으면(약 ${size}MB) 그다음부터 오프라인으로 작동합니다.';
+  }
+
+  @override
+  String get pack3dDownload => '내려받기';
+
+  @override
+  String get pack3dReady => '3D 팩이 설치되어 있습니다. 몸 아래에서 2D와 3D를 전환하세요.';
+
+  @override
+  String get pack3dRemove => '삭제';
+
+  @override
+  String get pack3dFailed => '3D 팩을 내려받지 못했습니다. 인터넷 연결을 확인하고 다시 시도하세요.';
 }

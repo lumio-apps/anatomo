@@ -351,7 +351,7 @@ abstract class AppLocalizations {
   /// No description provided for @femaleNote.
   ///
   /// In en, this message translates to:
-  /// **'The female body shows the organs, the skin and part of the skeleton. The full skeleton and the muscles are in the male body.'**
+  /// **'The skeleton and muscles of the female body are adapted from the male body.'**
   String get femaleNote;
 
   /// No description provided for @general.
@@ -627,7 +627,7 @@ abstract class AppLocalizations {
   /// No description provided for @modelsCredit.
   ///
   /// In en, this message translates to:
-  /// **'Male body: BodyParts3D 4.0, © The Database Center for Life Science (CC BY 4.0). Female body: HuBMAP 3D Reference Organ Set for Female v1.5, by Kristen Browne and Heidi Schlehlein (CC BY 4.0). Both are simplified for phones. The lungs and liver of the male body are fitted from the female set.'**
+  /// **'Male body: BodyParts3D 4.0, © The Database Center for Life Science (CC BY 4.0). Female body: HuBMAP 3D Reference Organ Set for Female v1.5, by Kristen Browne and Heidi Schlehlein (CC BY 4.0). Both are simplified for phones. The lungs and liver of the male body are fitted from the female set. The skeleton and muscles of the female body are adapted from the male body.'**
   String get modelsCredit;
 
   /// No description provided for @privacy.
@@ -639,7 +639,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyText.
   ///
   /// In en, this message translates to:
-  /// **'Anatomo works offline. No account, no ads, no tracking. Nothing about you leaves your phone.'**
+  /// **'Anatomo works offline. No account, no ads, no tracking. Nothing about you leaves your device.'**
   String get privacyText;
 
   /// No description provided for @disclaimerTitle.
@@ -653,6 +653,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Anatomo is made for learning. It is not medical advice. Talk to a doctor about your health.'**
   String get disclaimer;
+
+  /// No description provided for @hint2d.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap any part · pinch to zoom'**
+  String get hint2d;
+
+  /// No description provided for @hintDesktop.
+  ///
+  /// In en, this message translates to:
+  /// **'Click a part · scroll to zoom · drag to move'**
+  String get hintDesktop;
+
+  /// No description provided for @hiddenHere.
+  ///
+  /// In en, this message translates to:
+  /// **'This part can\'t be seen from this side. Try another side, or switch off the layers in front of it.'**
+  String get hiddenHere;
+
+  /// No description provided for @fittedFromMale.
+  ///
+  /// In en, this message translates to:
+  /// **'In the female body, this part is adapted from the male body.'**
+  String get fittedFromMale;
+
+  /// No description provided for @fittedFromFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'In the male body, this part is adapted from the female body.'**
+  String get fittedFromFemale;
+
+  /// No description provided for @layers.
+  ///
+  /// In en, this message translates to:
+  /// **'Layers'**
+  String get layers;
+
+  /// No description provided for @explore.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore'**
+  String get explore;
+
+  /// No description provided for @selectPartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Click any part of the body'**
+  String get selectPartTitle;
+
+  /// No description provided for @selectPartText.
+  ///
+  /// In en, this message translates to:
+  /// **'Its card opens here: what it does, what is good for it and what harms it.'**
+  String get selectPartText;
+
+  /// No description provided for @keyboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyboard'**
+  String get keyboard;
+
+  /// No description provided for @zoomIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom in'**
+  String get zoomIn;
+
+  /// No description provided for @zoomOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom out'**
+  String get zoomOut;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @pack3dTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'3D pack'**
+  String get pack3dTitle;
+
+  /// No description provided for @pack3dNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn the body and spread it apart in 3D. Downloads once (about {size} MB), then works offline.'**
+  String pack3dNote(int size);
+
+  /// No description provided for @pack3dDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get pack3dDownload;
+
+  /// No description provided for @pack3dReady.
+  ///
+  /// In en, this message translates to:
+  /// **'The 3D pack is installed. Switch between 2D and 3D under the body.'**
+  String get pack3dReady;
+
+  /// No description provided for @pack3dRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get pack3dRemove;
+
+  /// No description provided for @pack3dFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The 3D pack could not be downloaded. Check the internet connection and try again.'**
+  String get pack3dFailed;
 }
 
 class _AppLocalizationsDelegate

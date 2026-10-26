@@ -1,3 +1,5 @@
 *.bin binary
 *.png binary
+*.webp binary
 *.jks binary
+*.iss text eol=crlf

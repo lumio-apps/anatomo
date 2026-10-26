@@ -3,7 +3,7 @@
 The viewer then loads a layer (muscles, nerves, ...) only when it is switched
 on. Run it after build_models.py:
 
-  python3 tool/repack_by_layer.py assets/models
+  python3 tool/repack_by_layer.py pack/models
 """
 
 import json

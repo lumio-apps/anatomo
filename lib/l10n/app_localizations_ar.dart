@@ -134,7 +134,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get femaleNote =>
-      'يُظهر جسم الأنثى الأعضاء والجلد وجزءًا من الهيكل العظمي. الهيكل الكامل والعضلات موجودة في جسم الذكر.';
+      'هيكل جسم الأنثى العظمي وعضلاته مأخوذة من جسم الذكر ومُكيّفة له.';
 
   @override
   String get general => 'عام';
@@ -295,14 +295,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get modelsCredit =>
-      'جسم الذكر: BodyParts3D 4.0، © The Database Center for Life Science (CC BY 4.0). جسم الأنثى: HuBMAP 3D Reference Organ Set for Female v1.5، من إعداد Kristen Browne وHeidi Schlehlein (CC BY 4.0). كلاهما مبسّط للهواتف. الرئتان والكبد في جسم الذكر مأخوذة من مجموعة الأنثى ومُكيّفة له.';
+      'جسم الذكر: BodyParts3D 4.0، © The Database Center for Life Science (CC BY 4.0). جسم الأنثى: HuBMAP 3D Reference Organ Set for Female v1.5، من إعداد Kristen Browne وHeidi Schlehlein (CC BY 4.0). كلاهما مبسّط للهواتف. الرئتان والكبد في جسم الذكر مأخوذة من مجموعة الأنثى ومُكيّفة له. هيكل جسم الأنثى العظمي وعضلاته مأخوذة من جسم الذكر ومُكيّفة له.';
 
   @override
   String get privacy => 'الخصوصية';
 
   @override
   String get privacyText =>
-      'يعمل Anatomo دون إنترنت. بلا حساب، بلا إعلانات، بلا تتبّع. لا يغادر هاتفك أي شيء عنك.';
+      'يعمل Anatomo دون إنترنت. بلا حساب، بلا إعلانات، بلا تتبّع. لا يغادر جهازك أي شيء عنك.';
 
   @override
   String get disclaimerTitle => 'للتعلّم';
@@ -310,4 +310,70 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get disclaimer =>
       'صُمّم Anatomo للتعلّم. وهو ليس نصيحة طبية. تحدّث مع طبيب بشأن صحتك.';
+
+  @override
+  String get hint2d => 'اضغط على أي جزء · باعد بإصبعين للتكبير';
+
+  @override
+  String get hintDesktop =>
+      'انقر على جزء · استخدم عجلة الفأرة للتكبير · اسحب للتحريك';
+
+  @override
+  String get hiddenHere =>
+      'هذا الجزء لا يظهر من هذه الجهة. جرّب جهة أخرى، أو أوقف الطبقات التي أمامه.';
+
+  @override
+  String get fittedFromMale =>
+      'في جسم الأنثى، هذا الجزء مأخوذ من جسم الذكر ومُكيّف له.';
+
+  @override
+  String get fittedFromFemale =>
+      'في جسم الذكر، هذا الجزء مأخوذ من جسم الأنثى ومُكيّف له.';
+
+  @override
+  String get layers => 'الطبقات';
+
+  @override
+  String get explore => 'استكشاف';
+
+  @override
+  String get selectPartTitle => 'انقر على أي جزء من الجسم';
+
+  @override
+  String get selectPartText =>
+      'تُفتح بطاقته هنا: ماذا يفعل، وما المفيد له، وما الذي يضرّه.';
+
+  @override
+  String get keyboard => 'لوحة المفاتيح';
+
+  @override
+  String get zoomIn => 'تكبير';
+
+  @override
+  String get zoomOut => 'تصغير';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get pack3dTitle => 'حزمة ثلاثية الأبعاد';
+
+  @override
+  String pack3dNote(int size) {
+    return 'أدِر الجسم وافصل أجزاءه بالأبعاد الثلاثية. تُنزَّل مرة واحدة (نحو $size ميغابايت)، ثم تعمل دون إنترنت.';
+  }
+
+  @override
+  String get pack3dDownload => 'تنزيل';
+
+  @override
+  String get pack3dReady =>
+      'الحزمة ثلاثية الأبعاد مثبّتة. بدّل بين 2D و3D أسفل الجسم.';
+
+  @override
+  String get pack3dRemove => 'إزالة';
+
+  @override
+  String get pack3dFailed =>
+      'تعذّر تنزيل الحزمة ثلاثية الأبعاد. تحقّق من الاتصال بالإنترنت وحاول مرة أخرى.';
 }

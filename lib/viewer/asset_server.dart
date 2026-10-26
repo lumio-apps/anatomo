@@ -3,12 +3,18 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 
 /// A tiny web server on the phone itself (127.0.0.1 only) that hands the 3D
-/// viewer its files from the app's assets.
+/// viewer its files: the page from the app's assets, the models from the
+/// downloaded 3D pack.
 ///
 /// The viewer uses JavaScript modules, which a WebView only runs when the page
 /// comes from a server. Nothing leaves the phone: the server is bound to the
 /// loopback address and only serves files that are inside the app.
 class AssetServer {
+  AssetServer({required this.modelsPath});
+
+  /// Folder of the 3D pack with male/ and female/ inside.
+  final String modelsPath;
+
   HttpServer? _server;
 
   bool get running => _server != null;
@@ -41,15 +47,18 @@ class AssetServer {
         await response.close();
         return;
       }
-      final asset =
-          path.startsWith('/models/') ? 'assets$path' : 'assets/web$path';
-      final data = await rootBundle.load(asset);
+      List<int> bytes;
+      if (path.startsWith('/models/')) {
+        bytes = await File('$modelsPath${path.substring('/models'.length)}')
+            .readAsBytes();
+      } else {
+        final data = await rootBundle.load('assets/web$path');
+        bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      }
       response.headers.contentType = _typeOf(path);
       response.headers.set(HttpHeaders.cacheControlHeader, 'no-store');
-      response.contentLength = data.lengthInBytes;
-      response.add(
-        data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
-      );
+      response.contentLength = bytes.length;
+      response.add(bytes);
     } catch (_) {
       response.statusCode = HttpStatus.notFound;
     }

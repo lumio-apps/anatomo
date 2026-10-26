@@ -20,7 +20,7 @@ class UpdateInfo {
   final String version;
   final String notes;
 
-  /// The APK of the release.
+  /// The APK (Android) or the installer (Windows) of the release.
   final String downloadUrl;
 
   /// The release page on GitHub.
@@ -31,8 +31,12 @@ class UpdateInfo {
 /// "Check for updates". Nothing is checked in the background and nothing
 /// about the user or the phone is sent.
 class UpdateChecker {
+  /// End of the file name of this system's download in a release.
+  static String get assetSuffix =>
+      Platform.isWindows ? '-windows-setup.exe' : '.apk';
+
   /// Returns the newest release if it is newer than the installed app and
-  /// has an APK, or null when the app is up to date.
+  /// has a download for this system, or null when the app is up to date.
   static Future<UpdateInfo?> check() async {
     final info = await PackageInfo.fromPlatform();
     final uri = Uri.https(
@@ -54,11 +58,11 @@ class UpdateChecker {
 
     final assets =
         (json['assets'] as List<dynamic>? ?? []).cast<Map<String, dynamic>>();
-    final apk = assets.firstWhere(
-      (a) => (a['name'] as String).toLowerCase().endsWith('.apk'),
+    final file = assets.firstWhere(
+      (a) => (a['name'] as String).toLowerCase().endsWith(assetSuffix),
       orElse: () => <String, dynamic>{},
     );
-    final url = apk['browser_download_url'] as String?;
+    final url = file['browser_download_url'] as String?;
     if (url == null || !isTrustedDownload(url)) return null;
 
     return UpdateInfo(
@@ -70,7 +74,7 @@ class UpdateChecker {
     );
   }
 
-  /// Only APKs from this app's own GitHub releases are downloaded.
+  /// Only files from this app's own GitHub releases are downloaded.
   static bool isTrustedDownload(String url) {
     final uri = Uri.tryParse(url);
     if (uri == null || uri.scheme != 'https' || uri.host != 'github.com') {
@@ -80,13 +84,15 @@ class UpdateChecker {
         .startsWith('/$kGithubOwner/$kGithubRepo/releases/download/');
   }
 
-  /// Downloads the APK (reporting progress 0..1) and opens the installer.
+  /// Downloads the update (reporting progress 0..1) and starts the installer.
+  /// On Windows the app closes so the installer can replace it; the settings
+  /// and favorites stay, they are kept in the user's AppData folder.
   static Future<void> downloadAndInstall(
     UpdateInfo update,
     void Function(double progress) onProgress,
   ) async {
     final dir = await getTemporaryDirectory();
-    final file = File('${dir.path}/anatomo-${update.version}.apk');
+    final file = File('${dir.path}/anatomo-${update.version}$assetSuffix');
 
     final client = http.Client();
     try {
@@ -115,6 +121,15 @@ class UpdateChecker {
       rethrow;
     } finally {
       client.close();
+    }
+
+    if (Platform.isWindows) {
+      await Process.start(
+        file.path,
+        const ['/SILENT', '/SP-', '/NOCANCEL'],
+        mode: ProcessStartMode.detached,
+      );
+      exit(0);
     }
 
     final result = await OpenFilex.open(

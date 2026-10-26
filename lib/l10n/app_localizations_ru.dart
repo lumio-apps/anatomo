@@ -136,7 +136,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get femaleNote =>
-      'Женское тело показывает органы, кожу и часть скелета. Полный скелет и мышцы есть в мужском теле.';
+      'Скелет и мышцы женского тела адаптированы из мужского тела.';
 
   @override
   String get general => 'Общие';
@@ -297,14 +297,14 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get modelsCredit =>
-      'Мужское тело: BodyParts3D 4.0, © The Database Center for Life Science (CC BY 4.0). Женское тело: HuBMAP 3D Reference Organ Set for Female v1.5, Kristen Browne и Heidi Schlehlein (CC BY 4.0). Обе модели упрощены для телефонов. Лёгкие и печень мужского тела подогнаны из женского набора.';
+      'Мужское тело: BodyParts3D 4.0, © The Database Center for Life Science (CC BY 4.0). Женское тело: HuBMAP 3D Reference Organ Set for Female v1.5, Kristen Browne и Heidi Schlehlein (CC BY 4.0). Обе модели упрощены для телефонов. Лёгкие и печень мужского тела подогнаны из женского набора. Скелет и мышцы женского тела адаптированы из мужского тела.';
 
   @override
   String get privacy => 'Конфиденциальность';
 
   @override
   String get privacyText =>
-      'Anatomo работает без интернета. Без аккаунта, без рекламы, без слежки. Ничего о вас не покидает телефон.';
+      'Anatomo работает без интернета. Без аккаунта, без рекламы, без слежки. Ничего о вас не покидает устройство.';
 
   @override
   String get disclaimerTitle => 'Для обучения';
@@ -312,4 +312,71 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get disclaimer =>
       'Anatomo создан для обучения. Это не медицинский совет. О своём здоровье говорите с врачом.';
+
+  @override
+  String get hint2d =>
+      'Нажмите на любую часть · разведите пальцы для увеличения';
+
+  @override
+  String get hintDesktop =>
+      'Нажмите на часть · колесо мыши для масштаба · перетаскивайте для сдвига';
+
+  @override
+  String get hiddenHere =>
+      'Эту часть не видно с этой стороны. Посмотрите с другой стороны или отключите слои перед ней.';
+
+  @override
+  String get fittedFromMale =>
+      'В женском теле эта часть адаптирована из мужского тела.';
+
+  @override
+  String get fittedFromFemale =>
+      'В мужском теле эта часть адаптирована из женского тела.';
+
+  @override
+  String get layers => 'Слои';
+
+  @override
+  String get explore => 'Обзор';
+
+  @override
+  String get selectPartTitle => 'Нажмите на любую часть тела';
+
+  @override
+  String get selectPartText =>
+      'Здесь откроется её карточка: что она делает, что для неё полезно и что вредит.';
+
+  @override
+  String get keyboard => 'Клавиатура';
+
+  @override
+  String get zoomIn => 'Увеличить';
+
+  @override
+  String get zoomOut => 'Уменьшить';
+
+  @override
+  String get cancel => 'Отмена';
+
+  @override
+  String get pack3dTitle => '3D-пакет';
+
+  @override
+  String pack3dNote(int size) {
+    return 'Вращайте тело и разводите его части в 3D. Скачивается один раз (около $size МБ), потом работает без интернета.';
+  }
+
+  @override
+  String get pack3dDownload => 'Скачать';
+
+  @override
+  String get pack3dReady =>
+      '3D-пакет установлен. Переключайтесь между 2D и 3D под телом.';
+
+  @override
+  String get pack3dRemove => 'Удалить';
+
+  @override
+  String get pack3dFailed =>
+      'Не удалось скачать 3D-пакет. Проверьте подключение к интернету и попробуйте снова.';
 }

@@ -132,7 +132,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get femaleNote => '女性の体では臓器、皮膚、骨格の一部を表示します。骨格全体と筋肉は男性の体にあります。';
+  String get femaleNote => '女性の体の骨格と筋肉は、男性の体から合わせて作っています。';
 
   @override
   String get general => '一般';
@@ -291,7 +291,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get modelsCredit =>
-      '男性の体：BodyParts3D 4.0、© The Database Center for Life Science（CC BY 4.0）。女性の体：HuBMAP 3D Reference Organ Set for Female v1.5、Kristen Browne・Heidi Schlehlein 作（CC BY 4.0）。どちらもスマートフォン向けに軽量化しています。男性の体の肺と肝臓は女性のセットから合わせています。';
+      '男性の体：BodyParts3D 4.0、© The Database Center for Life Science（CC BY 4.0）。女性の体：HuBMAP 3D Reference Organ Set for Female v1.5、Kristen Browne・Heidi Schlehlein 作（CC BY 4.0）。どちらもスマートフォン向けに軽量化しています。男性の体の肺と肝臓は女性のセットから合わせています。女性の体の骨格と筋肉は、男性の体から合わせて作っています。';
 
   @override
   String get privacy => 'プライバシー';
@@ -306,4 +306,64 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get disclaimer =>
       'Anatomo は学習のためのアプリです。医療上の助言ではありません。健康については医師に相談してください。';
+
+  @override
+  String get hint2d => '部位をタップ · ピンチで拡大';
+
+  @override
+  String get hintDesktop => '部位をクリック · ホイールで拡大 · ドラッグで移動';
+
+  @override
+  String get hiddenHere => 'この部位はこの向きからは見えません。別の向きにするか、手前のレイヤーをオフにしてください。';
+
+  @override
+  String get fittedFromMale => '女性の体では、この部位は男性の体から合わせて作っています。';
+
+  @override
+  String get fittedFromFemale => '男性の体では、この部位は女性の体から合わせて作っています。';
+
+  @override
+  String get layers => 'レイヤー';
+
+  @override
+  String get explore => '探索';
+
+  @override
+  String get selectPartTitle => '体のどこかをクリック';
+
+  @override
+  String get selectPartText => 'ここにカードが開きます：その働き、良いこと、悪いこと。';
+
+  @override
+  String get keyboard => 'キーボード';
+
+  @override
+  String get zoomIn => '拡大';
+
+  @override
+  String get zoomOut => '縮小';
+
+  @override
+  String get cancel => 'キャンセル';
+
+  @override
+  String get pack3dTitle => '3D パック';
+
+  @override
+  String pack3dNote(int size) {
+    return '3D で体を回したり、部位を離して見たりできます。ダウンロードは一度だけ（約 $size MB）で、その後はオフラインで使えます。';
+  }
+
+  @override
+  String get pack3dDownload => 'ダウンロード';
+
+  @override
+  String get pack3dReady => '3D パックはインストール済みです。体の下で 2D と 3D を切り替えられます。';
+
+  @override
+  String get pack3dRemove => '削除';
+
+  @override
+  String get pack3dFailed =>
+      '3D パックをダウンロードできませんでした。インターネット接続を確認して、もう一度お試しください。';
 }

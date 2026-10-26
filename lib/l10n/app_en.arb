@@ -66,7 +66,7 @@
       }
     }
   },
-  "femaleNote": "The female body shows the organs, the skin and part of the skeleton. The full skeleton and the muscles are in the male body.",
+  "femaleNote": "The skeleton and muscles of the female body are adapted from the male body.",
   "general": "General",
   "appearance": "Appearance",
   "themeAuto": "Auto",
@@ -181,9 +181,35 @@
   "about": "About",
   "sourceCode": "Source code",
   "models3d": "3D models",
-  "modelsCredit": "Male body: BodyParts3D 4.0, © The Database Center for Life Science (CC BY 4.0). Female body: HuBMAP 3D Reference Organ Set for Female v1.5, by Kristen Browne and Heidi Schlehlein (CC BY 4.0). Both are simplified for phones. The lungs and liver of the male body are fitted from the female set.",
+  "modelsCredit": "Male body: BodyParts3D 4.0, © The Database Center for Life Science (CC BY 4.0). Female body: HuBMAP 3D Reference Organ Set for Female v1.5, by Kristen Browne and Heidi Schlehlein (CC BY 4.0). Both are simplified for phones. The lungs and liver of the male body are fitted from the female set. The skeleton and muscles of the female body are adapted from the male body.",
   "privacy": "Privacy",
-  "privacyText": "Anatomo works offline. No account, no ads, no tracking. Nothing about you leaves your phone.",
+  "privacyText": "Anatomo works offline. No account, no ads, no tracking. Nothing about you leaves your device.",
   "disclaimerTitle": "For learning",
-  "disclaimer": "Anatomo is made for learning. It is not medical advice. Talk to a doctor about your health."
+  "disclaimer": "Anatomo is made for learning. It is not medical advice. Talk to a doctor about your health.",
+  "hint2d": "Tap any part · pinch to zoom",
+  "hintDesktop": "Click a part · scroll to zoom · drag to move",
+  "hiddenHere": "This part can't be seen from this side. Try another side, or switch off the layers in front of it.",
+  "fittedFromMale": "In the female body, this part is adapted from the male body.",
+  "fittedFromFemale": "In the male body, this part is adapted from the female body.",
+  "layers": "Layers",
+  "explore": "Explore",
+  "selectPartTitle": "Click any part of the body",
+  "selectPartText": "Its card opens here: what it does, what is good for it and what harms it.",
+  "keyboard": "Keyboard",
+  "zoomIn": "Zoom in",
+  "zoomOut": "Zoom out",
+  "cancel": "Cancel",
+  "pack3dTitle": "3D pack",
+  "pack3dNote": "Turn the body and spread it apart in 3D. Downloads once (about {size} MB), then works offline.",
+  "@pack3dNote": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "pack3dDownload": "Download",
+  "pack3dReady": "The 3D pack is installed. Switch between 2D and 3D under the body.",
+  "pack3dRemove": "Remove",
+  "pack3dFailed": "The 3D pack could not be downloaded. Check the internet connection and try again."
 }

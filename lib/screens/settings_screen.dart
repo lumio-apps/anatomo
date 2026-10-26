@@ -3,6 +3,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../l10n/app_localizations.dart';
 import '../languages.dart';
+import '../pack/pack3d.dart';
 import '../settings.dart';
 import '../theme.dart';
 import '../update_service.dart';
@@ -183,7 +184,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ],
                 ),
               ),
-              const Divider(height: 1),
+              if (Pack3D.supported) const Divider(height: 1),
+              if (Pack3D.supported)
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
                 child: Column(
@@ -267,6 +269,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ],
           ),
+          if (Pack3D.supported) ...[
+            _SectionTitle(t.pack3dTitle),
+            _Card(children: [_PackTile(pack: Pack3D.instance)]),
+          ],
           _SectionTitle(t.updates),
           _Card(
             children: [
@@ -504,6 +510,89 @@ class _UpdateDialogState extends State<_UpdateDialog> {
           child: Text(t.downloadInstall),
         ),
       ],
+    );
+  }
+}
+
+class _PackTile extends StatelessWidget {
+  const _PackTile({required this.pack});
+
+  final Pack3D pack;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
+    return ListenableBuilder(
+      listenable: pack,
+      builder: (context, _) {
+        final state = pack.state;
+        final buttonStyle = FilledButton.styleFrom(
+          backgroundColor: AnatomoColors.accent,
+          foregroundColor: AnatomoColors.accentInk,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        );
+        Widget action;
+        switch (state) {
+          case PackState.checking:
+            action = const SizedBox.shrink();
+          case PackState.ready:
+            action = OutlinedButton(
+              onPressed: pack.remove,
+              child: Text(t.pack3dRemove),
+            );
+          case PackState.downloading:
+            action = Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                LinearProgressIndicator(value: pack.progress > 0 ? pack.progress : null),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(child: Text(t.downloading((pack.progress * 100).round()))),
+                    TextButton(onPressed: pack.cancel, child: Text(t.cancel)),
+                  ],
+                ),
+              ],
+            );
+          case PackState.missing:
+          case PackState.failed:
+            action = SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: FilledButton(
+                style: buttonStyle,
+                onPressed: pack.download,
+                child: Text(t.pack3dDownload),
+              ),
+            );
+        }
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.view_in_ar_rounded, color: AnatomoColors.accent),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      state == PackState.ready ? t.pack3dReady : t.pack3dNote(kPackSizeMb),
+                      style: TextStyle(fontSize: 14, height: 1.4, color: AnatomoColors.body),
+                    ),
+                  ),
+                ],
+              ),
+              if (state == PackState.failed) ...[
+                const SizedBox(height: 10),
+                Text(t.pack3dFailed, style: TextStyle(color: AnatomoColors.bad, fontSize: 13.5)),
+              ],
+              const SizedBox(height: 12),
+              action,
+            ],
+          ),
+        );
+      },
     );
   }
 }
