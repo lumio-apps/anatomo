@@ -1,0 +1,121 @@
+{
+  "@@locale": "en",
+  "welcomeTitle": "Welcome to Anatomo",
+  "welcomeSubtitle": "Choose your language. You can change it any time in Settings.",
+  "continueButton": "Continue",
+  "offlineNote": "Works offline · No account · No tracking",
+  "male": "Male",
+  "female": "Female",
+  "layerOrgans": "Organs",
+  "layerBones": "Bones",
+  "layerMuscles": "Muscles",
+  "layerNerves": "Nerves",
+  "layerVessels": "Vessels",
+  "layerSkin": "Body",
+  "viewFront": "Front",
+  "viewBack": "Back",
+  "viewSide": "Side",
+  "resetView": "Reset view",
+  "spreadApart": "Spread apart",
+  "assembled": "Assembled",
+  "hint": "Drag to rotate · pinch to zoom · tap any part",
+  "loading": "Loading the 3D body… {percent}%",
+  "@loading": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "errorWebgl": "This phone can't show the 3D body. Please update Android System WebView and try again.",
+  "errorLoad": "The 3D body could not be loaded.",
+  "retry": "Try again",
+  "tabAbout": "What it does",
+  "tabGood": "Good for it",
+  "tabBad": "Bad for it",
+  "partLabel": "Part: {name}",
+  "@partLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notMedical": "For learning only. Not medical advice.",
+  "close": "Close",
+  "showWholeBody": "Show the whole body",
+  "searchParts": "Search parts",
+  "settings": "Settings",
+  "allParts": "All parts",
+  "partsCount": "{count} parts",
+  "@partsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchHint": "Search heart, femur, liver…",
+  "filterAll": "All",
+  "detailedStructures": "Detailed structures",
+  "noResults": "Nothing found for “{query}”.",
+  "@noResults": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "femaleNote": "The female body shows the organs, the skin and part of the skeleton. The full skeleton and the muscles are in the male body.",
+  "general": "General",
+  "language": "Language",
+  "body": "Body",
+  "updates": "Updates",
+  "versionLabel": "Anatomo {version}",
+  "@versionLabel": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "checkForUpdates": "Check for updates",
+  "checking": "Checking…",
+  "upToDate": "You have the latest version.",
+  "updateAvailable": "Version {version} is available",
+  "@updateAvailable": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "downloadInstall": "Download and install",
+  "downloading": "Downloading… {percent}%",
+  "@downloading": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "later": "Later",
+  "updateFailed": "Could not check for updates. Check your internet connection and try again.",
+  "installFailed": "Could not install the update: {error}",
+  "@installFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "updatesNote": "Anatomo uses the internet only when you tap this button. New versions come from the app's GitHub releases.",
+  "about": "About",
+  "sourceCode": "Source code",
+  "models3d": "3D models",
+  "modelsCredit": "Male body: BodyParts3D 4.0, © The Database Center for Life Science (CC BY 4.0). Female body: HuBMAP 3D Reference Organ Set for Female v1.5, by Kristen Browne and Heidi Schlehlein (CC BY 4.0). Both are simplified for phones. The lungs and liver of the male body are fitted from the female set.",
+  "privacy": "Privacy",
+  "privacyText": "Anatomo works offline. No account, no ads, no tracking. Nothing about you leaves your phone.",
+  "disclaimerTitle": "For learning",
+  "disclaimer": "Anatomo is made for learning. It is not medical advice. Talk to a doctor about your health."
+}
