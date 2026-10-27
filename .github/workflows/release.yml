@@ -64,7 +64,7 @@ jobs:
           path: Anatomo-${{ github.ref_name }}.apk
 
   windows:
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
 
@@ -77,7 +77,11 @@ jobs:
 
       - run: flutter gen-l10n
 
+      # The webview_windows plugin uses C++ coroutine headers that newer
+      # Visual Studio versions reject. CL adds this flag to every compile.
       - name: Build Windows app
+        env:
+          CL: /D_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS
         run: flutter build windows --release
 
       - name: Build installer
