@@ -20,6 +20,9 @@ const List<String> kQualities = ['auto', 'low', 'medium', 'high'];
 /// 3D pack).
 const List<String> kModes = ['2d', '3d'];
 
+/// Text size steps (Settings → Text size).
+const List<double> kTextScales = [0.9, 1.0, 1.1, 1.2, 1.3, 1.4];
+
 const Map<String, bool> kDefaultLayers = {
   'organs': true,
   'bones': true,
@@ -48,7 +51,9 @@ class AppSettings extends ChangeNotifier {
   String _quality = 'auto';
   String _mode = '2d';
   final Set<String> _favorites = {};
+  final Set<String> _studied = {};
   int _quizBest = 0;
+  double _textScale = 1.0;
   final Map<String, bool> _layers = Map.of(kDefaultLayers);
 
   /// Language code chosen by the user, or null to follow the phone.
@@ -68,6 +73,12 @@ class AppSettings extends ChangeNotifier {
   /// Keys of the parts the user starred.
   Set<String> get favorites => Set.unmodifiable(_favorites);
   int get quizBest => _quizBest;
+
+  /// Keys of the parts the user has opened or learned with flashcards.
+  Set<String> get studied => Set.unmodifiable(_studied);
+
+  /// Extra text size chosen in Settings (1.0 = as on the phone).
+  double get textScale => _textScale;
   Map<String, bool> get layers => Map.unmodifiable(_layers);
 
   static Future<AppSettings> load() async {
@@ -92,6 +103,17 @@ class AppSettings extends ChangeNotifier {
       final favorites = data['favorites'];
       if (favorites is List) {
         _favorites.addAll(favorites.whereType<String>());
+      }
+      final studied = data['studied'];
+      if (studied is List) {
+        _studied.addAll(studied.whereType<String>());
+      }
+      final scale = data['textScale'];
+      if (scale is num) {
+        final v = scale.toDouble();
+        for (final s in kTextScales) {
+          if ((s - v).abs() < 0.001) _textScale = s;
+        }
       }
       final best = data['quizBest'];
       if (best is int && best >= 0) _quizBest = best;
@@ -130,6 +152,8 @@ class AppSettings extends ChangeNotifier {
           'mode': _mode,
           'favorites': _favorites.toList(),
           'quizBest': _quizBest,
+          'studied': _studied.toList(),
+          'textScale': _textScale,
           'layers': _layers,
         }),
         flush: true,
@@ -156,6 +180,23 @@ class AppSettings extends ChangeNotifier {
 
   void toggleFavorite(String key) {
     if (!_favorites.remove(key)) _favorites.add(key);
+    notifyListeners();
+    _save();
+  }
+
+  void markStudied(String key) {
+    if (!_studied.add(key)) return;
+    notifyListeners();
+    _save();
+  }
+
+  void setTextScale(double scale) {
+    double? match;
+    for (final s in kTextScales) {
+      if ((s - scale).abs() < 0.001) match = s;
+    }
+    if (match == null || match == _textScale) return;
+    _textScale = match;
     notifyListeners();
     _save();
   }

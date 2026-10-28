@@ -6,6 +6,7 @@ class _Palette {
     required this.stage,
     required this.panel,
     required this.panel2,
+    required this.picture,
     required this.line,
     required this.text,
     required this.body,
@@ -16,43 +17,51 @@ class _Palette {
     required this.grip,
     required this.good,
     required this.bad,
+    required this.goodTint,
+    required this.badTint,
   });
 
-  final Color bg, stage, panel, panel2, line, text, body, muted;
-  final Color accent, accentInk, tint, grip, good, bad;
+  final Color bg, stage, panel, panel2, picture, line, text, body, muted;
+  final Color accent, accentInk, tint, grip, good, bad, goodTint, badTint;
 
   static const dark = _Palette(
-    bg: Color(0xFF0A1215),
-    stage: Color(0xFF0D171B),
-    panel: Color(0xFF142227),
-    panel2: Color(0xFF0F1B1F),
-    line: Color(0xFF26393F),
-    text: Color(0xFFE9F1F0),
-    body: Color(0xFFCFDADA),
-    muted: Color(0xFF98ADAF),
-    accent: Color(0xFF46BFB4),
-    accentInk: Color(0xFF062523),
-    tint: Color(0xFF12302F),
-    grip: Color(0xFF3A5056),
+    bg: Color(0xFF0A1214),
+    stage: Color(0xFF0A1214),
+    panel: Color(0xFF121D20),
+    panel2: Color(0xFF0F181A),
+    picture: Color(0xFF13201F),
+    line: Color(0xFF22302F),
+    text: Color(0xFFE8F0EF),
+    body: Color(0xFFC9D5D3),
+    muted: Color(0xFF93A5A8),
+    accent: Color(0xFF3CC9B8),
+    accentInk: Color(0xFF062421),
+    tint: Color(0xFF17383A),
+    grip: Color(0xFF3A4A4C),
     good: Color(0xFF5CC48E),
     bad: Color(0xFFEE8A62),
+    goodTint: Color(0xFF16352B),
+    badTint: Color(0xFF3A231B),
   );
 
   static const light = _Palette(
-    bg: Color(0xFFF3F7F7),
-    stage: Color(0xFFE9F0F1),
+    bg: Color(0xFFF3F6F5),
+    stage: Color(0xFFF3F6F5),
     panel: Color(0xFFFFFFFF),
-    panel2: Color(0xFFEFF5F5),
-    line: Color(0xFFD0DEDF),
-    text: Color(0xFF10201F),
-    body: Color(0xFF30464A),
-    muted: Color(0xFF5B7377),
-    accent: Color(0xFF0B7F7A),
+    panel2: Color(0xFFEEF2F1),
+    picture: Color(0xFFE3EDEB),
+    line: Color(0xFFE2E8E7),
+    text: Color(0xFF0E1A1C),
+    body: Color(0xFF2A3739),
+    muted: Color(0xFF5B6B6E),
+    accent: Color(0xFF0B7A70),
     accentInk: Color(0xFFFFFFFF),
-    tint: Color(0xFFD9EEEC),
-    grip: Color(0xFFB5C8CA),
-    good: Color(0xFF1B8F5A),
-    bad: Color(0xFFC4532B),
+    tint: Color(0xFFDDF0EC),
+    grip: Color(0xFFD0DAD9),
+    good: Color(0xFF08625A),
+    bad: Color(0xFFB5422B),
+    goodTint: Color(0xFFDDF0EC),
+    badTint: Color(0xFFFBE6E0),
   );
 }
 
@@ -70,9 +79,14 @@ class AnatomoColors {
   }
 
   static Color get bg => _p.bg;
+
+  /// Behind the body (2D pictures and the 3D view).
   static Color get stage => _p.stage;
   static Color get panel => _p.panel;
   static Color get panel2 => _p.panel2;
+
+  /// Behind the small pictures of a part.
+  static Color get picture => _p.picture;
   static Color get line => _p.line;
   static Color get text => _p.text;
   static Color get body => _p.body;
@@ -83,15 +97,45 @@ class AnatomoColors {
   /// Soft teal background of a selected tile.
   static Color get tint => _p.tint;
 
-  /// The small handle on top of the details sheet.
+  /// The small handle on top of a sheet.
   static Color get grip => _p.grip;
   static Color get good => _p.good;
   static Color get bad => _p.bad;
+  static Color get goodTint => _p.goodTint;
+  static Color get badTint => _p.badTint;
 
-  /// These two look the same in both modes.
+  /// These look the same in both modes.
   static const Color deepTeal = Color(0xFF0B6E6D);
-  static const Color coral = Color(0xFFE8674C);
+  static const Color coral = Color(0xFFD9553A);
 }
+
+/// Colours of the body systems (dots and tiles).
+const Map<String, int> kSystemColors = {
+  'circulatory': 0xFFC8443A,
+  'digestive': 0xFFC98A2B,
+  'nervous': 0xFFD8A31F,
+  'respiratory': 0xFF3D8FB8,
+  'skeletal': 0xFFA89A80,
+  'muscular': 0xFFC8574A,
+  'urinary': 0xFF6F7FC4,
+  'endocrine': 0xFFB0832A,
+  'lymphatic': 0xFF5BA88C,
+  'reproductive': 0xFFC46A9A,
+  'sensory': 0xFF4FA3A0,
+  'integumentary': 0xFFD9A27E,
+};
+
+Color systemColor(String id) => Color(kSystemColors[id] ?? 0xFF46BFB4);
+
+/// Colours of the layer dots on the layer chips.
+const Map<String, int> kLayerColors = {
+  'organs': 0xFFB4505F,
+  'bones': 0xFFCFC6B4,
+  'muscles': 0xFFC8574A,
+  'nerves': 0xFFD8A31F,
+  'vessels': 0xFF3D6FC4,
+  'skin': 0xFFE2B49A,
+};
 
 ThemeData buildTheme(Brightness brightness) {
   AnatomoColors.use(brightness);
@@ -112,6 +156,7 @@ ThemeData buildTheme(Brightness brightness) {
     colorScheme: scheme,
     scaffoldBackgroundColor: AnatomoColors.bg,
     dividerColor: AnatomoColors.line,
+    dividerTheme: DividerThemeData(color: AnatomoColors.line, space: 1, thickness: 1),
     appBarTheme: AppBarTheme(
       backgroundColor: AnatomoColors.bg,
       foregroundColor: AnatomoColors.text,
@@ -119,16 +164,58 @@ ThemeData buildTheme(Brightness brightness) {
       scrolledUnderElevation: 0,
       centerTitle: false,
     ),
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: AnatomoColors.panel,
+      surfaceTintColor: Colors.transparent,
+      indicatorColor: AnatomoColors.tint,
+      elevation: 0,
+      height: 68,
+      labelTextStyle: WidgetStateProperty.resolveWith(
+        (states) => TextStyle(
+          fontSize: 12,
+          fontWeight: states.contains(WidgetState.selected)
+              ? FontWeight.w700
+              : FontWeight.w500,
+          color: states.contains(WidgetState.selected)
+              ? AnatomoColors.accent
+              : AnatomoColors.muted,
+        ),
+      ),
+      iconTheme: WidgetStateProperty.resolveWith(
+        (states) => IconThemeData(
+          size: 24,
+          color: states.contains(WidgetState.selected)
+              ? AnatomoColors.accent
+              : AnatomoColors.muted,
+        ),
+      ),
+    ),
     sliderTheme: SliderThemeData(
       activeTrackColor: AnatomoColors.accent,
       inactiveTrackColor: AnatomoColors.line,
       thumbColor: AnatomoColors.accent,
       overlayColor: AnatomoColors.accent.withAlpha(36),
+      trackHeight: 4,
     ),
     snackBarTheme: SnackBarThemeData(
-      backgroundColor: AnatomoColors.panel,
-      contentTextStyle: TextStyle(color: AnatomoColors.text),
+      backgroundColor: AnatomoColors.text,
+      contentTextStyle: TextStyle(color: AnatomoColors.bg),
       behavior: SnackBarBehavior.floating,
+    ),
+    segmentedButtonTheme: SegmentedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? AnatomoColors.accent
+              : Colors.transparent,
+        ),
+        foregroundColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? AnatomoColors.accentInk
+              : AnatomoColors.text,
+        ),
+        side: WidgetStatePropertyAll(BorderSide(color: AnatomoColors.line)),
+      ),
     ),
   );
 }

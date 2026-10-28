@@ -20,7 +20,7 @@ class UpdateInfo {
   final String version;
   final String notes;
 
-  /// The APK (Android) or the installer (Windows) of the release.
+  /// The APK of the release.
   final String downloadUrl;
 
   /// The release page on GitHub.
@@ -31,12 +31,11 @@ class UpdateInfo {
 /// "Check for updates". Nothing is checked in the background and nothing
 /// about the user or the phone is sent.
 class UpdateChecker {
-  /// End of the file name of this system's download in a release.
-  static String get assetSuffix =>
-      Platform.isWindows ? '-windows-setup.exe' : '.apk';
+  /// End of the file name of the app's download in a release.
+  static const String assetSuffix = '.apk';
 
   /// Returns the newest release if it is newer than the installed app and
-  /// has a download for this system, or null when the app is up to date.
+  /// has an APK, or null when the app is up to date.
   static Future<UpdateInfo?> check() async {
     final info = await PackageInfo.fromPlatform();
     final uri = Uri.https(
@@ -84,9 +83,9 @@ class UpdateChecker {
         .startsWith('/$kGithubOwner/$kGithubRepo/releases/download/');
   }
 
-  /// Downloads the update (reporting progress 0..1) and starts the installer.
-  /// On Windows the app closes so the installer can replace it; the settings
-  /// and favorites stay, they are kept in the user's AppData folder.
+  /// Downloads the update (reporting progress 0..1) and opens the Android
+  /// installer. The settings and favorites stay: Android keeps the app's data
+  /// when an app is updated with the same signing key.
   static Future<void> downloadAndInstall(
     UpdateInfo update,
     void Function(double progress) onProgress,
@@ -121,15 +120,6 @@ class UpdateChecker {
       rethrow;
     } finally {
       client.close();
-    }
-
-    if (Platform.isWindows) {
-      await Process.start(
-        file.path,
-        const ['/SILENT', '/SP-', '/NOCANCEL'],
-        mode: ProcessStartMode.detached,
-      );
-      exit(0);
     }
 
     final result = await OpenFilex.open(

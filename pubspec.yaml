@@ -1,8 +1,8 @@
 name: anatomo
-description: "Anatomo: explore the human body in 2D and 3D. Offline, private and open source."
+description: "Anatomo: explore the human body in 2D and 3D on Android. Offline, private and open source."
 publish_to: 'none'
 
-version: 2.1.0+6
+version: 3.0.0+7
 
 environment:
   sdk: ^3.5.0
@@ -14,7 +14,6 @@ dependencies:
     sdk: flutter
   intl: any
   webview_flutter: ^4.13.0
-  webview_windows: ^0.4.0
   http: ^1.2.0
   package_info_plus: ^8.0.0
   path_provider: ^2.1.0

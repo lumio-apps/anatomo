@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'l10n/app_localizations.dart';
-import 'screens/explore_screen.dart';
+import 'screens/home_shell.dart';
 import 'screens/welcome_screen.dart';
 import 'settings.dart';
 import 'theme.dart';
@@ -82,19 +82,31 @@ class _AnatomoAppState extends State<AnatomoApp> with WidgetsBindingObserver {
           locale: code == null ? null : Locale(code),
           supportedLocales: AppLocalizations.supportedLocales,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
-          builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle(
-              statusBarColor: Colors.transparent,
-              statusBarIconBrightness: light ? Brightness.dark : Brightness.light,
-              statusBarBrightness: light ? Brightness.light : Brightness.dark,
-              systemNavigationBarColor: AnatomoColors.bg,
-              systemNavigationBarIconBrightness:
-                  light ? Brightness.dark : Brightness.light,
-            ),
-            child: child ?? const SizedBox.shrink(),
-          ),
+          builder: (context, child) {
+            // Text size: the phone's setting times the one chosen in Settings.
+            final media = MediaQuery.of(context);
+            final phone = media.textScaler.scale(14) / 14;
+            return MediaQuery(
+              data: media.copyWith(
+                textScaler: TextScaler.linear(
+                  (phone * settings.textScale).clamp(0.8, 2.2).toDouble(),
+                ),
+              ),
+              child: AnnotatedRegion<SystemUiOverlayStyle>(
+                value: SystemUiOverlayStyle(
+                  statusBarColor: Colors.transparent,
+                  statusBarIconBrightness: light ? Brightness.dark : Brightness.light,
+                  statusBarBrightness: light ? Brightness.light : Brightness.dark,
+                  systemNavigationBarColor: AnatomoColors.panel,
+                  systemNavigationBarIconBrightness:
+                      light ? Brightness.dark : Brightness.light,
+                ),
+                child: child ?? const SizedBox.shrink(),
+              ),
+            );
+          },
           home: settings.onboarded
-              ? ExploreScreen(settings: settings)
+              ? HomeShell(settings: settings)
               : WelcomeScreen(settings: settings),
         );
       },

@@ -2,18 +2,47 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../atlas/atlas_controller.dart';
+import '../atlas/atlas_view.dart';
+import '../atlas/part_picture.dart';
+import '../body_manifest.dart';
 import '../content.dart';
 import '../l10n/app_localizations.dart';
 import '../quiz.dart';
+import '../selection.dart';
 import '../settings.dart';
 import '../theme.dart';
+import '../widgets/ui.dart';
+
+/// Parts that can be shown as a picture or found on the body: whole organs,
+/// bones and muscles.
+Set<String> quizPictureKeys(BodyManifest? m) {
+  if (m == null) return const {};
+  // Keys with at least one piece that can be seen in the 2D pictures.
+  final seen = {for (final p in m.parts) if (p.visible) p.key};
+  return {
+    for (final e in m.keyLayers.entries)
+      if ((m.keyWhole[e.key] ?? false) &&
+          seen.contains(e.key) &&
+          const ['organs', 'bones', 'muscles'].contains(e.value))
+        e.key,
+  };
+}
 
 /// A short quiz made from the part texts: ten questions, one score.
 class QuizScreen extends StatefulWidget {
-  const QuizScreen({super.key, required this.content, required this.settings});
+  const QuizScreen({
+    super.key,
+    required this.content,
+    required this.settings,
+    required this.manifest,
+    this.mode = QuizMode.mixed,
+  });
 
   final BodyContent content;
   final AppSettings settings;
+  final BodyManifest? manifest;
+  final QuizMode mode;
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
@@ -27,20 +56,54 @@ class _QuizScreenState extends State<QuizScreen> {
   int _score = 0;
   bool _done = false;
 
+  // "Find the part"
+  AtlasController? _atlas;
+  String _view = 'front';
+  bool? _foundRight;
+
   @override
   void initState() {
     super.initState();
-    _questions = buildQuiz(widget.content, _random);
+    _questions = _build();
+    final m = widget.manifest;
+    if (widget.mode == QuizMode.find && m != null) {
+      final atlas = AtlasController(
+        onSelect: _onFindSelect,
+        onClear: () {},
+        onLayers: (_) {},
+        layers: const {},
+      );
+      atlas.setManifest(m);
+      _atlas = atlas;
+      _prepareFind();
+    }
+  }
+
+  @override
+  void dispose() {
+    _atlas?.dispose();
+    super.dispose();
+  }
+
+  List<QuizQuestion> _build() {
+    final keys = quizPictureKeys(widget.manifest);
+    return switch (widget.mode) {
+      QuizMode.find => buildFindQuiz(widget.content, keys, _random),
+      QuizMode.systems => buildQuiz(widget.content, _random, systemsOnly: true),
+      QuizMode.mixed => buildQuiz(widget.content, _random, pictureKeys: keys),
+    };
   }
 
   void _restart() {
     setState(() {
-      _questions = buildQuiz(widget.content, _random);
+      _questions = _build();
       _index = 0;
       _picked = null;
+      _foundRight = null;
       _score = 0;
       _done = false;
     });
+    _prepareFind();
   }
 
   void _pick(int i) {
@@ -59,8 +122,33 @@ class _QuizScreenState extends State<QuizScreen> {
       setState(() {
         _index++;
         _picked = null;
+        _foundRight = null;
       });
+      _prepareFind();
     }
+  }
+
+  /// Shows only the layer of the part to find, from the front.
+  void _prepareFind() {
+    final atlas = _atlas;
+    final m = widget.manifest;
+    if (atlas == null || m == null || _questions.isEmpty) return;
+    final layer = m.keyLayers[_questions[_index].key] ?? 'organs';
+    atlas.setLayers({for (final l in kLayers) l: l == layer});
+    atlas.reset();
+    _view = 'front';
+  }
+
+  void _onFindSelect(ViewerSelection selection) {
+    if (_foundRight != null || _done || _questions.isEmpty) return;
+    final target = _questions[_index].key;
+    final right = selection.key == target;
+    setState(() {
+      _foundRight = right;
+      if (right) _score++;
+    });
+    // Show where the right part is.
+    if (!right) _atlas?.selectKey(target);
   }
 
   @override
@@ -69,7 +157,7 @@ class _QuizScreenState extends State<QuizScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          t.quiz,
+          _title(t),
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
         ),
       ),
@@ -77,23 +165,21 @@ class _QuizScreenState extends State<QuizScreen> {
           ? Center(child: Text(t.noResults('')))
           : _done
               ? _result(t)
-              : _question(t),
+              : widget.mode == QuizMode.find
+                  ? _find(t)
+                  : _question(t),
     );
   }
 
-  Widget _question(AppLocalizations t) {
-    final q = _questions[_index];
-    final picked = _picked;
-    final prompt = q.kind == QuizKind.part
-        ? t.quizWhichPart
-        : t.quizWhichSystem(q.subject);
-    return ListView(
-      padding: EdgeInsets.fromLTRB(
-        16,
-        4,
-        16,
-        24 + MediaQuery.paddingOf(context).bottom,
-      ),
+  String _title(AppLocalizations t) => switch (widget.mode) {
+        QuizMode.find => t.findPart,
+        QuizMode.systems => t.systemsQuiz,
+        QuizMode.mixed => t.quiz,
+      };
+
+  Widget _progress(AppLocalizations t, bool answered) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           t.quizQuestionOf(_index + 1, _questions.length),
@@ -103,34 +189,78 @@ class _QuizScreenState extends State<QuizScreen> {
         ClipRRect(
           borderRadius: BorderRadius.circular(3),
           child: LinearProgressIndicator(
-            value: (_index + (picked == null ? 0 : 1)) / _questions.length,
-            minHeight: 5,
+            value: (_index + (answered ? 1 : 0)) / _questions.length,
+            minHeight: 6,
             color: AnatomoColors.accent,
             backgroundColor: AnatomoColors.line,
           ),
         ),
-        const SizedBox(height: 18),
+      ],
+    );
+  }
+
+  Widget _nextButton(AppLocalizations t) {
+    return SizedBox(
+      width: double.infinity,
+      height: 52,
+      child: FilledButton(
+        style: FilledButton.styleFrom(
+          backgroundColor: AnatomoColors.text,
+          foregroundColor: AnatomoColors.bg,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        ),
+        onPressed: _next,
+        child: Text(
+          _index + 1 >= _questions.length ? t.quizFinish : t.quizNext,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+        ),
+      ),
+    );
+  }
+
+  Widget _question(AppLocalizations t) {
+    final q = _questions[_index];
+    final picked = _picked;
+    final m = widget.manifest;
+    final prompt = switch (q.kind) {
+      QuizKind.part => t.quizWhichPart,
+      QuizKind.system => t.quizWhichSystem(q.subject),
+      QuizKind.picture || QuizKind.find => t.quizWhatHighlighted,
+    };
+    return ListView(
+      padding: EdgeInsets.fromLTRB(
+        16,
+        4,
+        16,
+        24 + MediaQuery.paddingOf(context).bottom,
+      ),
+      children: [
+        _progress(t, picked != null),
+        const SizedBox(height: 16),
+        if (q.kind == QuizKind.picture && m != null) ...[
+          Container(
+            height: 230,
+            decoration: BoxDecoration(
+              color: AnatomoColors.picture,
+              borderRadius: BorderRadius.circular(22),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: PartPicture(manifest: m, partKey: q.key),
+          ),
+          const SizedBox(height: 16),
+        ],
         Text(
           prompt,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+          style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w800, height: 1.3),
         ),
         if (q.kind == QuizKind.part) ...[
           const SizedBox(height: 12),
-          Container(
-            width: double.infinity,
+          Panel(
+            radius: 16,
             padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: AnatomoColors.panel,
-              border: Border.all(color: AnatomoColors.line),
-              borderRadius: BorderRadius.circular(14),
-            ),
             child: Text(
               q.subject,
-              style: TextStyle(
-                fontSize: 15.5,
-                height: 1.5,
-                color: AnatomoColors.body,
-              ),
+              style: TextStyle(fontSize: 15.5, height: 1.5, color: AnatomoColors.body),
             ),
           ),
         ],
@@ -150,32 +280,91 @@ class _QuizScreenState extends State<QuizScreen> {
         if (picked != null) ...[
           const SizedBox(height: 6),
           Text(
-            picked == q.answer
-                ? t.quizCorrect
-                : t.quizWrong(q.options[q.answer]),
+            picked == q.answer ? t.quizCorrect : t.quizWrong(q.options[q.answer]),
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w700,
               color: picked == q.answer ? AnatomoColors.good : AnatomoColors.bad,
             ),
           ),
+          if (q.key.isNotEmpty && widget.content[q.key] != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              widget.content[q.key]!.description,
+              style: TextStyle(fontSize: 13.5, height: 1.5, color: AnatomoColors.muted),
+            ),
+          ],
+          const SizedBox(height: 16),
+          _nextButton(t),
+        ],
+      ],
+    );
+  }
+
+  Widget _find(AppLocalizations t) {
+    final q = _questions[_index];
+    final atlas = _atlas;
+    final right = _foundRight;
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16, 4, 16, 16 + MediaQuery.paddingOf(context).bottom),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _progress(t, right != null),
           const SizedBox(height: 14),
-          SizedBox(
-            height: 50,
-            child: FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: AnatomoColors.accent,
-                foregroundColor: AnatomoColors.accentInk,
-              ),
-              onPressed: _next,
-              child: Text(
-                _index + 1 >= _questions.length ? t.quizFinish : t.quizNext,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          Text(
+            t.quizTapThe(q.subject),
+            style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w800, height: 1.3),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            t.quizTapHint,
+            style: TextStyle(fontSize: 13.5, color: AnatomoColors.muted),
+          ),
+          const SizedBox(height: 12),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(22),
+              child: Stack(
+                children: [
+                  if (atlas != null) Positioned.fill(child: AtlasView(controller: atlas)),
+                  PositionedDirectional(
+                    start: 10,
+                    top: 10,
+                    child: Segmented(
+                      vertical: true,
+                      itemWidth: 60,
+                      options: {
+                        'front': t.viewFront,
+                        'back': t.viewBack,
+                        'side': t.viewSide,
+                      },
+                      value: _view,
+                      onChanged: (v) {
+                        setState(() => _view = v);
+                        atlas?.setView(v);
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
+          if (right != null) ...[
+            const SizedBox(height: 12),
+            Text(
+              right ? t.quizCorrect : t.quizWrong(q.subject),
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: right ? AnatomoColors.good : AnatomoColors.bad,
+              ),
+            ),
+            const SizedBox(height: 12),
+            _nextButton(t),
+          ],
         ],
-      ],
+      ),
     );
   }
 
@@ -201,11 +390,12 @@ class _QuizScreenState extends State<QuizScreen> {
             const SizedBox(height: 28),
             SizedBox(
               width: double.infinity,
-              height: 50,
+              height: 52,
               child: FilledButton(
                 style: FilledButton.styleFrom(
-                  backgroundColor: AnatomoColors.accent,
-                  foregroundColor: AnatomoColors.accentInk,
+                  backgroundColor: AnatomoColors.text,
+                  foregroundColor: AnatomoColors.bg,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 ),
                 onPressed: _restart,
                 child: Text(
@@ -243,40 +433,55 @@ class _OptionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color border;
     final Color fill;
+    String mark = '';
     switch (state) {
       case _OptionState.correct:
         border = AnatomoColors.good;
-        fill = AnatomoColors.good.withAlpha(36);
+        fill = AnatomoColors.goodTint;
+        mark = '✓';
       case _OptionState.wrong:
         border = AnatomoColors.bad;
-        fill = AnatomoColors.bad.withAlpha(36);
+        fill = AnatomoColors.badTint;
+        mark = '✕';
       default:
         border = AnatomoColors.line;
         fill = AnatomoColors.panel;
     }
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 10),
       child: Opacity(
         opacity: state == _OptionState.dim ? 0.55 : 1,
         child: Material(
           color: fill,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
             side: BorderSide(color: border, width: state == _OptionState.idle ? 1 : 1.6),
           ),
           clipBehavior: Clip.antiAlias,
           child: InkWell(
             onTap: state == _OptionState.idle ? onTap : null,
             child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 54),
+              constraints: const BoxConstraints(minHeight: 56),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                child: Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Text(
-                    text,
-                    style: const TextStyle(fontSize: 15.5, fontWeight: FontWeight.w600),
-                  ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        text,
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    if (mark.isNotEmpty)
+                      Text(
+                        mark,
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w800,
+                          color: border,
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),

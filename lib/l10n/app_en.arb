@@ -44,7 +44,6 @@
   "notMedical": "For learning only. Not medical advice.",
   "close": "Close",
   "showWholeBody": "Show the whole body",
-  "searchParts": "Search parts",
   "settings": "Settings",
   "allParts": "All parts",
   "partsCount": "{count} parts",
@@ -147,7 +146,6 @@
       }
     }
   },
-  "checkForUpdates": "Check for updates",
   "checking": "Checking…",
   "upToDate": "You have the latest version.",
   "updateAvailable": "Version {version} is available",
@@ -187,15 +185,10 @@
   "disclaimerTitle": "For learning",
   "disclaimer": "Anatomo is made for learning. It is not medical advice. Talk to a doctor about your health.",
   "hint2d": "Tap any part · pinch to zoom",
-  "hintDesktop": "Click a part · scroll to zoom · drag to move",
   "hiddenHere": "This part can't be seen from this side. Try another side, or switch off the layers in front of it.",
   "fittedFromMale": "In the female body, this part is adapted from the male body.",
   "fittedFromFemale": "In the male body, this part is adapted from the female body.",
-  "layers": "Layers",
   "explore": "Explore",
-  "selectPartTitle": "Click any part of the body",
-  "selectPartText": "Its card opens here: what it does, what is good for it and what harms it.",
-  "keyboard": "Keyboard",
   "zoomIn": "Zoom in",
   "zoomOut": "Zoom out",
   "cancel": "Cancel",
@@ -209,8 +202,80 @@
     }
   },
   "pack3dDownload": "Download",
-  "pack3dReady": "The 3D pack is installed. Use the 2D / 3D switch to change the view.",
+  "pack3dReady": "The 3D pack is installed. Use the 2D / 3D switch next to the body.",
   "pack3dRemove": "Remove",
   "pack3dFailed": "The 3D pack could not be downloaded. Check the internet connection and try again.",
-  "hint3dDesktop": "Drag to rotate · scroll to zoom · click any part"
+  "tabParts": "Parts",
+  "details": "Details",
+  "crossSection": "Cross-section",
+  "off": "Off",
+  "autoRotate": "Auto-rotate",
+  "labels": "Labels",
+  "whereItIs": "Where it is",
+  "showOnBody": "Show on the body",
+  "madeOfPieces": "Made of {count} pieces",
+  "@madeOfPieces": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "showAll": "Show all",
+  "showLess": "Show less",
+  "worksWith": "Works with",
+  "quizMe": "Quiz me",
+  "viewIn3d": "View in 3D",
+  "browseBySystem": "Browse by system",
+  "learn": "Learn",
+  "learnSubtitle": "A few minutes a day is enough.",
+  "organOfDay": "Organ of the day",
+  "readMore": "Read more",
+  "quizNote": "10 questions",
+  "flashcards": "Flashcards",
+  "flashcardsNote": "Flip and remember",
+  "findPart": "Find the part",
+  "findPartNote": "Tap it on the body",
+  "systemsQuiz": "Body systems",
+  "systemsQuizNote": "Which system is it?",
+  "yourProgress": "Your progress",
+  "partsStudied": "Parts studied",
+  "studiedOf": "{count} of {total}",
+  "@studiedOf": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "bestQuiz": "Best quiz",
+  "quizWhatHighlighted": "What is the highlighted part?",
+  "quizTapThe": "Tap the {name}",
+  "@quizTapThe": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quizTapHint": "Tap it on the body. Pinch to zoom in.",
+  "flashTapToFlip": "Tap the card to see the answer",
+  "flashAgain": "Again",
+  "flashGotIt": "Got it",
+  "flashDone": "You went through {count} cards.",
+  "@flashDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "textSize": "Text size",
+  "textSizeNote": "Bigger or smaller text in the whole app",
+  "textSmaller": "Smaller text",
+  "textBigger": "Bigger text",
+  "check": "Check"
 }

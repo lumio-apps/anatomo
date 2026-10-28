@@ -8,7 +8,9 @@ import '../settings.dart';
 import '../theme.dart';
 import '../update_service.dart';
 import '../widgets/logo.dart';
+import '../widgets/ui.dart';
 
+/// The Settings tab.
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key, required this.settings});
 
@@ -116,202 +118,226 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
     final lang = languageFor(Localizations.localeOf(context).languageCode);
-    final sex = widget.settings.sex;
+    final settings = widget.settings;
     final noteStyle = TextStyle(fontSize: 12.5, height: 1.4, color: AnatomoColors.muted);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          t.settings,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
-        ),
-      ),
-      body: Align(
-        alignment: Alignment.topCenter,
-        child: ConstrainedBox(
-          // On wide windows the settings stay a readable column, like the
-          // settings pages of Windows, instead of stretching across.
-          constraints: const BoxConstraints(maxWidth: 760),
-          child: ListView(
-            padding: EdgeInsets.fromLTRB(
-              16,
-              8,
-              16,
-              24 + MediaQuery.paddingOf(context).bottom,
-            ),
-            children: [
-              _SectionTitle(t.general),
-              _Card(
+    final scale = settings.textScale;
+    final step = kTextScales.indexOf(scale);
+    return ColoredBox(
+      color: AnatomoColors.bg,
+      child: SafeArea(
+        bottom: false,
+        child: ListView(
+          padding: const EdgeInsets.only(bottom: 24),
+          children: [
+            PageTitle(title: t.settings),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _SettingRow(
-                    icon: Icons.language_rounded,
-                    title: t.language,
-                    onTap: _pickLanguage,
-                    control: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(lang.nativeName, style: TextStyle(color: AnatomoColors.muted)),
-                        Icon(Icons.chevron_right_rounded, color: AnatomoColors.muted),
-                      ],
-                    ),
-                  ),
-                  const Divider(height: 1),
-                  _SettingRow(
-                    icon: Icons.contrast_rounded,
-                    title: t.appearance,
-                    control: SegmentedButton<String>(
-                      showSelectedIcon: false,
-                      segments: [
-                        ButtonSegment(value: 'system', label: Text(t.themeAuto)),
-                        ButtonSegment(value: 'light', label: Text(t.themeLight)),
-                        ButtonSegment(value: 'dark', label: Text(t.themeDark)),
-                      ],
-                      selected: {widget.settings.theme},
-                      onSelectionChanged: (s) => widget.settings.setTheme(s.first),
-                    ),
+                  SectionTitle(t.general, padding: const EdgeInsets.fromLTRB(4, 4, 4, 8)),
+                  _Card(
+                    children: [
+                      _SettingRow(
+                        icon: Icons.language_rounded,
+                        title: t.language,
+                        onTap: _pickLanguage,
+                        control: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(lang.nativeName, style: TextStyle(color: AnatomoColors.muted)),
+                            Icon(Icons.chevron_right_rounded, color: AnatomoColors.muted),
+                          ],
+                        ),
+                      ),
+                      const Divider(height: 1),
+                      _SettingRow(
+                        icon: Icons.contrast_rounded,
+                        title: t.appearance,
+                        control: SegmentedButton<String>(
+                          showSelectedIcon: false,
+                          segments: [
+                            ButtonSegment(value: 'system', label: Text(t.themeAuto)),
+                            ButtonSegment(value: 'light', label: Text(t.themeLight)),
+                            ButtonSegment(value: 'dark', label: Text(t.themeDark)),
+                          ],
+                          selected: {settings.theme},
+                          onSelectionChanged: (s) => settings.setTheme(s.first),
+                        ),
+                      ),
+                      const Divider(height: 1),
+                      _SettingRow(
+                        icon: Icons.format_size_rounded,
+                        title: t.textSize,
+                        note: t.textSizeNote,
+                        control: Container(
+                          padding: const EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            color: AnatomoColors.panel2,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                tooltip: t.textSmaller,
+                                onPressed: step > 0
+                                    ? () => settings.setTextScale(kTextScales[step - 1])
+                                    : null,
+                                icon: const Icon(Icons.text_decrease_rounded),
+                              ),
+                              SizedBox(
+                                width: 52,
+                                child: Text(
+                                  '${(scale * 100).round()}%',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontWeight: FontWeight.w700),
+                                ),
+                              ),
+                              IconButton(
+                                tooltip: t.textBigger,
+                                onPressed: step >= 0 && step < kTextScales.length - 1
+                                    ? () => settings.setTextScale(kTextScales[step + 1])
+                                    : null,
+                                icon: const Icon(Icons.text_increase_rounded),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const Divider(height: 1),
+                      _SettingRow(
+                        icon: Icons.accessibility_new_rounded,
+                        title: t.body,
+                        note: t.femaleNote,
+                        control: SegmentedButton<String>(
+                          showSelectedIcon: false,
+                          segments: [
+                            ButtonSegment(value: 'male', label: Text(t.male)),
+                            ButtonSegment(value: 'female', label: Text(t.female)),
+                          ],
+                          selected: {settings.sex},
+                          onSelectionChanged: (s) => settings.setSex(s.first),
+                        ),
+                      ),
+                    ],
                   ),
                   if (Pack3D.supported) ...[
-                    const Divider(height: 1),
-                    _SettingRow(
-                      icon: Icons.speed_rounded,
-                      title: t.quality,
-                      note: t.qualityNote,
-                      control: SegmentedButton<String>(
-                        showSelectedIcon: false,
-                        segments: [
-                          ButtonSegment(value: 'auto', label: Text(t.qualityAuto)),
-                          ButtonSegment(value: 'low', label: Text(t.qualityLow)),
-                          ButtonSegment(value: 'medium', label: Text(t.qualityMedium)),
-                          ButtonSegment(value: 'high', label: Text(t.qualityHigh)),
-                        ],
-                        selected: {widget.settings.quality},
-                        onSelectionChanged: (s) => widget.settings.setQuality(s.first),
-                      ),
+                    SectionTitle(t.pack3dTitle),
+                    _Card(
+                      children: [
+                        _PackTile(pack: Pack3D.instance),
+                        const Divider(height: 1),
+                        _SettingRow(
+                          icon: Icons.speed_rounded,
+                          title: t.quality,
+                          note: t.qualityNote,
+                          control: SegmentedButton<String>(
+                            showSelectedIcon: false,
+                            segments: [
+                              ButtonSegment(value: 'auto', label: Text(t.qualityAuto)),
+                              ButtonSegment(value: 'low', label: Text(t.qualityLow)),
+                              ButtonSegment(value: 'medium', label: Text(t.qualityMedium)),
+                              ButtonSegment(value: 'high', label: Text(t.qualityHigh)),
+                            ],
+                            selected: {settings.quality},
+                            onSelectionChanged: (s) => settings.setQuality(s.first),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
-                  const Divider(height: 1),
-                  _SettingRow(
-                    icon: Icons.accessibility_new_rounded,
-                    title: t.body,
-                    note: t.femaleNote,
-                    control: SegmentedButton<String>(
-                      showSelectedIcon: false,
-                      segments: [
-                        ButtonSegment(value: 'male', label: Text(t.male)),
-                        ButtonSegment(value: 'female', label: Text(t.female)),
-                      ],
-                      selected: {sex},
-                      onSelectionChanged: (s) => widget.settings.setSex(s.first),
-                    ),
-                  ),
-                ],
-              ),
-              if (Pack3D.supported) ...[
-                _SectionTitle(t.pack3dTitle),
-                _Card(children: [_PackTile(pack: Pack3D.instance)]),
-              ],
-              _SectionTitle(t.updates),
-              _Card(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: LayoutBuilder(
-                      builder: (context, c) {
-                        final wide = c.maxWidth >= 520;
-                        final info = Row(
-                          children: [
-                            const AnatomoMark(size: 40),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    _version.isEmpty ? 'Anatomo' : t.versionLabel(_version),
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  if (_status != null)
-                                    Text(
-                                      _status!,
-                                      style: TextStyle(
-                                        fontSize: 13.5,
-                                        color: _statusIsError
-                                            ? AnatomoColors.bad
-                                            : AnatomoColors.good,
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        );
-                        final button = SizedBox(
-                          width: wide ? null : double.infinity,
-                          height: 44,
-                          child: FilledButton(
-                            style: FilledButton.styleFrom(
-                              backgroundColor: AnatomoColors.accent,
-                              foregroundColor: AnatomoColors.accentInk,
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            onPressed: _checking ? null : _checkForUpdates,
-                            child: Text(_checking ? t.checking : t.checkForUpdates),
-                          ),
-                        );
-                        return Column(
+                  SectionTitle(t.updates),
+                  _Card(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (wide)
-                              Row(
-                                children: [
-                                  Expanded(child: info),
-                                  const SizedBox(width: 16),
-                                  button,
-                                ],
-                              )
-                            else ...[
-                              info,
-                              const SizedBox(height: 12),
-                              button,
-                            ],
+                            Row(
+                              children: [
+                                const AnatomoMark(size: 40),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        _version.isEmpty ? 'Anatomo' : t.versionLabel(_version),
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                      if (_status != null)
+                                        Text(
+                                          _status!,
+                                          style: TextStyle(
+                                            fontSize: 13.5,
+                                            color: _statusIsError
+                                                ? AnatomoColors.bad
+                                                : AnatomoColors.good,
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                SizedBox(
+                                  height: 40,
+                                  child: FilledButton(
+                                    style: FilledButton.styleFrom(
+                                      backgroundColor: AnatomoColors.text,
+                                      foregroundColor: AnatomoColors.bg,
+                                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                                      shape: const StadiumBorder(),
+                                    ),
+                                    onPressed: _checking ? null : _checkForUpdates,
+                                    child: Text(_checking ? t.checking : t.check),
+                                  ),
+                                ),
+                              ],
+                            ),
                             const SizedBox(height: 10),
                             Text(t.updatesNote, style: noteStyle),
                           ],
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              _SectionTitle(t.about),
-              _Card(
-                children: [
-                  _InfoTile(
-                    title: t.sourceCode,
-                    child: SelectableText(
-                      'github.com/$kGithubOwner/$kGithubRepo',
-                      style: TextStyle(
-                        fontSize: 13.5,
-                        color: AnatomoColors.accent,
-                        fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                  const Divider(height: 1),
-                  _InfoTile(title: t.models3d, text: t.modelsCredit),
-                  const Divider(height: 1),
-                  _InfoTile(title: t.privacy, text: t.privacyText),
-                  const Divider(height: 1),
-                  _InfoTile(title: t.disclaimerTitle, text: t.disclaimer),
+                  SectionTitle(t.about),
+                  _Card(
+                    children: [
+                      _InfoTile(
+                        title: t.sourceCode,
+                        child: SelectableText(
+                          'github.com/$kGithubOwner/$kGithubRepo',
+                          style: TextStyle(
+                            fontSize: 13.5,
+                            color: AnatomoColors.accent,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      const Divider(height: 1),
+                      _InfoTile(title: t.models3d, text: t.modelsCredit),
+                      const Divider(height: 1),
+                      _InfoTile(title: t.privacy, text: t.privacyText),
+                      const Divider(height: 1),
+                      _InfoTile(title: t.disclaimerTitle, text: t.disclaimer),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    t.offlineNote,
+                    textAlign: TextAlign.center,
+                    style: noteStyle,
+                  ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -386,28 +412,6 @@ class _SettingRow extends StatelessWidget {
               ],
             );
           },
-        ),
-      ),
-    );
-  }
-}
-
-class _SectionTitle extends StatelessWidget {
-  const _SectionTitle(this.text);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 18, 4, 8),
-      child: Text(
-        text.toUpperCase(),
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.6,
-          color: AnatomoColors.muted,
         ),
       ),
     );

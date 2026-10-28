@@ -47,14 +47,19 @@ class PartContent {
 
 /// All part texts and body system names in one language.
 class BodyContent {
-  const BodyContent(this.parts, this.systems);
+  const BodyContent(this.parts, this.systems, [this.where = const {}]);
 
   final Map<String, PartContent> parts;
   final Map<String, String> systems;
 
+  /// key -> where the part sits in the body.
+  final Map<String, String> where;
+
   static const BodyContent empty = BodyContent({}, {});
 
   PartContent? operator [](String key) => parts[key];
+
+  String? whereOf(String key) => where[key];
 
   String systemName(String id) => systems[id] ?? id;
 
@@ -82,6 +87,7 @@ class BodyContent {
     final merged = BodyContent(
       {...english.parts, ...local.parts},
       {...english.systems, ...local.systems},
+      {...english.where, ...local.where},
     );
     _cache[language] = merged;
     return merged;
@@ -105,6 +111,45 @@ class BodyContent {
         });
       }
     }
-    return BodyContent(parts, systems);
+    final where = <String, String>{};
+    try {
+      final text = await rootBundle.loadString('assets/content/${language}_w.json');
+      final data = jsonDecode(text) as Map<String, dynamic>;
+      final w = data['where'];
+      if (w is Map) {
+        w.forEach((k, v) => where['$k'] = '$v');
+      }
+    } catch (_) {
+      // Older content without "where" texts; the section is left out.
+    }
+    return BodyContent(parts, systems, where);
+  }
+}
+
+/// Which parts work together ("Works with" on the part page). The same in
+/// every language: assets/content/links.json.
+class PartLinks {
+  PartLinks._();
+
+  static Map<String, List<String>>? _links;
+
+  static Future<Map<String, List<String>>> load() async {
+    final cached = _links;
+    if (cached != null) return cached;
+    final out = <String, List<String>>{};
+    try {
+      final data = jsonDecode(
+        await rootBundle.loadString('assets/content/links.json'),
+      );
+      if (data is Map) {
+        data.forEach((k, v) {
+          if (v is List) out['$k'] = v.map((e) => '$e').toList();
+        });
+      }
+    } catch (_) {
+      // Without the file the section is left out.
+    }
+    _links = out;
+    return out;
   }
 }

@@ -45,11 +45,12 @@ if (!renderer.capabilities.isWebGL2) {
   post({ type: 'error', code: 'webgl2' });
 }
 renderer.setPixelRatio(curRatio);
-let stageColor = 0x0d171b;
+let stageColor = 0x0a1214;
 renderer.setClearColor(stageColor, 1);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.05;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.localClippingEnabled = true;
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
@@ -92,9 +93,17 @@ let loadToken = 0;
 
 const uniforms = { partTex: { value: null }, ghostOpacity: { value: 0.16 } };
 
+// Cross-section: everything in front of this plane is cut away.
+const cutPlane = new THREE.Plane(new THREE.Vector3(0, 0, -1), 100);
+let cut = 0;
+const cutUniform = { value: 100 };
+
+let dragging = false;
 function invalidate() { dirty = true; }
 controls.addEventListener('change', invalidate);
-controls.addEventListener('start', () => { lastMove = performance.now(); });
+controls.addEventListener('start', () => { dragging = true; lastMove = performance.now(); });
+controls.addEventListener('end', () => { dragging = false; });
+controls.autoRotateSpeed = 1.6;
 
 function setRatio(r) {
   if (r === curRatio) return;
@@ -194,13 +203,14 @@ function makeGhost(layer) {
 
 const pickMaterial = new THREE.ShaderMaterial({
   glslVersion: THREE.GLSL3,
-  uniforms: { partTex: uniforms.partTex, pickGhost: { value: 0 } },
+  uniforms: { partTex: uniforms.partTex, pickGhost: { value: 0 }, cutZ: cutUniform },
   vertexShader: `
 in float partIndex;
 uniform highp sampler2D partTex;
 flat out int vId;
 out float vState;
 out float vFlag;
+out float vZ;
 void main() {
   int pIdx = int(partIndex + 0.5);
   ivec2 c0 = ivec2((pIdx * 2) % ${TEXW}, (pIdx * 2) / ${TEXW});
@@ -209,16 +219,20 @@ void main() {
   vId = pIdx;
   vState = t0.w;
   vFlag = t1.w;
+  vZ = (modelMatrix * vec4(position + t0.xyz, 1.0)).z;
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position + t0.xyz, 1.0);
 }`,
   fragmentShader: `
 flat in int vId;
 in float vState;
 in float vFlag;
+in float vZ;
 uniform float pickGhost;
+uniform float cutZ;
 layout(location = 0) out highp vec4 pickColor;
 void main() {
   if (vState > 2.5) discard;
+  if (vZ > cutZ) discard;
   bool ghost = vState > 1.5;
   if (pickGhost < 0.5) {
     if (ghost) discard;
@@ -301,6 +315,7 @@ async function load(sex) {
     }
     loading = false;
     applyLayers();
+    setCut(cut);
     resetView(false);
     post({ type: 'ready', sex, parts: parts.length });
     setTimeout(autoTune, 600);
@@ -432,6 +447,8 @@ function buildLayer(layer) {
   geo.setIndex(new THREE.BufferAttribute(idx, 1));
   const solid = new THREE.Mesh(geo, makeSolid(layer));
   const ghost = new THREE.Mesh(geo, makeGhost(layer));
+  applyCutTo(solid.material);
+  applyCutTo(ghost.material);
   const pick = new THREE.Mesh(geo, pickMaterial);
   for (const m of [solid, ghost, pick]) m.frustumCulled = false;
   ghost.renderOrder = 1;
@@ -487,6 +504,109 @@ function writeOffsets() {
 
 function applyLayers() {
   writeStates();
+}
+
+// ---------- cross-section ----------
+function applyCutTo(mat) {
+  const on = cut > 0.001;
+  const planes = on ? [cutPlane] : null;
+  const side = on ? THREE.DoubleSide : THREE.FrontSide;
+  if ((mat.clippingPlanes ? 1 : 0) !== (planes ? 1 : 0) || mat.side !== side) {
+    mat.clippingPlanes = planes;
+    mat.side = side;
+    mat.needsUpdate = true;
+  }
+}
+
+function setCut(v) {
+  cut = Math.max(0, Math.min(1, Number(v) || 0));
+  const front = bodyCenter.z + bodySize.z / 2 + 0.01;
+  const depth = bodySize.z + 0.02;
+  const z = cut > 0.001 ? front - cut * depth : 100;
+  cutPlane.constant = z; // keeps points with z <= constant
+  cutUniform.value = z;
+  for (const layer of Object.keys(layerMeshes)) {
+    applyCutTo(layerMeshes[layer].solid.material);
+    applyCutTo(layerMeshes[layer].ghost.material);
+  }
+  invalidate();
+}
+
+// ---------- labels ----------
+let labelNames = null;       // key -> name, or null when labels are off
+let labelEls = new Map();    // key -> element
+const labelBox = document.createElement('div');
+labelBox.style.cssText = 'position:fixed;left:0;top:0;right:0;bottom:0;pointer-events:none;overflow:hidden;';
+document.body.appendChild(labelBox);
+let labelLight = false;
+const LABEL_ORDER = ['organs', 'bones', 'muscles', 'vessels', 'nerves', 'skin'];
+
+function clearLabels() {
+  for (const el of labelEls.values()) el.remove();
+  labelEls = new Map();
+}
+
+function labelStyle(el) {
+  el.style.background = labelLight ? 'rgba(255,255,255,0.92)' : 'rgba(18,29,32,0.88)';
+  el.style.color = labelLight ? '#0E1A1C' : '#E8F0EF';
+  el.style.borderColor = labelLight ? '#E2E8E7' : '#22302F';
+}
+
+function setLabels(map) {
+  clearLabels();
+  labelNames = map && typeof map === 'object' ? map : null;
+  if (!labelNames) { invalidate(); return; }
+  for (const [k, name] of Object.entries(labelNames)) {
+    const el = document.createElement('div');
+    el.textContent = String(name);
+    el.style.cssText = 'position:absolute;left:0;top:0;padding:3px 8px;border-radius:10px;'
+      + 'border:1px solid;font:600 11px system-ui,sans-serif;white-space:nowrap;display:none;'
+      + 'box-shadow:0 2px 6px rgba(0,0,0,0.18);';
+    labelStyle(el);
+    labelBox.appendChild(el);
+    labelEls.set(k, el);
+  }
+  invalidate();
+}
+
+const tmpV = new THREE.Vector3();
+function updateLabels() {
+  if (!labelNames || !parts.length) {
+    for (const el of labelEls.values()) el.style.display = 'none';
+    return;
+  }
+  const w = window.innerWidth, h = window.innerHeight;
+  const placed = [];
+  const keys = [...labelEls.keys()].filter((k) => keyParts.has(k));
+  keys.sort((a, b) => LABEL_ORDER.indexOf(parts[keyParts.get(a)[0]].layer)
+    - LABEL_ORDER.indexOf(parts[keyParts.get(b)[0]].layer));
+  for (const k of keys) {
+    const el = labelEls.get(k);
+    const first = parts[keyParts.get(k)[0]];
+    let show = !!layerOn[first.layer] && !!layerMeshes[first.layer] && first.layer !== 'skin';
+    if (show && selected.size) show = selectedKey === k;
+    if (show) {
+      const g = groups.get(first.group);
+      tmpV.copy(g.center).add(offsetOf(first));
+      if (cut > 0.001 && tmpV.z > cutPlane.constant) show = false;
+    }
+    if (show) {
+      tmpV.project(camera);
+      if (tmpV.z > 1 || tmpV.x < -1 || tmpV.x > 1 || tmpV.y < -1 || tmpV.y > 1) show = false;
+    }
+    if (!show) { el.style.display = 'none'; continue; }
+    const x = (tmpV.x + 1) / 2 * w;
+    const y = (1 - tmpV.y) / 2 * h;
+    const lw = el.textContent.length * 6.4 + 18, lh = 22;
+    const r = { l: x - lw / 2, t: y - lh / 2, r: x + lw / 2, b: y + lh / 2 };
+    if (placed.some((p) => r.l < p.r && r.r > p.l && r.t < p.b && r.b > p.t)) {
+      el.style.display = 'none';
+      continue;
+    }
+    placed.push(r);
+    el.style.display = 'block';
+    el.style.transform = `translate(${Math.round(r.l)}px, ${Math.round(r.t)}px)`;
+  }
 }
 
 function offsetOf(p) {
@@ -678,12 +798,14 @@ function tick() {
   }
   const changed = controls.update();
   const now = performance.now();
-  if (moving || changed) lastMove = now;
-  // lower resolution while the view moves, sharp again when it stops
+  // lower resolution while the finger moves the view, sharp again when it
+  // stops (the slow auto-rotation stays sharp)
+  if (moving || dragging || (changed && !controls.autoRotate)) lastMove = now;
   setRatio(now - lastMove < 220 ? moveRatio : baseRatio);
   if (!(moving || changed || dirty)) return;
   dirty = false;
   renderer.render(scene, camera);
+  if (labelNames) updateLabels();
 }
 if (!ATLAS) tick();
 
@@ -702,11 +824,16 @@ window.anatomo = {
   setView(name) { setView(name); },
   reset() { clearSelection(false); resetView(true); },
   setTheme(mode) {
-    stageColor = mode === 'light' ? 0xe9f0f1 : 0x0d171b;
+    stageColor = mode === 'light' ? 0xf3f6f5 : 0x0a1214;
     renderer.setClearColor(stageColor, 1);
-    document.body.style.background = mode === 'light' ? '#E9F0F1' : '#0D171B';
+    document.body.style.background = mode === 'light' ? '#F3F6F5' : '#0A1214';
+    labelLight = mode === 'light';
+    for (const el of labelEls.values()) labelStyle(el);
     invalidate();
   },
+  setAutoRotate(on) { controls.autoRotate = !!on; invalidate(); },
+  setCut(v) { setCut(v); },
+  setLabels(map) { setLabels(map); },
   setSpread(v) { spread = Math.max(0, Math.min(1, Number(v) || 0)); invalidate(); },
   setInset(v) {
     inset = Math.max(0, Math.min(0.7, Number(v) || 0));

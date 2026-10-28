@@ -1571,8 +1571,207 @@ for _lang, (_hint, _ready) in V21.items():
     S[_lang]["pack3dReady"] = _ready
 
 
+# ---------------------------------------------------------------- v3 texts (Android redesign)
+# Windows is gone: its texts are removed.
+V3_REMOVED = [
+    "hintDesktop", "hint3dDesktop", "keyboard", "selectPartTitle",
+    "selectPartText", "layers", "searchParts", "checkForUpdates",
+]
+
+PLACEHOLDERS.update({
+    "madeOfPieces": {"count": "int"},
+    "studiedOf": {"count": "int", "total": "int"},
+    "quizTapThe": {"name": "String"},
+    "flashDone": {"count": "int"},
+})
+
+V3_KEYS = [
+    "tabParts", "details", "crossSection", "off", "autoRotate", "labels",
+    "whereItIs", "showOnBody", "madeOfPieces", "showAll", "showLess",
+    "worksWith", "quizMe", "viewIn3d", "browseBySystem", "learn",
+    "learnSubtitle", "organOfDay", "readMore", "quizNote", "flashcards",
+    "flashcardsNote", "findPart", "findPartNote", "systemsQuiz",
+    "systemsQuizNote", "yourProgress", "partsStudied", "studiedOf",
+    "bestQuiz", "quizWhatHighlighted", "quizTapThe", "quizTapHint",
+    "flashTapToFlip", "flashAgain", "flashGotIt", "flashDone", "textSize",
+    "textSizeNote", "textSmaller", "textBigger", "check",
+]
+
+V3 = {
+    "en": [
+        "Parts", "Details", "Cross-section", "Off", "Auto-rotate", "Labels",
+        "Where it is", "Show on the body", "Made of {count} pieces", "Show all", "Show less",
+        "Works with", "Quiz me", "View in 3D", "Browse by system", "Learn",
+        "A few minutes a day is enough.", "Organ of the day", "Read more", "10 questions", "Flashcards",
+        "Flip and remember", "Find the part", "Tap it on the body", "Body systems",
+        "Which system is it?", "Your progress", "Parts studied", "{count} of {total}",
+        "Best quiz", "What is the highlighted part?", "Tap the {name}", "Tap it on the body. Pinch to zoom in.",
+        "Tap the card to see the answer", "Again", "Got it", "You went through {count} cards.", "Text size",
+        "Bigger or smaller text in the whole app", "Smaller text", "Bigger text", "Check",
+    ],
+    "hi": [
+        "हिस्से", "विवरण", "क्रॉस-सेक्शन", "बंद", "अपने आप घुमाएँ", "नाम",
+        "यह कहाँ है", "शरीर पर दिखाएँ", "{count} हिस्सों से बना", "सब दिखाएँ", "कम दिखाएँ",
+        "किसके साथ काम करता है", "मेरा क्विज़ लें", "3D में देखें", "तंत्र के अनुसार देखें", "सीखें",
+        "रोज़ कुछ मिनट काफ़ी हैं।", "आज का अंग", "और पढ़ें", "10 सवाल", "फ़्लैशकार्ड",
+        "पलटें और याद करें", "हिस्सा ढूँढें", "शरीर पर टैप करें", "शरीर के तंत्र",
+        "यह किस तंत्र का है?", "आपकी प्रगति", "पढ़े गए हिस्से", "{total} में से {count}",
+        "सबसे अच्छा क्विज़", "हाइलाइट किया गया हिस्सा कौन-सा है?", "{name} पर टैप करें", "शरीर पर टैप करें। ज़ूम करने के लिए दो उंगलियों से फैलाएँ।",
+        "जवाब देखने के लिए कार्ड पर टैप करें", "फिर से", "याद हो गया", "आपने {count} कार्ड पूरे किए।", "अक्षरों का आकार",
+        "पूरे ऐप में बड़े या छोटे अक्षर", "छोटे अक्षर", "बड़े अक्षर", "जाँचें",
+    ],
+    "hy": [
+        "Մասեր", "Մանրամասներ", "Կտրվածք", "Անջատված", "Ինքնապտտում", "Անուններ",
+        "Որտեղ է գտնվում", "Ցույց տալ մարմնի վրա", "Կազմված է {count} մասից", "Ցույց տալ բոլորը", "Ցույց տալ քիչ",
+        "Աշխատում է միասին", "Թեստ ինձ համար", "Դիտել 3D-ով", "Ըստ համակարգի", "Սովորել",
+        "Օրական մի քանի րոպեն բավական է։", "Օրվա օրգանը", "Կարդալ ավելին", "10 հարց", "Քարտեր",
+        "Շրջիր և հիշիր", "Գտիր մասը", "Սեղմիր մարմնի վրա", "Մարմնի համակարգեր",
+        "Ո՞ր համակարգին է պատկանում", "Ձեր առաջընթացը", "Ուսումնասիրված մասեր", "{count}՝ {total}-ից",
+        "Լավագույն թեստ", "Ո՞րն է ընդգծված մասը", "Սեղմեք՝ {name}", "Սեղմեք մարմնի վրա։ Մեծացնելու համար բացեք երկու մատով։",
+        "Սեղմեք քարտին՝ պատասխանը տեսնելու համար", "Կրկին", "Հիշեցի", "Դուք անցաք {count} քարտ։", "Տառաչափ",
+        "Ավելի մեծ կամ փոքր տեքստ ամբողջ հավելվածում", "Փոքր տեքստ", "Մեծ տեքստ", "Ստուգել",
+    ],
+    "ru": [
+        "Части", "Подробнее", "Разрез", "Выкл.", "Автоповорот", "Подписи",
+        "Где находится", "Показать на теле", "Состоит из {count} частей", "Показать все", "Свернуть",
+        "Работает вместе с", "Проверить себя", "Смотреть в 3D", "По системам", "Учиться",
+        "Нескольких минут в день достаточно.", "Орган дня", "Читать дальше", "10 вопросов", "Карточки",
+        "Переверни и запомни", "Найди часть", "Нажми на неё на теле", "Системы органов",
+        "К какой системе относится?", "Ваш прогресс", "Изучено частей", "{count} из {total}",
+        "Лучший тест", "Какая часть выделена?", "Нажмите: {name}", "Нажмите на теле. Разведите пальцы, чтобы увеличить.",
+        "Нажмите на карточку, чтобы увидеть ответ", "Ещё раз", "Запомнил", "Вы прошли {count} карточек.", "Размер текста",
+        "Крупнее или мельче текст во всём приложении", "Мельче", "Крупнее", "Проверить",
+    ],
+    "es": [
+        "Partes", "Detalles", "Corte", "No", "Girar solo", "Nombres",
+        "Dónde está", "Mostrar en el cuerpo", "Formado por {count} piezas", "Ver todo", "Ver menos",
+        "Trabaja con", "Ponme a prueba", "Ver en 3D", "Ver por sistema", "Aprender",
+        "Unos minutos al día bastan.", "Órgano del día", "Leer más", "10 preguntas", "Tarjetas",
+        "Da la vuelta y recuerda", "Encuentra la parte", "Tócala en el cuerpo", "Sistemas del cuerpo",
+        "¿A qué sistema pertenece?", "Tu progreso", "Partes estudiadas", "{count} de {total}",
+        "Mejor test", "¿Qué parte está resaltada?", "Toca: {name}", "Tócala en el cuerpo. Separa los dedos para ampliar.",
+        "Toca la tarjeta para ver la respuesta", "Otra vez", "Ya lo sé", "Has repasado {count} tarjetas.", "Tamaño del texto",
+        "Texto más grande o más pequeño en toda la app", "Texto más pequeño", "Texto más grande", "Buscar",
+    ],
+    "fr": [
+        "Parties", "Détails", "Coupe", "Non", "Rotation auto", "Noms",
+        "Où se trouve-t-il", "Montrer sur le corps", "Composé de {count} pièces", "Tout afficher", "Afficher moins",
+        "Travaille avec", "Me tester", "Voir en 3D", "Par système", "Apprendre",
+        "Quelques minutes par jour suffisent.", "Organe du jour", "Lire la suite", "10 questions", "Cartes",
+        "Retourne et retiens", "Trouve la partie", "Touche-la sur le corps", "Systèmes du corps",
+        "À quel système appartient-il ?", "Ta progression", "Parties étudiées", "{count} sur {total}",
+        "Meilleur quiz", "Quelle partie est mise en évidence ?", "Touchez : {name}", "Touchez-la sur le corps. Écartez deux doigts pour zoomer.",
+        "Touchez la carte pour voir la réponse", "Encore", "Je sais", "Vous avez passé {count} cartes.", "Taille du texte",
+        "Texte plus grand ou plus petit dans toute l'app", "Texte plus petit", "Texte plus grand", "Vérifier",
+    ],
+    "de": [
+        "Teile", "Details", "Schnitt", "Aus", "Automatisch drehen", "Namen",
+        "Wo es liegt", "Am Körper zeigen", "Besteht aus {count} Teilen", "Alle zeigen", "Weniger zeigen",
+        "Arbeitet zusammen mit", "Quiz dazu", "In 3D ansehen", "Nach System", "Lernen",
+        "Ein paar Minuten am Tag reichen.", "Organ des Tages", "Weiterlesen", "10 Fragen", "Lernkarten",
+        "Umdrehen und merken", "Finde das Teil", "Tippe es am Körper an", "Körpersysteme",
+        "Zu welchem System gehört es?", "Dein Fortschritt", "Gelernte Teile", "{count} von {total}",
+        "Bestes Quiz", "Welches Teil ist markiert?", "Tippe auf: {name}", "Tippe es am Körper an. Mit zwei Fingern vergrößern.",
+        "Tippe auf die Karte, um die Antwort zu sehen", "Nochmal", "Gewusst", "Du hast {count} Karten geschafft.", "Textgröße",
+        "Größerer oder kleinerer Text in der ganzen App", "Kleinerer Text", "Größerer Text", "Prüfen",
+    ],
+    "ar": [
+        "الأجزاء", "التفاصيل", "مقطع عرضي", "إيقاف", "تدوير تلقائي", "الأسماء",
+        "أين يقع", "أظهره على الجسم", "يتكوّن من {count} قطعة", "عرض الكل", "عرض أقل",
+        "يعمل مع", "اختبرني", "عرض ثلاثي الأبعاد", "حسب الجهاز", "تعلّم",
+        "بضع دقائق يوميًا تكفي.", "عضو اليوم", "اقرأ المزيد", "10 أسئلة", "بطاقات",
+        "اقلب وتذكّر", "اعثر على الجزء", "انقر عليه في الجسم", "أجهزة الجسم",
+        "إلى أي جهاز ينتمي؟", "تقدّمك", "الأجزاء التي درستها", "{count} من {total}",
+        "أفضل اختبار", "ما الجزء المميّز؟", "انقر على: {name}", "انقر عليه في الجسم. باعد إصبعيك للتكبير.",
+        "انقر على البطاقة لرؤية الإجابة", "مرة أخرى", "عرفتها", "أنهيت {count} بطاقة.", "حجم النص",
+        "نص أكبر أو أصغر في التطبيق كله", "نص أصغر", "نص أكبر", "تحقّق",
+    ],
+    "zh": [
+        "部位", "详情", "剖面", "关", "自动旋转", "标签",
+        "位置", "在人体上显示", "由 {count} 个部分组成", "全部显示", "收起",
+        "协同部位", "测一测", "3D 查看", "按系统浏览", "学习",
+        "每天几分钟就够了。", "今日器官", "阅读更多", "10 道题", "闪卡",
+        "翻转并记住", "找部位", "在人体上点它", "人体系统",
+        "它属于哪个系统？", "你的进度", "已学部位", "{count} / {total}",
+        "最佳成绩", "高亮的是哪个部位？", "点击：{name}", "在人体上点它。双指张开可放大。",
+        "点击卡片查看答案", "再来", "记住了", "你已完成 {count} 张卡片。", "文字大小",
+        "调大或调小整个应用的文字", "缩小文字", "放大文字", "检查",
+    ],
+    "pt": [
+        "Partes", "Detalhes", "Corte", "Desligado", "Girar sozinho", "Nomes",
+        "Onde fica", "Mostrar no corpo", "Formado por {count} peças", "Mostrar tudo", "Mostrar menos",
+        "Trabalha com", "Me teste", "Ver em 3D", "Por sistema", "Aprender",
+        "Alguns minutos por dia bastam.", "Órgão do dia", "Ler mais", "10 perguntas", "Cartões",
+        "Vire e lembre", "Encontre a parte", "Toque nela no corpo", "Sistemas do corpo",
+        "A que sistema pertence?", "Seu progresso", "Partes estudadas", "{count} de {total}",
+        "Melhor quiz", "Qual parte está destacada?", "Toque em: {name}", "Toque nela no corpo. Afaste dois dedos para ampliar.",
+        "Toque no cartão para ver a resposta", "De novo", "Já sei", "Você passou por {count} cartões.", "Tamanho do texto",
+        "Texto maior ou menor no app todo", "Texto menor", "Texto maior", "Verificar",
+    ],
+    "ja": [
+        "部位", "詳しく", "断面", "オフ", "自動回転", "名前",
+        "どこにある？", "体の上で見る", "{count} 個の部分でできています", "すべて表示", "閉じる",
+        "一緒に働く部位", "クイズに挑戦", "3D で見る", "器官系で見る", "学ぶ",
+        "1日数分で十分です。", "今日の臓器", "続きを読む", "10問", "フラッシュカード",
+        "めくって覚える", "部位をさがす", "体の上でタップ", "器官系クイズ",
+        "どの器官系？", "あなたの進み具合", "学んだ部位", "{count} / {total}",
+        "クイズ最高点", "ハイライトされた部位は？", "{name}をタップ", "体の上でタップしてください。2本指で拡大できます。",
+        "カードをタップすると答えが見られます", "もう一度", "覚えた", "{count} 枚のカードを終えました。", "文字の大きさ",
+        "アプリ全体の文字を大きく・小さくします", "文字を小さく", "文字を大きく", "確認",
+    ],
+    "ko": [
+        "부위", "자세히", "단면", "끔", "자동 회전", "이름",
+        "위치", "몸에서 보기", "{count}개 부분으로 이루어짐", "모두 보기", "접기",
+        "함께 일하는 부위", "퀴즈 풀기", "3D로 보기", "계통별 보기", "학습",
+        "하루 몇 분이면 충분합니다.", "오늘의 장기", "더 읽기", "10문제", "플래시카드",
+        "뒤집고 외우기", "부위 찾기", "몸에서 탭하기", "인체 계통",
+        "어느 계통일까요?", "나의 진도", "공부한 부위", "{count} / {total}",
+        "퀴즈 최고 점수", "강조된 부위는 무엇일까요?", "{name} 탭하기", "몸에서 탭하세요. 두 손가락으로 벌려 확대할 수 있습니다.",
+        "카드를 탭하면 답이 보입니다", "다시", "알았어요", "카드 {count}장을 마쳤습니다.", "글자 크기",
+        "앱 전체의 글자를 크게 또는 작게", "작은 글자", "큰 글자", "확인",
+    ],
+    "it": [
+        "Parti", "Dettagli", "Sezione", "No", "Rotazione auto", "Nomi",
+        "Dove si trova", "Mostra sul corpo", "Formato da {count} pezzi", "Mostra tutto", "Mostra meno",
+        "Lavora con", "Mettimi alla prova", "Vedi in 3D", "Per apparato", "Impara",
+        "Bastano pochi minuti al giorno.", "Organo del giorno", "Leggi di più", "10 domande", "Schede",
+        "Gira e ricorda", "Trova la parte", "Toccala sul corpo", "Apparati del corpo",
+        "A quale apparato appartiene?", "I tuoi progressi", "Parti studiate", "{count} su {total}",
+        "Miglior quiz", "Qual è la parte evidenziata?", "Tocca: {name}", "Toccala sul corpo. Allarga due dita per ingrandire.",
+        "Tocca la scheda per vedere la risposta", "Ancora", "La so", "Hai completato {count} schede.", "Dimensione testo",
+        "Testo più grande o più piccolo in tutta l'app", "Testo più piccolo", "Testo più grande", "Controlla",
+    ],
+}
+
+for _lang, _values in V3.items():
+    if len(_values) != len(V3_KEYS):
+        raise SystemExit(f"v3 {_lang}: {len(_values)} texts for {len(V3_KEYS)} keys")
+    for _key in V3_REMOVED:
+        S[_lang].pop(_key, None)
+    S[_lang].update(dict(zip(V3_KEYS, _values)))
+
+# The old note asked to use the switch "under the body"; it is now beside it.
+V3_READY = {
+    "en": "The 3D pack is installed. Use the 2D / 3D switch next to the body.",
+    "hi": "3D पैक इंस्टॉल है। शरीर के बगल वाले 2D / 3D स्विच का इस्तेमाल करें।",
+    "hy": "3D փաթեթը տեղադրված է։ Օգտագործեք մարմնի կողքի 2D / 3D փոխարկիչը։",
+    "ru": "3D-пакет установлен. Переключайтесь кнопкой 2D / 3D рядом с телом.",
+    "es": "El paquete 3D está instalado. Usa el selector 2D / 3D junto al cuerpo.",
+    "fr": "Le pack 3D est installé. Utilisez le bouton 2D / 3D à côté du corps.",
+    "de": "Das 3D-Paket ist installiert. Nutze den Schalter 2D / 3D neben dem Körper.",
+    "ar": "الحزمة ثلاثية الأبعاد مثبّتة. استخدم مفتاح 2D / 3D بجانب الجسم.",
+    "zh": "3D 资源包已安装。使用人体旁边的 2D / 3D 开关。",
+    "pt": "O pacote 3D está instalado. Use o seletor 2D / 3D ao lado do corpo.",
+    "ja": "3D パックはインストール済みです。体の横の 2D / 3D で切り替えられます。",
+    "ko": "3D 팩이 설치되어 있습니다. 몸 옆의 2D / 3D 전환을 사용하세요.",
+    "it": "Il pacchetto 3D è installato. Usa il selettore 2D / 3D accanto al corpo.",
+}
+for _lang, _text in V3_READY.items():
+    S[_lang]["pack3dReady"] = _text
+
+
 def main():
-    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    root =os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     out = os.path.join(root, "lib", "l10n")
     os.makedirs(out, exist_ok=True)
     base = S["en"]

@@ -10,13 +10,13 @@ Nothing. Anatomo does not collect, send or sell any personal data.
 
 ## What stays on your device
 
-Your language, the body you chose (male or female), the layers you turned on, your favorites and your best quiz score are saved in a small file inside the app (on Windows, in your AppData folder). They never leave your device. On Android they are deleted when you uninstall the app or clear its data. Updates keep them.
+Your language, the body you chose (male or female), the layers you turned on, your favorites, the parts you studied, your text size and your best quiz score are saved in a small file inside the app. They never leave your device. They are deleted when you uninstall the app or clear its data. Updates keep them.
 
 ## Internet
 
 - **2D view.** The pictures of the body are inside the app. Exploring works fully offline.
 - **3D pack.** Only when you tap Download, the app downloads the 3D models from the GitHub release `pack-1` of `lumio-apps/anatomo` and keeps them in its own folder. After that the 3D view works offline: it is drawn by a tiny web server that runs inside the app at `127.0.0.1`, reachable only from your own device. You can remove the pack in Settings.
-- **Check for updates.** Only when you tap it, the app asks GitHub (`api.github.com`) for the latest release of `lumio-apps/anatomo` and, if you agree, downloads the new APK (Android) or installer (Windows) from GitHub. GitHub may log the request as with any website visit. See [GitHub's privacy statement](https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement).
+- **Check for updates.** Only when you tap it, the app asks GitHub (`api.github.com`) for the latest release of `lumio-apps/anatomo` and, if you agree, downloads the new APK from GitHub. GitHub may log the request as with any website visit. See [GitHub's privacy statement](https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement).
 
 ## Permissions
 

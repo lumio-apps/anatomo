@@ -2,91 +2,13 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../theme.dart';
 import 'atlas_controller.dart';
+import 'atlas_images.dart';
 
-/// A tap map: every pixel holds the number of the part drawn there
-/// (red + 256 * green; 0 = nothing).
-class _TapMap {
-  _TapMap(this.width, this.height, this.pixels);
-
-  final int width;
-  final int height;
-  final Uint8List pixels; // RGBA
-
-  int idAt(int x, int y) {
-    if (x < 0 || y < 0 || x >= width || y >= height) return 0;
-    final o = (y * width + x) * 4;
-    return pixels[o] + pixels[o + 1] * 256;
-  }
-
-  /// The part at (x, y), or the most common part close to it, so thin
-  /// pieces are easy to hit with a finger.
-  int pick(int x, int y, int radius) {
-    final exact = idAt(x, y);
-    if (exact != 0) return exact;
-    final count = <int, int>{};
-    for (var dy = -radius; dy <= radius; dy++) {
-      for (var dx = -radius; dx <= radius; dx++) {
-        if (dx * dx + dy * dy > radius * radius) continue;
-        final id = idAt(x + dx, y + dy);
-        if (id != 0) count[id] = (count[id] ?? 0) + 1;
-      }
-    }
-    if (count.isEmpty) return 0;
-    return count.entries.reduce((a, b) => a.value >= b.value ? a : b).key;
-  }
-}
-
-/// Decoded pictures, shared by all screens. Only a few are kept.
-class _Store {
-  static final Map<String, Future<ui.Image>> _images = {};
-  static final Map<String, Future<_TapMap>> _maps = {};
-  static const int _keep = 10;
-
-  static Future<ui.Image> image(String asset) {
-    final hit = _images.remove(asset);
-    final future = hit ?? _decode(asset);
-    _images[asset] = future; // most recent last
-    while (_images.length > _keep) {
-      _images.remove(_images.keys.first);
-    }
-    return future;
-  }
-
-  static Future<_TapMap> map(String asset) {
-    final hit = _maps.remove(asset);
-    final future = hit ?? _decodeMap(asset);
-    _maps[asset] = future;
-    while (_maps.length > _keep) {
-      _maps.remove(_maps.keys.first);
-    }
-    return future;
-  }
-
-  static Future<ui.Image> _decode(String asset) async {
-    final data = await rootBundle.load(asset);
-    final codec = await ui.instantiateImageCodec(
-      data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
-    );
-    final frame = await codec.getNextFrame();
-    codec.dispose();
-    return frame.image;
-  }
-
-  static Future<_TapMap> _decodeMap(String asset) async {
-    final image = await _decode(asset);
-    final bytes = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
-    final map = _TapMap(image.width, image.height, bytes!.buffer.asUint8List());
-    image.dispose();
-    return map;
-  }
-}
-
-/// The body drawn from the 2D pictures: pinch or scroll to zoom, drag to move,
-/// tap a part to open it.
+/// The body drawn from the 2D pictures: pinch to zoom, drag to move, tap a
+/// part to open it.
 class AtlasView extends StatefulWidget {
   const AtlasView({super.key, required this.controller, this.onHidden});
 
@@ -107,17 +29,18 @@ class _AtlasViewState extends State<AtlasView>
 
   String? _colorAsset, _skinAsset, _tapAsset;
   ui.Image? _color, _skin, _mask;
-  _TapMap? _tap;
+  TapMap? _tap;
   String? _maskFor;
   Rect? _selectionBox; // in tap map pixels
   int _maskToken = 0;
+  bool _maskPending = false;
 
   int _appliedFocus = 0;
   int _appliedReset = 0;
 
   Size _stage = Size.zero;
 
-  /// Where the picture sits on the stage (above the details sheet).
+  /// Where the picture sits on the stage (above what covers its bottom).
   Rect get _body => _bodyRect(_stage, _c.inset);
 
   Rect _bodyRect(Size size, double inset) {
@@ -155,10 +78,10 @@ class _AtlasViewState extends State<AtlasView>
   }
 
   @override
-  void didUpdateWidget(AtlasView old) {
-    super.didUpdateWidget(old);
-    if (old.controller != widget.controller) {
-      old.controller.removeListener(_sync);
+  void didUpdateWidget(AtlasView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller.removeListener(_sync);
       widget.controller.addListener(_sync);
       _sync();
     }
@@ -191,7 +114,7 @@ class _AtlasViewState extends State<AtlasView>
       if (color == null) {
         _color = null;
       } else {
-        _Store.image(color).then((img) {
+        AtlasImages.image(color).then((img) {
           if (mounted && _colorAsset == color) setState(() => _color = img);
         }).catchError((Object _) {});
       }
@@ -201,7 +124,7 @@ class _AtlasViewState extends State<AtlasView>
       if (skin == null) {
         _skin = null;
       } else {
-        _Store.image(skin).then((img) {
+        AtlasImages.image(skin).then((img) {
           if (mounted && _skinAsset == skin) setState(() => _skin = img);
         }).catchError((Object _) {});
       }
@@ -210,7 +133,7 @@ class _AtlasViewState extends State<AtlasView>
       _tapAsset = tap;
       _tap = null;
       if (tap != null) {
-        _Store.map(tap).then((map) {
+        AtlasImages.map(tap).then((map) {
           if (!mounted || _tapAsset != tap) return;
           _tap = map;
           _updateMask();
@@ -227,14 +150,14 @@ class _AtlasViewState extends State<AtlasView>
     if (mounted) setState(() {});
   }
 
-  /// Darkens everything but the selection, and finds where the selection is.
+  /// Fades everything but the selection, and finds where the selection is.
   void _updateMask() {
     final tap = _tap;
     final selected = _c.selected;
     final key = '${_tapAsset ?? ''}|${_c.focusRequest}|${selected.length}|'
         '${selected.isEmpty ? '' : selected.first}|${AnatomoColors.isLight}';
     if (key == _maskFor) {
-      _applyRequests();
+      if (!_maskPending) _applyRequests();
       return;
     }
     if (selected.isEmpty || tap == null) {
@@ -242,51 +165,38 @@ class _AtlasViewState extends State<AtlasView>
         _maskFor = key;
         _mask = null;
         _selectionBox = null;
+        _maskPending = false;
       }
       _applyRequests();
       return;
     }
     _maskFor = key;
+    _maskPending = true;
     final token = ++_maskToken;
-    final light = AnatomoColors.isLight;
-    // stage colour, see theme.dart
-    final dr = light ? 0xE9 : 0x0D, dg = light ? 0xF0 : 0x17, db = light ? 0xF1 : 0x1B;
-    final px = Uint8List(tap.width * tap.height * 4);
-    var minX = tap.width, minY = tap.height, maxX = -1, maxY = -1;
-    final src = tap.pixels;
-    for (var y = 0; y < tap.height; y++) {
-      for (var x = 0; x < tap.width; x++) {
-        final o = (y * tap.width + x) * 4;
-        final id = src[o] + src[o + 1] * 256;
-        if (id == 0) continue;
-        if (selected.contains(id - 1)) {
-          px[o] = 255;
-          px[o + 1] = 255;
-          px[o + 2] = 255;
-          px[o + 3] = 46;
-          if (x < minX) minX = x;
-          if (x > maxX) maxX = x;
-          if (y < minY) minY = y;
-          if (y > maxY) maxY = y;
-        } else {
-          px[o] = dr;
-          px[o + 1] = dg;
-          px[o + 2] = db;
-          px[o + 3] = 170;
-        }
-      }
-    }
-    final found = maxX >= 0;
-    _selectionBox = found
-        ? Rect.fromLTRB(minX.toDouble(), minY.toDouble(), maxX + 1.0, maxY + 1.0)
-        : null;
-    if (!found) widget.onHidden?.call();
-    ui.decodeImageFromPixels(px, tap.width, tap.height, ui.PixelFormat.rgba8888,
-        (img) {
+    final stage = AnatomoColors.stage.toARGB32() & 0x00FFFFFF;
+    buildMask(tap, selected, 0x2EFFFFFF, 0xAA000000 | stage).then((result) async {
       if (!mounted || token != _maskToken) return;
+      final box = result.box;
+      _selectionBox = box == null
+          ? null
+          : Rect.fromLTRB(
+              box[0].toDouble(),
+              box[1].toDouble(),
+              box[2].toDouble(),
+              box[3].toDouble(),
+            );
+      _maskPending = false;
+      if (box == null) widget.onHidden?.call();
+      _applyRequests();
+      final img = await imageFromPixels(result.pixels, result.width, result.height);
+      if (!mounted || token != _maskToken) {
+        img.dispose();
+        return;
+      }
       setState(() => _mask = img);
+    }).catchError((Object _) {
+      _maskPending = false;
     });
-    _applyRequests();
   }
 
   void _applyRequests() {
@@ -296,10 +206,10 @@ class _AtlasViewState extends State<AtlasView>
       if (_c.selected.isEmpty) _animateTo(Matrix4.identity());
     }
     if (_c.focusRequest != _appliedFocus && _c.selected.isNotEmpty) {
-      final box = _selectionBox;
       final tap = _tap;
-      if (tap == null) return; // wait for the tap map
+      if (tap == null || _maskPending) return; // wait for the tap map
       _appliedFocus = _c.focusRequest;
+      final box = _selectionBox;
       if (box == null) {
         _animateTo(Matrix4.identity());
         return;
